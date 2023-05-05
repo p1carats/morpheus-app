@@ -20,6 +20,25 @@ class HomeScreen extends StatelessWidget {
                 children: [
                   Text(
                       'Connecté en tant que ${authProvider.user!.displayName}'),
+                  if (!authProvider.user!.isEmailVerified)
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        color: Colors.redAccent,
+                        padding: EdgeInsets.all(8),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: const [
+                            Icon(Icons.warning, color: Colors.white),
+                            SizedBox(width: 8),
+                            Text(
+                              'Email not verified',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   ElevatedButton(
                     onPressed: () async {
                       await authProvider.signOut();

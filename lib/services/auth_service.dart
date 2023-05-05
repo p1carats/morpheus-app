@@ -7,7 +7,10 @@ class AuthService {
 
   UserModel? _userFromFirebaseUser(User? user) {
     return user != null
-        ? UserModel(uid: user.uid, displayName: user.displayName ?? '')
+        ? UserModel(
+            uid: user.uid,
+            displayName: user.displayName ?? '',
+            isEmailVerified: user.emailVerified)
         : null;
   }
 
