@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "166357141239",
+    "project_id": "uphoria-morpheus-app",
+    "storage_bucket": "uphoria-morpheus-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:166357141239:android:3627c87879ab8af7b8b5f2",
+        "android_client_info": {
+          "package_name": "com.uphoria.morpheus"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "166357141239-s44vcvl24ug8276udvkds22t2ta1t9ug.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyANmnhHYapdkOcZtlHyzgU9u8_4BhrsEJY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "166357141239-2osjt5nq3af3def55ctqiun20b31uenl.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "166357141239-2po871sp1mmtupdiflnfgfmm25irr3od.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.morpheus"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
