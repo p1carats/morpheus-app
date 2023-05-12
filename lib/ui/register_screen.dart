@@ -1,95 +1,113 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../providers/auth_provider.dart';
+import '../models/user_model.dart';
+import '../providers/user_auth_provider.dart';
 
 class RegisterScreen extends StatefulWidget {
+  RegisterScreen({Key? key}) : super(key: key);
+
   @override
   _RegisterScreenState createState() => _RegisterScreenState();
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
-  String _displayName = '';
-  String _email = '';
-  String _password = '';
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _birthDateController = TextEditingController();
+  final TextEditingController _genderController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Inscription'),
       ),
-      body: Center(
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              TextFormField(
-                decoration:
-                    const InputDecoration(labelText: 'Nom d\'utilisateur'),
-                onChanged: (value) {
-                  setState(() {
-                    _displayName = value.trim();
-                  });
-                },
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Merci d\'entrer votre nom d\'utilisateur';
+      body: Form(
+        key: _formKey,
+        child: Column(
+          children: <Widget>[
+            TextFormField(
+              controller: _nameController,
+              decoration: const InputDecoration(labelText: 'Nom'),
+              validator: (String? value) {
+                if (value == null || value.isEmpty) {
+                  return 'Merci d\'entrer un nom valide.';
+                }
+                return null;
+              },
+            ),
+            TextFormField(
+              controller: _emailController,
+              decoration: const InputDecoration(labelText: 'Adresse mail'),
+              validator: (String? value) {
+                if (value == null || value.isEmpty) {
+                  return 'Merci d\'entrer une adresse mail valide.';
+                }
+                return null;
+              },
+            ),
+            TextFormField(
+              controller: _passwordController,
+              decoration: const InputDecoration(labelText: 'Mot de passe'),
+              validator: (String? value) {
+                if (value == null || value.isEmpty) {
+                  return 'Merci d\'entrer un mot de passe valide.';
+                }
+                return null;
+              },
+            ),
+            DropdownButtonFormField<Genders>(
+              value: _genderController,
+              decoration: const InputDecoration(labelText: 'Gender'),
+              onChanged: (Genders? value) {
+                setState(() {
+                  _genderController = value;
+                });
+              },
+              validator: (Genders? value) {
+                if (value == null) {
+                  return 'Please select a gender';
+                }
+                return null;
+              },
+              items: Genders.values.map((Genders gender) {
+                return DropdownMenuItem<Genders>(
+                  value: gender,
+                  child: Text(gender == Genders.male
+                      ? 'Male'
+                      : gender == Genders.female
+                          ? 'Female'
+                          : 'I prefer not to answer'),
+                );
+              }).toList(),
+            ),
+            ),
+            // Birth date and Sleep hours TextFormFields can be added in similar way. For date, you would probably use a DatePicker.
+            ElevatedButton(
+              onPressed: () async {
+                if (_formKey.currentState!.validate()) {
+                  try {
+                    await Provider.of<UserAuthProvider>(context, listen: false)
+                        .register(
+                      email: _emailController.text,
+                      password: _passwordController.text,
+                      displayName: _nameController.text,
+                      gender: _genderController.text,
+                      birthDate: DateTime.parse(_birthDateController
+                          .text), // Assuming input in YYYY-MM-DD format
+                    );
+                  } catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Error: ${e.toString()}')));
                   }
-                  return null;
-                },
-              ),
-              TextFormField(
-                decoration: const InputDecoration(labelText: 'Adresse mail'),
-                onChanged: (value) {
-                  setState(() {
-                    _email = value.trim();
-                  });
-                },
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Merci d\'entrer votre email';
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
-                decoration: const InputDecoration(labelText: 'Mot de passe'),
-                obscureText: true,
-                onChanged: (value) {
-                  setState(() {
-                    _password = value.trim();
-                  });
-                },
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Merci d\'entrer votre mot de passe';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () async {
-                  if (_formKey.currentState!.validate()) {
-                    try {
-                      await authProvider.signUp(
-                          _displayName, _email, _password);
-                      Navigator.pop(context);
-                    } catch (e) {
-                      ScaffoldMessenger.of(context)
-                          .showSnackBar(SnackBar(content: Text(e.toString())));
-                    }
-                  }
-                },
-                child: const Text('Inscription'),
-              ),
-            ],
-          ),
+                }
+              },
+              child: const Text('Inscription'),
+            ),
+          ],
         ),
       ),
     );

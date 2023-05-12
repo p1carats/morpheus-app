@@ -2,22 +2,32 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 
-import 'providers/auth_provider.dart';
-import 'services/auth_service.dart';
 import 'firebase_options.dart';
+import 'services/user_auth_service.dart';
+import 'services/user_data_service.dart';
+import 'providers/user_auth_provider.dart';
+import 'providers/user_data_provider.dart';
 import 'app.dart';
 
 void main() async {
+  // Ensure that all widgets are initialized
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize Firebase
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  // Run app
   runApp(
-    MultiProvider(providers: [
-      Provider(create: (_) => AuthService()),
-      ChangeNotifierProxyProvider<AuthService, AuthProvider>(
-        create: (_) => AuthProvider(),
-        update: (_, authService, authProvider) =>
-            authProvider!..updateAuthService(authService),
-      ),
-    ], child: const Morpheus()),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider<UserAuthProvider>(
+          create: (_) => UserAuthProvider(userAuthService: UserAuthService()),
+        ),
+        ChangeNotifierProvider<UserDataProvider>(
+          create: (_) => UserDataProvider(userDataService: UserDataService()),
+        ),
+      ],
+      child: const Morpheus(),
+    ),
   );
 }
