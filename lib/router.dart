@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -10,16 +12,19 @@ class AppRouterDelegate {
     routes: [
       GoRoute(
         path: '/',
-        pageBuilder: (context, state) => MaterialPage(child: HomeScreen()),
-        redirect: (_) => '/login',
+        pageBuilder: (context, state) =>
+            const MaterialPage(child: HomeScreen()),
+        redirect: (context, state) => Future.value('/login'),
       ),
       GoRoute(
         path: '/login',
-        pageBuilder: (context, state) => MaterialPage(child: LoginScreen()),
+        pageBuilder: (context, state) =>
+            const MaterialPage(child: LoginScreen()),
       ),
       GoRoute(
         path: '/register',
-        pageBuilder: (context, state) => MaterialPage(child: RegisterScreen()),
+        pageBuilder: (context, state) =>
+            const MaterialPage(child: RegisterScreen()),
       ),
     ],
   );

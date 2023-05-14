@@ -5,7 +5,7 @@ import '../models/user_model.dart';
 import '../providers/user_auth_provider.dart';
 
 class RegisterScreen extends StatefulWidget {
-  RegisterScreen({Key? key}) : super(key: key);
+  const RegisterScreen({Key? key}) : super(key: key);
 
   @override
   _RegisterScreenState createState() => _RegisterScreenState();
@@ -60,11 +60,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
               },
             ),
             DropdownButtonFormField<Genders>(
-              value: _genderController,
+              value: _genderController.text == 'male'
+                  ? Genders.male
+                  : _genderController.text == 'female'
+                      ? Genders.female
+                      : _genderController.text == 'other'
+                          ? Genders.other
+                          : null,
               decoration: const InputDecoration(labelText: 'Gender'),
               onChanged: (Genders? value) {
                 setState(() {
-                  _genderController = value;
+                  _genderController.text = value.toString();
                 });
               },
               validator: (Genders? value) {
@@ -84,19 +90,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 );
               }).toList(),
             ),
-            ),
             // Birth date and Sleep hours TextFormFields can be added in similar way. For date, you would probably use a DatePicker.
             ElevatedButton(
               onPressed: () async {
                 if (_formKey.currentState!.validate()) {
                   try {
                     await Provider.of<UserAuthProvider>(context, listen: false)
-                        .register(
-                      email: _emailController.text,
-                      password: _passwordController.text,
-                      displayName: _nameController.text,
-                      gender: _genderController.text,
-                      birthDate: DateTime.parse(_birthDateController
+                        .signUp(
+                      _nameController.text,
+                      _emailController.text,
+                      _passwordController.text,
+                      _genderController.text as Genders,
+                      DateTime.parse(_birthDateController
                           .text), // Assuming input in YYYY-MM-DD format
                     );
                   } catch (e) {

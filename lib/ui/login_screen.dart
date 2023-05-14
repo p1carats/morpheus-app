@@ -21,7 +21,7 @@ class _LoginScreenState extends State<LoginScreen> {
       try {
         await Provider.of<UserAuthProvider>(context, listen: false)
             .signIn(_email, _password);
-        Navigator.of(context).pushReplacementNamed('/');
+        Navigator.of(context).pushNamed('/');
       } catch (error) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -98,7 +98,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 TextButton(
                   child: const Text('Inscription'),
                   onPressed: () {
-                    Navigator.of(context).pushReplacementNamed('/register');
+                    Navigator.of(context).pushNamed('/register');
                   },
                 ),
               ],

@@ -1,12 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 import 'router.dart';
-import 'providers/user_auth_provider.dart';
-
-import 'ui/home_screen.dart';
-import 'ui/login_screen.dart';
-import 'ui/register_screen.dart';
 
 class Morpheus extends StatelessWidget {
   Morpheus({Key? key}) : super(key: key);

@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/user_auth_provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<UserAuthProvider>(context);
@@ -19,13 +22,14 @@ class HomeScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                      'Connecté en tant que ${authProvider.user!.displayName}'),
-                  if (!authProvider.user!.isEmailVerified)
+                      //print la phrase suivante : "Connecté en tant que ${displayName}"
+                      'Connecté en tant que ${authProvider.user!.name}'),
+                  if (FirebaseAuth.instance.currentUser!.emailVerified)
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Container(
                         color: Colors.redAccent,
-                        padding: EdgeInsets.all(8),
+                        padding: const EdgeInsets.all(8),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: const [

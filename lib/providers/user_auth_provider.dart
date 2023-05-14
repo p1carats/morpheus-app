@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
+//import 'package:flutter/material.dart';
 
 import '../models/user_model.dart';
 import '../services/user_auth_service.dart';
@@ -19,7 +20,9 @@ class UserAuthProvider with ChangeNotifier {
       _user = await _userAuthService.signIn(email, password);
       notifyListeners();
     } on FirebaseAuthException catch (err) {
-      print(err.message);
+      if (kDebugMode) {
+        print(err.message);
+      }
     }
   }
 

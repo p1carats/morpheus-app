@@ -21,13 +21,15 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider<UserAuthProvider>(
-          create: (_) => UserAuthProvider(userAuthService: UserAuthService()),
+          create: (_) => UserAuthProvider(
+              userAuthService:
+                  UserAuthService(userDataService: UserDataService())),
         ),
         ChangeNotifierProvider<UserDataProvider>(
           create: (_) => UserDataProvider(userDataService: UserDataService()),
         ),
       ],
-      child: const Morpheus(),
+      child: Morpheus(),
     ),
   );
 }
