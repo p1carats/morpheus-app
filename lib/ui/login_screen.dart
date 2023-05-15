@@ -23,7 +23,7 @@ class _LoginScreenState extends State<LoginScreen> {
       try {
         await Provider.of<UserAuthProvider>(context, listen: false)
             .signIn(_email, _password);
-        context.goNamed('/');
+        context.goNamed('home');
       } catch (error) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(

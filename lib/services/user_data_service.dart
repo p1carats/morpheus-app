@@ -6,7 +6,7 @@ class UserDataService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   // Get user's gender (there're only two of em)
-  Future<Genders> getGender(String uid) async {
+  Future<String> getGender(String uid) async {
     var doc = await _firestore.collection('users').doc(uid).get();
     return doc['gender'] ?? '';
   }
@@ -18,7 +18,7 @@ class UserDataService {
   }
 
   // Set user's gender
-  Future<void> setGender(String uid, Genders gender) async {
+  Future<void> setGender(String uid, String gender) async {
     await _firestore.collection('users').doc(uid).set(
       {'gender': gender},
       SetOptions(merge: true),

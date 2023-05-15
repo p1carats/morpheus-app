@@ -1,12 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
-enum Genders { male, female, other }
-
 class UserModel {
   final String uid;
   final String name;
   final String email;
-  final Genders gender;
+  final String gender;
   final DateTime birthDate;
 
   UserModel({
@@ -18,7 +16,7 @@ class UserModel {
   });
 
   factory UserModel.fromFirebaseUser(User user,
-      {required Genders gender, required DateTime birthDate}) {
+      {required String gender, required DateTime birthDate}) {
     return UserModel(
       uid: user.uid,
       email: user.email ?? '',

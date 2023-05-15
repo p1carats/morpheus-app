@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:morpheus/models/user_model.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
+import 'package:ionicons/ionicons.dart';
 
-import '../models/user_model.dart';
 import '../providers/user_auth_provider.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -13,11 +15,45 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _birthDateController = TextEditingController();
-  final TextEditingController _genderController = TextEditingController();
+  String _name = '';
+  String _email = '';
+  String _password = '';
+  String _gender = '';
+  DateTime _birthDate = DateTime.now();
+
+  void _submit() async {
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+      try {
+        await Provider.of<UserAuthProvider>(context, listen: false)
+            .signUp(_name, _email, _password, _gender, _birthDate);
+        context.goNamed('home');
+      } catch (error) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(error.toString()),
+            backgroundColor: Theme.of(context).colorScheme.error,
+          ),
+        );
+      }
+    }
+  }
+
+  // Function to show the DatePicker
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: _birthDate,
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2100),
+    );
+
+    if (picked != null && picked != _birthDate) {
+      setState(() {
+        _birthDate = picked;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,94 +61,118 @@ class _RegisterScreenState extends State<RegisterScreen> {
       appBar: AppBar(
         title: const Text('Inscription'),
       ),
-      body: Form(
-        key: _formKey,
-        child: Column(
-          children: <Widget>[
-            TextFormField(
-              controller: _nameController,
-              decoration: const InputDecoration(labelText: 'Nom'),
-              validator: (String? value) {
-                if (value == null || value.isEmpty) {
-                  return 'Merci d\'entrer un nom valide.';
-                }
-                return null;
-              },
+      body: Center(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(20.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                const SizedBox(height: 30),
+                TextFormField(
+                  decoration: const InputDecoration(
+                    labelText: 'Nom',
+                    border: OutlineInputBorder(),
+                    prefixIcon: Icon(Ionicons.person_outline),
+                  ),
+                  validator: (value) {
+                    if (value!.isEmpty || value.length < 3) {
+                      return 'Nom trop court ! (3 caractères minimum)';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) {
+                    _name = value!;
+                  },
+                ),
+                const SizedBox(height: 20),
+                TextFormField(
+                  decoration: const InputDecoration(
+                    labelText: 'Adresse mail',
+                    border: OutlineInputBorder(),
+                    prefixIcon: Icon(Ionicons.mail_outline),
+                  ),
+                  validator: (value) {
+                    if (value!.isEmpty || !value.contains('@')) {
+                      return 'Adresse email incorrecte !';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) {
+                    _email = value!;
+                  },
+                ),
+                const SizedBox(height: 20),
+                TextFormField(
+                  obscureText: true,
+                  decoration: const InputDecoration(
+                    labelText: 'Mot de passe',
+                    border: OutlineInputBorder(),
+                    prefixIcon: Icon(Ionicons.lock_closed_outline),
+                  ),
+                  validator: (value) {
+                    if (value!.isEmpty || value.length < 7) {
+                      return 'Password must be at least 7 characters long';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) {
+                    _password = value!;
+                  },
+                ),
+                const SizedBox(height: 20),
+                SegmentedButton<String>(
+                  segments: const <ButtonSegment<String>>[
+                    ButtonSegment<String>(
+                      value: 'male',
+                      label: Text('Masculin'),
+                      icon: Icon(Ionicons.male_outline),
+                    ),
+                    ButtonSegment<String>(
+                      value: 'female',
+                      label: Text('Féminin'),
+                      icon: Icon(Ionicons.female_outline),
+                    ),
+                    ButtonSegment<String>(
+                      value: 'other',
+                      label: Text('Autre'),
+                      icon: Icon(Ionicons.male_female_outline),
+                    ),
+                  ],
+                  selected: <String>{_gender},
+                  showSelectedIcon: false,
+                  onSelectionChanged: (Set<String> newSelection) {
+                    setState(() {
+                      _gender = newSelection.first;
+                    });
+                  },
+                ),
+                const SizedBox(height: 20),
+                TextButton(
+                  onPressed: () => _selectDate(context),
+                  child: const Text('Date de naissance'),
+                ),
+                const SizedBox(height: 30),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 50, vertical: 10),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                  onPressed: _submit,
+                  child: const Text('Inscription'),
+                ),
+                const SizedBox(height: 10),
+                TextButton(
+                  child: const Text('J\'ai déjà un compte'),
+                  onPressed: () => context.go('/login'),
+                ),
+              ],
             ),
-            TextFormField(
-              controller: _emailController,
-              decoration: const InputDecoration(labelText: 'Adresse mail'),
-              validator: (String? value) {
-                if (value == null || value.isEmpty) {
-                  return 'Merci d\'entrer une adresse mail valide.';
-                }
-                return null;
-              },
-            ),
-            TextFormField(
-              controller: _passwordController,
-              decoration: const InputDecoration(labelText: 'Mot de passe'),
-              validator: (String? value) {
-                if (value == null || value.isEmpty) {
-                  return 'Merci d\'entrer un mot de passe valide.';
-                }
-                return null;
-              },
-            ),
-            DropdownButtonFormField<Genders>(
-              value: _genderController.text == 'male'
-                  ? Genders.male
-                  : _genderController.text == 'female'
-                      ? Genders.female
-                      : _genderController.text == 'other'
-                          ? Genders.other
-                          : null,
-              decoration: const InputDecoration(labelText: 'Gender'),
-              onChanged: (Genders? value) {
-                setState(() {
-                  _genderController.text = value.toString();
-                });
-              },
-              validator: (Genders? value) {
-                if (value == null) {
-                  return 'Please select a gender';
-                }
-                return null;
-              },
-              items: Genders.values.map((Genders gender) {
-                return DropdownMenuItem<Genders>(
-                  value: gender,
-                  child: Text(gender == Genders.male
-                      ? 'Male'
-                      : gender == Genders.female
-                          ? 'Female'
-                          : 'I prefer not to answer'),
-                );
-              }).toList(),
-            ),
-            // Birth date and Sleep hours TextFormFields can be added in similar way. For date, you would probably use a DatePicker.
-            ElevatedButton(
-              onPressed: () async {
-                if (_formKey.currentState!.validate()) {
-                  try {
-                    await Provider.of<UserAuthProvider>(context, listen: false)
-                        .signUp(
-                      _nameController.text,
-                      _emailController.text,
-                      _passwordController.text,
-                      _genderController.text as Genders,
-                      DateTime.parse(_birthDateController
-                          .text), // Assuming input in YYYY-MM-DD format
-                    );
-                  } catch (e) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Error: ${e.toString()}')));
-                  }
-                }
-              },
-              child: const Text('Inscription'),
-            ),
-          ],
+          ),
         ),
       ),
     );

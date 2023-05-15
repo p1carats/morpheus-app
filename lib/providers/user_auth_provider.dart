@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
-//import 'package:flutter/material.dart';
 
 import '../models/user_model.dart';
 import '../services/user_auth_service.dart';
@@ -27,8 +26,8 @@ class UserAuthProvider with ChangeNotifier {
   }
 
   // Sign up
-  Future<void> signUp(String name, String email, String password,
-      Genders gender, DateTime birthDate) async {
+  Future<void> signUp(String name, String email, String password, String gender,
+      DateTime birthDate) async {
     _user =
         await _userAuthService.signUp(name, email, password, gender, birthDate);
     notifyListeners();

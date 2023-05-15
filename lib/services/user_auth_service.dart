@@ -19,22 +19,25 @@ class UserAuthService {
     var user = authResult.user!;
     var gender = await _userDataService.getGender(user.uid);
     var birthDate = await _userDataService.getBirthDate(user.uid);
-    return UserModel.fromFirebaseUser(user,
-        gender: gender, birthDate: birthDate);
+    return UserModel.fromFirebaseUser(
+      user,
+      gender: gender,
+      birthDate: birthDate,
+    );
   }
 
   // Registers a new user
-  Future<UserModel> signUp(String name, String email, String password,
-      Genders gender, DateTime birthDate) async {
+  Future<UserModel?> signUp(String name, String email, String password,
+      String gender, DateTime birthDate) async {
     var authResult = await _firebaseAuth.createUserWithEmailAndPassword(
       email: email,
       password: password,
     );
     var user = authResult.user!;
-    await user.sendEmailVerification();
     await user.updateDisplayName(name);
     await _userDataService.setGender(user.uid, gender);
     await _userDataService.setBirthDate(user.uid, birthDate);
+    await user.sendEmailVerification();
     return UserModel.fromFirebaseUser(user,
         gender: gender, birthDate: birthDate);
   }

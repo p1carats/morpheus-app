@@ -7,6 +7,7 @@ import 'ui/login_screen.dart';
 import 'ui/register_screen.dart';
 
 final GoRouter _router = GoRouter(
+  initialLocation: '/',
   routes: [
     GoRoute(
       name: 'home',
@@ -38,6 +39,7 @@ class Morpheus extends StatelessWidget {
       themeMode: ThemeMode.system,
       theme: ThemeData(
         useMaterial3: true,
+        fontFamily: 'Montserrat',
       ),
       routerConfig: _router,
     );
