@@ -6,6 +6,7 @@ class UserModel {
   final String email;
   final String gender;
   final DateTime birthDate;
+  final bool isEmailVerified;
 
   UserModel({
     required this.uid,
@@ -13,6 +14,7 @@ class UserModel {
     required this.email,
     required this.gender,
     required this.birthDate,
+    required this.isEmailVerified,
   });
 
   factory UserModel.fromFirebaseUser(User user,
@@ -23,6 +25,7 @@ class UserModel {
       name: user.displayName ?? '',
       gender: gender,
       birthDate: birthDate,
+      isEmailVerified: user.emailVerified,
     );
   }
 }

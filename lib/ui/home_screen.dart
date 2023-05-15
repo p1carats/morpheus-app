@@ -24,28 +24,7 @@ class HomeScreen extends StatelessWidget {
             : Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                      //print la phrase suivante : "Connecté en tant que ${displayName}"
-                      'Connecté en tant que ${authProvider.user!.name}'),
-                  if (FirebaseAuth.instance.currentUser!.emailVerified)
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                        color: Colors.redAccent,
-                        padding: const EdgeInsets.all(8),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
-                            Icon(Ionicons.warning_outline, color: Colors.white),
-                            SizedBox(width: 8),
-                            Text(
-                              'Adresse mail non vérifiée !',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
+                  Text('Connecté en tant que ${authProvider.user!.name}'),
                   ElevatedButton(
                     onPressed: () async {
                       await authProvider.signOut();

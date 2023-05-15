@@ -16,10 +16,11 @@ final GoRouter router = GoRouter(
   routes: [
     ShellRoute(
       builder: (context, state, child) {
-        return BottomNavBar(child);
+        return const BottomNavBar();
       },
       routes: <RouteBase>[
         GoRoute(
+          name: 'home',
           path: '/',
           builder: (context, state) => const HomeScreen(),
         ),

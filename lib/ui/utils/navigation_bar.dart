@@ -1,22 +1,43 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:morpheus/ui/dreams_screen.dart';
+import 'package:morpheus/ui/home_screen.dart';
+import 'package:morpheus/ui/settings_screen.dart';
+import 'package:morpheus/ui/sleep_screen.dart';
 
-class BottomNavBar extends StatelessWidget {
-  const BottomNavBar(this.child, {Key? key}) : super(key: key);
-  final Widget child;
+class BottomNavBar extends StatefulWidget {
+  const BottomNavBar({Key? key}) : super(key: key);
+
+  @override
+  _BottomNavBarState createState() => _BottomNavBarState();
+}
+
+class _BottomNavBarState extends State<BottomNavBar> {
+  int currentPageIndex = 0;
+
+  final List<Widget> pages = [
+    // Define your pages here
+    // For example: HomePage(), AnalyticsPage(), DreamsPage(), SettingsPage()
+    const HomeScreen(),
+    const SleepScreen(),
+    const DreamsScreen(),
+    const SettingsScreen(),
+  ];
 
   @override
   Widget build(BuildContext context) {
-    int currentPageIndex = 0;
     return Scaffold(
+      body: pages[currentPageIndex],
       bottomNavigationBar: NavigationBar(
         labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
         selectedIndex: currentPageIndex,
         onDestinationSelected: (int index) {
-          currentPageIndex = index;
+          setState(() {
+            currentPageIndex = index;
+          });
         },
-        destinations: const <Widget>[
+        destinations: const <NavigationDestination>[
           NavigationDestination(
             selectedIcon: Icon(Ionicons.home),
             icon: Icon(Ionicons.home_outline),

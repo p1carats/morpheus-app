@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:ionicons/ionicons.dart';
 
 import '../../providers/user_auth_provider.dart';
+import 'forgotten_screen.dart';
 
 class WizardLoginScreen extends StatefulWidget {
   const WizardLoginScreen({Key? key}) : super(key: key);
@@ -23,7 +24,7 @@ class _WizardLoginScreenState extends State<WizardLoginScreen> {
       try {
         await Provider.of<UserAuthProvider>(context, listen: false)
             .signIn(_email, _password);
-        context.goNamed('home');
+        context.go('/');
       } catch (error) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -99,7 +100,13 @@ class _WizardLoginScreenState extends State<WizardLoginScreen> {
                 const SizedBox(height: 10),
                 TextButton(
                   child: const Text('Mot de passe oublié ?'),
-                  onPressed: () => context.go('/register'),
+                  onPressed: () => showModalBottomSheet(
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                    ),
+                    context: context,
+                    builder: (context) => const ForgottenScreen(),
+                  ),
                 ),
                 TextButton(
                   child: const Text('Pas encore de compte ?'),
