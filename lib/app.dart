@@ -1,7 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:go_router/go_router.dart';
 
-import 'router.dart';
+import 'ui/home_screen.dart';
+import 'ui/login_screen.dart';
+import 'ui/register_screen.dart';
+
+final GoRouter _router = GoRouter(
+  routes: [
+    GoRoute(
+      name: 'home',
+      path: '/',
+      builder: (context, state) => const HomeScreen(),
+    ),
+    GoRoute(
+      name: 'login',
+      path: '/login',
+      builder: (context, state) => const LoginScreen(),
+    ),
+    GoRoute(
+      name: 'register',
+      path: '/register',
+      builder: (context, state) => const RegisterScreen(),
+    ),
+  ],
+);
 
 class Morpheus extends StatelessWidget {
   final SharedPreferences sharedPreferences;
@@ -16,8 +39,7 @@ class Morpheus extends StatelessWidget {
       theme: ThemeData(
         useMaterial3: true,
       ),
-      routeInformationParser: router.routeInformationParser,
-      routerDelegate: router.routerDelegate,
+      routerConfig: _router,
     );
   }
 }

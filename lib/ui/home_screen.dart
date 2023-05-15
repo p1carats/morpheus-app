@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
+import 'package:ionicons/ionicons.dart';
 
 import '../providers/user_auth_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -36,7 +38,7 @@ class HomeScreen extends StatelessWidget {
                             Icon(Icons.warning, color: Colors.white),
                             SizedBox(width: 8),
                             Text(
-                              'Email not verified',
+                              'Adresse mail non vérifiée !',
                               style: TextStyle(color: Colors.white),
                             ),
                           ],
@@ -55,18 +57,14 @@ class HomeScreen extends StatelessWidget {
       floatingActionButton:
           Column(mainAxisAlignment: MainAxisAlignment.end, children: [
         FloatingActionButton(
-          onPressed: () {
-            Navigator.pushNamed(context, '/login');
-          },
+          onPressed: () => context.goNamed('login'),
           tooltip: 'Connexion',
           heroTag: 'loginBtn',
-          child: const Icon(Icons.login),
+          child: const Icon(Ionicons.log_in_outline),
         ),
         const SizedBox(height: 16),
         FloatingActionButton(
-          onPressed: () {
-            Navigator.pushNamed(context, '/register');
-          },
+          onPressed: () => context.goNamed('register'),
           tooltip: 'Inscription',
           heroTag: 'registerBtn',
           child: const Icon(Icons.app_registration),
