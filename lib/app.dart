@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'router.dart';
 
 class Morpheus extends StatelessWidget {
-  Morpheus({Key? key}) : super(key: key);
-  final _routerDelegate = AppRouterDelegate();
+  final SharedPreferences sharedPreferences;
+  const Morpheus({Key? key, required this.sharedPreferences}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -15,8 +16,8 @@ class Morpheus extends StatelessWidget {
       theme: ThemeData(
         useMaterial3: true,
       ),
-      routerDelegate: _routerDelegate.goRouter.routerDelegate,
-      routeInformationParser: _routerDelegate.goRouter.routeInformationParser,
+      routeInformationParser: router.routeInformationParser,
+      routerDelegate: router.routerDelegate,
     );
   }
 }
