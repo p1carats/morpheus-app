@@ -3,11 +3,14 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_core/firebase_core.dart';
 
-import 'firebase_options.dart';
-import 'services/user_auth_service.dart';
-import 'services/user_data_service.dart';
+import 'providers/app_state_provider.dart';
 import 'providers/user_auth_provider.dart';
 import 'providers/user_data_provider.dart';
+
+import 'services/user_auth_service.dart';
+import 'services/user_data_service.dart';
+
+import 'firebase_options.dart';
 import 'app.dart';
 
 void main() async {
@@ -24,6 +27,7 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (context) => AppStateProvider()),
         ChangeNotifierProvider<UserAuthProvider>(
           create: (_) => UserAuthProvider(
               userAuthService:

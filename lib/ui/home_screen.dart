@@ -12,6 +12,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<UserAuthProvider>(context);
+    int currentPageIndex = 0;
 
     return Scaffold(
       appBar: AppBar(
@@ -61,13 +62,6 @@ class HomeScreen extends StatelessWidget {
           tooltip: 'Connexion',
           heroTag: 'loginBtn',
           child: const Icon(Ionicons.log_in_outline),
-        ),
-        const SizedBox(height: 16),
-        FloatingActionButton(
-          onPressed: () => context.goNamed('register'),
-          tooltip: 'Inscription',
-          heroTag: 'registerBtn',
-          child: const Icon(Icons.app_registration),
         ),
       ]),
     );

@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:morpheus/models/user_model.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ionicons/ionicons.dart';
 
-import '../providers/user_auth_provider.dart';
+import '../../providers/user_auth_provider.dart';
 
-class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({Key? key}) : super(key: key);
+class WizardRegisterScreen extends StatefulWidget {
+  const WizardRegisterScreen({Key? key}) : super(key: key);
 
   @override
-  _RegisterScreenState createState() => _RegisterScreenState();
+  _WizardRegisterScreenState createState() => _WizardRegisterScreenState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> {
+class _WizardRegisterScreenState extends State<WizardRegisterScreen> {
   final _formKey = GlobalKey<FormState>();
   String _name = '';
   String _email = '';
@@ -44,8 +43,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: _birthDate,
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2100),
+      firstDate: DateTime(1900),
+      lastDate: DateTime(DateTime.now().year + 1),
     );
 
     if (picked != null && picked != _birthDate) {
