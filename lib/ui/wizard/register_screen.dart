@@ -169,6 +169,12 @@ class _WizardRegisterScreenState extends State<WizardRegisterScreen> {
                   child: const Text('J\'ai déjà un compte'),
                   onPressed: () => context.go('/login'),
                 ),
+                TextButton.icon(
+                  icon: const Icon(Ionicons.help_buoy_outline),
+                  label: const Text(
+                      'Pourquoi avons-nous besoin de ces informations ?'),
+                  onPressed: () {},
+                ),
               ],
             ),
           ),

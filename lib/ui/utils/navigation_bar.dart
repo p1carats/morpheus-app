@@ -17,8 +17,6 @@ class _BottomNavBarState extends State<BottomNavBar> {
   int currentPageIndex = 0;
 
   final List<Widget> pages = [
-    // Define your pages here
-    // For example: HomePage(), AnalyticsPage(), DreamsPage(), SettingsPage()
     const HomeScreen(),
     const SleepScreen(),
     const DreamsScreen(),
@@ -41,22 +39,22 @@ class _BottomNavBarState extends State<BottomNavBar> {
           NavigationDestination(
             selectedIcon: Icon(Ionicons.home),
             icon: Icon(Ionicons.home_outline),
-            label: 'Home',
+            label: 'Accueil',
           ),
           NavigationDestination(
-            selectedIcon: Icon(Ionicons.bar_chart),
-            icon: Icon(Ionicons.bar_chart_outline),
-            label: 'Analytics',
+            selectedIcon: Icon(Ionicons.bed),
+            icon: Icon(Ionicons.bed_outline),
+            label: 'Sommeil',
           ),
           NavigationDestination(
-            selectedIcon: Icon(Ionicons.journal),
-            icon: Icon(Ionicons.journal_outline),
-            label: 'Dreams',
+            selectedIcon: Icon(Ionicons.moon),
+            icon: Icon(Ionicons.moon_outline),
+            label: 'Rêves',
           ),
           NavigationDestination(
             selectedIcon: Icon(Ionicons.cog),
             icon: Icon(Ionicons.cog_outline),
-            label: 'Settings',
+            label: 'Réglages',
           ),
         ],
       ),

@@ -12,7 +12,7 @@ import 'ui/settings_screen.dart';
 import 'ui/utils/navigation_bar.dart';
 
 final GoRouter router = GoRouter(
-  initialLocation: '/',
+  initialLocation: '/login',
   routes: [
     ShellRoute(
       builder: (context, state, child) {
