@@ -14,7 +14,7 @@ class AppRouterDelegate {
         path: '/',
         pageBuilder: (context, state) =>
             const MaterialPage(child: HomeScreen()),
-        redirect: (context, state) => Future.value('/login'),
+        //redirect: (context, state) => Future.value('/login'),
       ),
       GoRoute(
         path: '/login',

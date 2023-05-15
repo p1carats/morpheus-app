@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 
 import '../providers/user_auth_provider.dart';
 
@@ -21,7 +22,7 @@ class _LoginScreenState extends State<LoginScreen> {
       try {
         await Provider.of<UserAuthProvider>(context, listen: false)
             .signIn(_email, _password);
-        Navigator.of(context).pushNamed('/');
+        context.go('/')
       } catch (error) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -98,7 +99,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 TextButton(
                   child: const Text('Inscription'),
                   onPressed: () {
-                    Navigator.of(context).pushNamed('/register');
+                    context.go('/register');
                   },
                 ),
               ],
