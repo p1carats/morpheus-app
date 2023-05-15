@@ -35,7 +35,7 @@ class HomeScreen extends StatelessWidget {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: const [
-                            Icon(Icons.warning, color: Colors.white),
+                            Icon(Ionicons.warning_outline, color: Colors.white),
                             SizedBox(width: 8),
                             Text(
                               'Adresse mail non vérifiée !',
