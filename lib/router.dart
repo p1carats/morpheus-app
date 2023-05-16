@@ -101,12 +101,16 @@ final GoRouter router = GoRouter(
         GoRoute(
           name: 'login',
           path: 'login',
-          builder: (context, state) => const AuthLoginScreen(),
+          builder: (context, state) => AuthLoginScreen(
+            email: state.queryParameters['email'],
+          ),
         ),
         GoRoute(
           name: 'register',
           path: 'register',
-          builder: (context, state) => const AuthRegisterScreen(),
+          builder: (context, state) => AuthRegisterScreen(
+            email: state.queryParameters['email'],
+          ),
         ),
       ],
     ),

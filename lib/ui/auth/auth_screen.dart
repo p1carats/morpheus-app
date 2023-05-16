@@ -22,9 +22,9 @@ class _AuthMainScreenState extends State<AuthMainScreen> {
       var isEmailRegistered =
           await context.read<UserAuthProvider>().isEmailRegistered(_email);
       if (isEmailRegistered) {
-        context.pushNamed('login');
+        context.pushNamed('login', queryParameters: {'email': _email});
       } else {
-        context.pushNamed('register');
+        context.pushNamed('register', queryParameters: {'email': _email});
       }
     }
   }
@@ -52,7 +52,7 @@ class _AuthMainScreenState extends State<AuthMainScreen> {
                   ),
                   validator: (value) {
                     if (value!.isEmpty || !value.contains('@')) {
-                      return 'Adresse email incorrecte !';
+                      return 'Adresse email invalide !';
                     }
                     return null;
                   },

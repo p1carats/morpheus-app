@@ -7,7 +7,8 @@ import '../../providers/user_auth_provider.dart';
 import 'forgotten_screen.dart';
 
 class AuthLoginScreen extends StatefulWidget {
-  const AuthLoginScreen({Key? key}) : super(key: key);
+  const AuthLoginScreen({Key? key, required this.email}) : super(key: key);
+  final String? email;
 
   @override
   _AuthLoginScreenState createState() => _AuthLoginScreenState();
@@ -19,16 +20,17 @@ class _AuthLoginScreenState extends State<AuthLoginScreen> {
   String _password = '';
 
   void _submit() async {
+    _email = widget.email ?? '';
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
       try {
         await Provider.of<UserAuthProvider>(context, listen: false)
             .signIn(_email, _password);
         context.go('/');
-      } catch (error) {
+      } catch (err) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(error.toString()),
+            content: Text(err.toString()),
             backgroundColor: Theme.of(context).colorScheme.error,
           ),
         );
@@ -44,7 +46,6 @@ class _AuthLoginScreenState extends State<AuthLoginScreen> {
           icon: const Icon(Ionicons.arrow_back_outline),
           onPressed: () => context.pop(),
         ),
-        title: const Text('Connexion'),
       ),
       body: Center(
         child: SingleChildScrollView(
@@ -55,23 +56,7 @@ class _AuthLoginScreenState extends State<AuthLoginScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 const SizedBox(height: 30),
-                Text(_email),
-                TextFormField(
-                  decoration: const InputDecoration(
-                    labelText: 'Adresse mail',
-                    border: OutlineInputBorder(),
-                    prefixIcon: Icon(Ionicons.mail_outline),
-                  ),
-                  validator: (value) {
-                    if (value!.isEmpty || !value.contains('@')) {
-                      return 'Adresse email incorrecte !';
-                    }
-                    return null;
-                  },
-                  onSaved: (value) {
-                    _email = value!;
-                  },
-                ),
+                Text('Connecté en tant que ${widget.email}'),
                 const SizedBox(height: 20),
                 TextFormField(
                   obscureText: true,
@@ -82,7 +67,7 @@ class _AuthLoginScreenState extends State<AuthLoginScreen> {
                   ),
                   validator: (value) {
                     if (value!.isEmpty || value.length < 7) {
-                      return 'Password must be at least 7 characters long';
+                      return 'Le mot de passe doit contenir au moins 7 caractères.';
                     }
                     return null;
                   },

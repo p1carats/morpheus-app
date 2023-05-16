@@ -6,7 +6,8 @@ import 'package:ionicons/ionicons.dart';
 import '../../providers/user_auth_provider.dart';
 
 class AuthRegisterScreen extends StatefulWidget {
-  const AuthRegisterScreen({Key? key}) : super(key: key);
+  const AuthRegisterScreen({Key? key, required this.email}) : super(key: key);
+  final String? email;
 
   @override
   _AuthRegisterScreenState createState() => _AuthRegisterScreenState();
@@ -21,6 +22,7 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen> {
   DateTime _birthDate = DateTime.now();
 
   void _submit() async {
+    _email = widget.email ?? '';
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
       try {
@@ -73,6 +75,8 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 const SizedBox(height: 30),
+                Text('Inscription en tant que ${widget.email}'),
+                const SizedBox(height: 20),
                 TextFormField(
                   decoration: const InputDecoration(
                     labelText: 'Nom',
@@ -91,23 +95,6 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen> {
                 ),
                 const SizedBox(height: 20),
                 TextFormField(
-                  decoration: const InputDecoration(
-                    labelText: 'Adresse mail',
-                    border: OutlineInputBorder(),
-                    prefixIcon: Icon(Ionicons.mail_outline),
-                  ),
-                  validator: (value) {
-                    if (value!.isEmpty || !value.contains('@')) {
-                      return 'Adresse email incorrecte !';
-                    }
-                    return null;
-                  },
-                  onSaved: (value) {
-                    _email = value!;
-                  },
-                ),
-                const SizedBox(height: 20),
-                TextFormField(
                   obscureText: true,
                   decoration: const InputDecoration(
                     labelText: 'Mot de passe',
@@ -116,7 +103,7 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen> {
                   ),
                   validator: (value) {
                     if (value!.isEmpty || value.length < 7) {
-                      return 'Password must be at least 7 characters long';
+                      return 'Le mot de passe doit contenir au moins 7 caractères.';
                     }
                     return null;
                   },
