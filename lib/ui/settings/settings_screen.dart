@@ -105,12 +105,12 @@ class _SettingsMainScreenState extends State<SettingsMainScreen> {
           ListTile(
             leading: const Icon(Ionicons.person_outline),
             title: const Text('Mon profil'),
-            onTap: () => context.pushNamed('profile'),
+            onTap: () => context.pushNamed('email'),
           ),
           ListTile(
             leading: const Icon(Ionicons.mail_outline),
             title: const Text('Changer mon adresse mail'),
-            onTap: () {},
+            onTap: () => context.push('/email'),
           ),
           ListTile(
             leading: const Icon(Ionicons.lock_closed_outline),

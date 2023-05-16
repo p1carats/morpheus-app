@@ -14,7 +14,7 @@ import 'ui/dreams_screen.dart';
 import 'ui/add_dream_screen.dart';
 
 import 'ui/settings/settings_screen.dart';
-import 'ui/settings/profile_screen.dart';
+import 'ui/settings/email_screen.dart';
 import 'ui/settings/data_screen.dart';
 import 'ui/utils/navigation_bar.dart';
 
@@ -57,9 +57,9 @@ final GoRouter router = GoRouter(
       ],
     ),
     GoRoute(
-      name: 'profile',
-      path: '/profile',
-      builder: (context, state) => const SettingsProfileScreen(),
+      name: 'email',
+      path: '/email',
+      builder: (context, state) => const SettingsEmailScreen(),
     ),
     GoRoute(
       name: 'data',
