@@ -3,16 +3,16 @@ import 'package:go_router/go_router.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:provider/provider.dart';
 
-import '../providers/user_auth_provider.dart';
+import '../../providers/user_auth_provider.dart';
 
-class SettingsScreen extends StatefulWidget {
-  const SettingsScreen({Key? key}) : super(key: key);
+class SettingsMainScreen extends StatefulWidget {
+  const SettingsMainScreen({Key? key}) : super(key: key);
 
   @override
-  State<SettingsScreen> createState() => _SettingsScreenState();
+  State<SettingsMainScreen> createState() => _SettingsMainScreenState();
 }
 
-class _SettingsScreenState extends State<SettingsScreen> {
+class _SettingsMainScreenState extends State<SettingsMainScreen> {
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<UserAuthProvider>(context);
@@ -100,6 +100,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
             title: Text('Paramètres du compte'),
           ),
           ListTile(
+            leading: const Icon(Ionicons.person_outline),
+            title: const Text('Mon profil'),
+            onTap: () => context.pushNamed('profile'),
+          ),
+          ListTile(
             leading: const Icon(Ionicons.mail_outline),
             title: const Text('Changer mon adresse mail'),
             onTap: () {},
@@ -114,6 +119,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             title: const Text('Me déconnecter'),
             onTap: () async {
               await authProvider.signOut();
+              context.goNamed('login');
             },
           ),
           ListTile(

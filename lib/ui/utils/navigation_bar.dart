@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:morpheus/ui/dreams_screen.dart';
 import 'package:morpheus/ui/home_screen.dart';
-import 'package:morpheus/ui/settings_screen.dart';
+import 'package:morpheus/ui/settings/settings_screen.dart';
 import 'package:morpheus/ui/sleep_screen.dart';
 
 class BottomNavBar extends StatefulWidget {
@@ -20,7 +20,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
     const HomeScreen(),
     const SleepScreen(),
     const DreamsScreen(),
-    const SettingsScreen(),
+    const SettingsMainScreen(),
   ];
 
   @override
