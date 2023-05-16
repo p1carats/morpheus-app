@@ -1,5 +1,5 @@
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 import 'ui/auth/auth_screen.dart';
 import 'ui/auth/login_screen.dart';
@@ -19,30 +19,39 @@ import 'ui/settings/profile_screen.dart';
 import 'ui/settings/email_screen.dart';
 import 'ui/settings/password_screen.dart';
 
+final _rootNavigatorKey = GlobalKey<NavigatorState>();
+final _shellNavigatorKey = GlobalKey<NavigatorState>();
+
 final GoRouter router = GoRouter(
   initialLocation: '/auth',
+  navigatorKey: _rootNavigatorKey,
   routes: [
     ShellRoute(
+      navigatorKey: _shellNavigatorKey,
       builder: (context, state, child) {
         return const BottomNavBar();
       },
       routes: <RouteBase>[
         GoRoute(
+          parentNavigatorKey: _shellNavigatorKey,
           name: 'home',
           path: '/',
           builder: (context, state) => const HomeScreen(),
         ),
         GoRoute(
+          parentNavigatorKey: _shellNavigatorKey,
           name: 'sleep',
           path: '/sleep',
           builder: (context, state) => const SleepScreen(),
         ),
         GoRoute(
+          parentNavigatorKey: _shellNavigatorKey,
           name: 'dreams',
           path: '/dreams',
           builder: (context, state) => const DreamsScreen(),
           routes: <RouteBase>[
             GoRoute(
+              parentNavigatorKey: _rootNavigatorKey,
               name: 'add',
               path: 'add',
               builder: (context, state) => const AddDreamScreen(),
@@ -50,26 +59,31 @@ final GoRouter router = GoRouter(
           ],
         ),
         GoRoute(
+          parentNavigatorKey: _shellNavigatorKey,
           name: 'settings',
           path: '/settings',
           builder: (context, state) => const SettingsMainScreen(),
           routes: <RouteBase>[
             GoRoute(
+              parentNavigatorKey: _rootNavigatorKey,
               name: 'data',
               path: 'data',
               builder: (context, state) => const SettingsDataScreen(),
             ),
             GoRoute(
+              parentNavigatorKey: _rootNavigatorKey,
               name: 'profile',
               path: 'profile',
               builder: (context, state) => const SettingsProfileScreen(),
             ),
             GoRoute(
+              parentNavigatorKey: _rootNavigatorKey,
               name: 'email',
               path: 'email',
               builder: (context, state) => const SettingsEmailScreen(),
             ),
             GoRoute(
+              parentNavigatorKey: _rootNavigatorKey,
               name: 'password',
               path: 'password',
               builder: (context, state) => const SettingsPasswordScreen(),
@@ -79,6 +93,7 @@ final GoRouter router = GoRouter(
       ],
     ),
     GoRoute(
+      parentNavigatorKey: _rootNavigatorKey,
       name: 'auth',
       path: '/auth',
       builder: (context, state) => const AuthMainScreen(),
