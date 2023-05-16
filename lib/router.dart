@@ -7,6 +7,7 @@ import 'ui/auth/login_screen.dart';
 import 'ui/auth/register_screen.dart';
 
 import 'ui/wizard/welcome_screen.dart';
+import 'ui/utils/navigation_bar.dart';
 import 'ui/error_screen.dart';
 import 'ui/home_screen.dart';
 import 'ui/sleep_screen.dart';
@@ -14,9 +15,10 @@ import 'ui/dreams_screen.dart';
 import 'ui/add_dream_screen.dart';
 
 import 'ui/settings/settings_screen.dart';
-import 'ui/settings/email_screen.dart';
 import 'ui/settings/data_screen.dart';
-import 'ui/utils/navigation_bar.dart';
+import 'ui/settings/profile_screen.dart';
+import 'ui/settings/email_screen.dart';
+import 'ui/settings/password_screen.dart';
 
 final GoRouter router = GoRouter(
   initialLocation: '/auth',
@@ -53,18 +55,30 @@ final GoRouter router = GoRouter(
           name: 'settings',
           path: '/settings',
           builder: (context, state) => const SettingsMainScreen(),
+          routes: <RouteBase>[
+            GoRoute(
+              name: 'data',
+              path: 'data',
+              builder: (context, state) => const SettingsDataScreen(),
+            ),
+            GoRoute(
+              name: 'profile',
+              path: 'profile',
+              builder: (context, state) => const SettingsProfileScreen(),
+            ),
+            GoRoute(
+              name: 'email',
+              path: 'email',
+              builder: (context, state) => const SettingsEmailScreen(),
+            ),
+            GoRoute(
+              name: 'password',
+              path: 'password',
+              builder: (context, state) => const SettingsPasswordScreen(),
+            ),
+          ],
         ),
       ],
-    ),
-    GoRoute(
-      name: 'email',
-      path: '/email',
-      builder: (context, state) => const SettingsEmailScreen(),
-    ),
-    GoRoute(
-      name: 'data',
-      path: '/data',
-      builder: (context, state) => const SettingsDataScreen(),
     ),
     GoRoute(
       name: 'auth',
@@ -74,12 +88,12 @@ final GoRouter router = GoRouter(
         GoRoute(
           name: 'login',
           path: 'login',
-          builder: (context, state) => AuthLoginScreen(),
+          builder: (context, state) => const AuthLoginScreen(),
         ),
         GoRoute(
           name: 'register',
           path: 'register',
-          builder: (context, state) => AuthRegisterScreen(),
+          builder: (context, state) => const AuthRegisterScreen(),
         ),
       ],
     ),
