@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 
 import '../models/user_model.dart';
@@ -6,11 +5,11 @@ import '../services/user_auth_service.dart';
 
 class UserAuthProvider with ChangeNotifier {
   final UserAuthService _userAuthService;
-  UserModel? _user;
 
   UserAuthProvider({required UserAuthService userAuthService})
       : _userAuthService = userAuthService;
 
+  UserModel? _user;
   UserModel? get user => _user;
 
   // Checks whether an email address is already registered

@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -22,7 +21,6 @@ import 'ui/settings/password_screen.dart';
 
 final GoRouter router = GoRouter(
   initialLocation: '/auth',
-  //FirebaseAuth.instance.currentUser != null ? '/home' : '/auth',
   routes: [
     ShellRoute(
       builder: (context, state, child) {
@@ -45,7 +43,7 @@ final GoRouter router = GoRouter(
           builder: (context, state) => const DreamsScreen(),
           routes: <RouteBase>[
             GoRoute(
-              name: 'dream-add',
+              name: 'add',
               path: 'add',
               builder: (context, state) => const AddDreamScreen(),
             ),

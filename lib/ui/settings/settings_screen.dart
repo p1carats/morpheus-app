@@ -85,7 +85,7 @@ class _SettingsMainScreenState extends State<SettingsMainScreen> {
           ListTile(
             leading: const Icon(Ionicons.medical_outline),
             title: const Text('Accès aux données'),
-            onTap: () => context.push('/settings/data'),
+            onTap: () => context.pushNamed('data'),
           ),
           ListTile(
             leading: const Icon(Ionicons.color_palette_outline),
@@ -105,17 +105,17 @@ class _SettingsMainScreenState extends State<SettingsMainScreen> {
           ListTile(
             leading: const Icon(Ionicons.person_outline),
             title: const Text('Mon profil'),
-            onTap: () => context.go('/settings/profile'),
+            onTap: () => context.pushNamed('profile'),
           ),
           ListTile(
             leading: const Icon(Ionicons.mail_outline),
             title: const Text('Changer mon adresse mail'),
-            onTap: () => context.push('/settings/email'),
+            onTap: () => context.pushNamed('email'),
           ),
           ListTile(
             leading: const Icon(Ionicons.lock_closed_outline),
             title: const Text('Changer mon mot de passe'),
-            onTap: () => context.push('/settings/password'),
+            onTap: () => context.pushNamed('password'),
           ),
           ListTile(
             leading: const Icon(Ionicons.log_out_outline),
