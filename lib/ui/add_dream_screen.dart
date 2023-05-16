@@ -48,19 +48,56 @@ class _AddDreamScreenState extends State<AddDreamScreen>
           ],
         ),
       ),
-      body: TabBarView(
-        controller: _tabController,
-        children: const <Widget>[
-          Center(
-            child: Text("It's cloudy here"),
+      body: Padding(
+        padding: const EdgeInsets.fromLTRB(20, 40, 20, 20),
+        child: Form(
+          child: TabBarView(
+            controller: _tabController,
+            children: <Widget>[
+              ListView(
+                children: [
+                  TextFormField(
+                    decoration: const InputDecoration(
+                      labelText: 'Titre du rêve',
+                      border: OutlineInputBorder(),
+                      prefixIcon: Icon(Ionicons.eye_outline),
+                    ),
+                    validator: (value) => value!.isEmpty
+                        ? 'Le titre ne peut pas être vide.'
+                        : null,
+                  ),
+                  const SizedBox(height: 20),
+                  TextFormField(
+                    maxLines: 6,
+                    decoration: const InputDecoration(
+                      labelText: 'Description',
+                      border: OutlineInputBorder(),
+                      prefixIcon: Icon(Ionicons.journal_outline),
+                    ),
+                    validator: (value) => value!.isEmpty
+                        ? 'La description ne peut pas être vide.'
+                        : null,
+                  ),
+                ],
+              ),
+              ListView(
+                children: [
+                  const Text('test mamene2'),
+                ],
+              ),
+              ListView(
+                children: [
+                  const Text('test mamene3'),
+                ],
+              ),
+            ],
           ),
-          Center(
-            child: Text("It's rainy here"),
-          ),
-          Center(
-            child: Text("It's sunny here"),
-          ),
-        ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        icon: const Icon(Ionicons.add_outline),
+        label: const Text('Ajouter'),
+        onPressed: () => context.pop(),
       ),
     );
   }

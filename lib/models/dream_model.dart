@@ -20,13 +20,13 @@ class DreamModel {
   // Conversion from JSON to Dream object
   factory DreamModel.fromJson(Map<String, dynamic> json) {
     return DreamModel(
-      id: json['id'],
-      title: json['title'],
-      description: json['description'],
+      id: json['id'] ?? '',
+      title: json['title'] ?? '',
+      description: json['description'] ?? '',
       date: json['date'].toDate(),
-      type: json['type'],
-      rating: json['rating'].toDouble(),
-      isLucid: json['isLucid'],
+      type: json['type'] ?? 'dream',
+      rating: json['rating'].toInt() ?? '1',
+      isLucid: json['isLucid'] ?? false,
     );
   }
 
