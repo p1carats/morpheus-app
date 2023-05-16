@@ -3,17 +3,17 @@ import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ionicons/ionicons.dart';
 
-import '../../../providers/user_auth_provider.dart';
+import '../../providers/user_auth_provider.dart';
 import 'forgotten_screen.dart';
 
-class WizardLoginScreen extends StatefulWidget {
-  const WizardLoginScreen({Key? key}) : super(key: key);
+class AuthLoginScreen extends StatefulWidget {
+  const AuthLoginScreen({Key? key}) : super(key: key);
 
   @override
-  _WizardLoginScreenState createState() => _WizardLoginScreenState();
+  _AuthLoginScreenState createState() => _AuthLoginScreenState();
 }
 
-class _WizardLoginScreenState extends State<WizardLoginScreen> {
+class _AuthLoginScreenState extends State<AuthLoginScreen> {
   final _formKey = GlobalKey<FormState>();
   String _email = '';
   String _password = '';
@@ -25,8 +25,7 @@ class _WizardLoginScreenState extends State<WizardLoginScreen> {
         await Provider.of<UserAuthProvider>(context, listen: false)
             .signIn(_email, _password);
         context.go('/');
-      } 
-      catch (error) {
+      } catch (error) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(error.toString()),
@@ -56,6 +55,7 @@ class _WizardLoginScreenState extends State<WizardLoginScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 const SizedBox(height: 30),
+                Text(_email),
                 TextFormField(
                   decoration: const InputDecoration(
                     labelText: 'Adresse mail',

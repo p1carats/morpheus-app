@@ -3,16 +3,16 @@ import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ionicons/ionicons.dart';
 
-import '../../../providers/user_auth_provider.dart';
+import '../../providers/user_auth_provider.dart';
 
-class WizardAuthScreen extends StatefulWidget {
-  const WizardAuthScreen({Key? key}) : super(key: key);
+class AuthMainScreen extends StatefulWidget {
+  const AuthMainScreen({Key? key}) : super(key: key);
 
   @override
-  State<WizardAuthScreen> createState() => _WizardAuthScreenState();
+  State<AuthMainScreen> createState() => _AuthMainScreenState();
 }
 
-class _WizardAuthScreenState extends State<WizardAuthScreen> {
+class _AuthMainScreenState extends State<AuthMainScreen> {
   final _formKey = GlobalKey<FormState>();
   String _email = '';
 

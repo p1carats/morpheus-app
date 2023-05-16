@@ -2,15 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import 'ui/auth/auth_screen.dart';
+import 'ui/auth/login_screen.dart';
+import 'ui/auth/register_screen.dart';
+
 import 'ui/wizard/welcome_screen.dart';
-import 'ui/wizard/auth/auth_screen.dart';
-import 'ui/wizard/auth/login_screen.dart';
-import 'ui/wizard/auth/register_screen.dart';
 import 'ui/error_screen.dart';
 import 'ui/home_screen.dart';
 import 'ui/sleep_screen.dart';
 import 'ui/dreams_screen.dart';
 import 'ui/add_dream_screen.dart';
+
 import 'ui/settings/settings_screen.dart';
 import 'ui/settings/profile_screen.dart';
 import 'ui/settings/data_screen.dart';
@@ -67,17 +69,17 @@ final GoRouter router = GoRouter(
     GoRoute(
       name: 'auth',
       path: '/auth',
-      builder: (context, state) => const WizardAuthScreen(),
+      builder: (context, state) => const AuthMainScreen(),
       routes: <RouteBase>[
         GoRoute(
           name: 'login',
           path: 'login',
-          builder: (context, state) => const WizardLoginScreen(),
+          builder: (context, state) => AuthLoginScreen(),
         ),
         GoRoute(
           name: 'register',
           path: 'register',
-          builder: (context, state) => const WizardRegisterScreen(),
+          builder: (context, state) => AuthRegisterScreen(),
         ),
       ],
     ),

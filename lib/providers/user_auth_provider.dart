@@ -23,10 +23,8 @@ class UserAuthProvider with ChangeNotifier {
     try {
       _user = await _userAuthService.signIn(email, password);
       notifyListeners();
-    } on FirebaseAuthException catch (err) {
-      if (kDebugMode) {
-        print(err.message);
-      }
+    } catch (e) {
+      throw Exception(e.toString());
     }
   }
 
