@@ -29,10 +29,6 @@ class _AddDreamScreenState extends State<AddDreamScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Ionicons.arrow_back_outline),
-          onPressed: () => context.pop(),
-        ),
         title: const Text('Nouveau rêve'),
         bottom: TabBar(
           controller: _tabController,

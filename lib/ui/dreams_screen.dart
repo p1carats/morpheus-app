@@ -19,7 +19,7 @@ class _DreamsScreenState extends State<DreamsScreen> {
           TextButton.icon(
             icon: const Icon(Ionicons.add_outline),
             label: const Text('Nouveau rêve'),
-            onPressed: () => context.push('/add'),
+            onPressed: () => context.pushNamed('dream-add'),
             //onPressed: () => context.push('/add'),
           ),
         ],

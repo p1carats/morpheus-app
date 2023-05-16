@@ -10,6 +10,12 @@ class UserAuthService {
   UserAuthService({required UserDataService userDataService})
       : _userDataService = userDataService;
 
+  // Checks whether an email address is already registered
+  Future<bool> isEmailRegistered(String email) async {
+    var users = await _firebaseAuth.fetchSignInMethodsForEmail(email);
+    return users.isNotEmpty;
+  }
+
   // Logs in an existing user
   Future<UserModel> signIn(String email, String password) async {
     var authResult = await _firebaseAuth.signInWithEmailAndPassword(

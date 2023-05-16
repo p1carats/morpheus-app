@@ -13,6 +13,11 @@ class UserAuthProvider with ChangeNotifier {
 
   UserModel? get user => _user;
 
+  // Checks whether an email address is already registered
+  Future<bool> isEmailRegistered(String email) async {
+    return await _userAuthService.isEmailRegistered(email);
+  }
+
   // Sign in
   Future<void> signIn(String email, String password) async {
     try {

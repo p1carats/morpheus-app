@@ -119,7 +119,7 @@ class _SettingsMainScreenState extends State<SettingsMainScreen> {
             title: const Text('Me déconnecter'),
             onTap: () async {
               await authProvider.signOut();
-              context.goNamed('login');
+              context.goNamed('auth');
             },
           ),
           ListTile(

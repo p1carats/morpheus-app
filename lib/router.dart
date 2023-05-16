@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'ui/wizard/welcome_screen.dart';
+import 'ui/wizard/auth_screen.dart';
 import 'ui/wizard/login_screen.dart';
 import 'ui/wizard/register_screen.dart';
 import 'ui/error_screen.dart';
@@ -15,7 +17,8 @@ import 'ui/settings/data_screen.dart';
 import 'ui/utils/navigation_bar.dart';
 
 final GoRouter router = GoRouter(
-  initialLocation: '/login',
+  initialLocation: 'auth',
+  //FirebaseAuth.instance.currentUser != null ? '/home' : '/auth',
   routes: [
     ShellRoute(
       builder: (context, state, child) {
@@ -38,6 +41,7 @@ final GoRouter router = GoRouter(
           builder: (context, state) => const DreamsScreen(),
           routes: <RouteBase>[
             GoRoute(
+              name: 'dream-add',
               path: 'add',
               builder: (context, state) => const AddDreamScreen(),
             ),
@@ -51,11 +55,6 @@ final GoRouter router = GoRouter(
       ],
     ),
     GoRoute(
-      name: 'dream-add',
-      path: '/add',
-      builder: (context, state) => const AddDreamScreen(),
-    ),
-    GoRoute(
       name: 'profile',
       path: '/profile',
       builder: (context, state) => const SettingsProfileScreen(),
@@ -66,14 +65,21 @@ final GoRouter router = GoRouter(
       builder: (context, state) => const SettingsDataScreen(),
     ),
     GoRoute(
-      name: 'login',
-      path: '/login',
-      builder: (context, state) => const WizardLoginScreen(),
-    ),
-    GoRoute(
-      name: 'register',
-      path: '/register',
-      builder: (context, state) => const WizardRegisterScreen(),
+      name: 'auth',
+      path: '/auth',
+      builder: (context, state) => const WizardAuthScreen(),
+      routes: <RouteBase>[
+        GoRoute(
+          name: 'login',
+          path: 'login',
+          builder: (context, state) => const WizardLoginScreen(),
+        ),
+        GoRoute(
+          name: 'register',
+          path: 'register',
+          builder: (context, state) => const WizardRegisterScreen(),
+        ),
+      ],
     ),
   ],
   errorBuilder: (context, state) => const ErrorScreen(),
