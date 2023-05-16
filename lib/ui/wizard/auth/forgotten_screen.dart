@@ -65,6 +65,16 @@ class _ForgottenScreenState extends State<ForgottenScreen> {
                       try {
                         await FirebaseAuth.instance
                             .sendPasswordResetEmail(email: _email);
+                          showDialog(context: context, builder: (context) => AlertDialog(
+                            title: const Text('Email envoyé'),
+                            content: Text('Un email de réinitialisation de mot de passe a été envoyé à l\'adresse $_email'),
+                            actions: [
+                              TextButton(
+                                onPressed: () => context.pop(),
+                                child: const Text('OK'),
+                              ),
+                            ],
+                          ));
                         // Password reset email sent successfully
                         // You can show a success message or navigate to a different screen
                       } catch (e) {

@@ -25,7 +25,8 @@ class _WizardLoginScreenState extends State<WizardLoginScreen> {
         await Provider.of<UserAuthProvider>(context, listen: false)
             .signIn(_email, _password);
         context.go('/');
-      } catch (error) {
+      } 
+      catch (error) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(error.toString()),

@@ -17,7 +17,7 @@ import 'ui/settings/data_screen.dart';
 import 'ui/utils/navigation_bar.dart';
 
 final GoRouter router = GoRouter(
-  initialLocation: 'auth',
+  initialLocation: '/auth',
   //FirebaseAuth.instance.currentUser != null ? '/home' : '/auth',
   routes: [
     ShellRoute(
