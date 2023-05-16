@@ -3,9 +3,9 @@ import 'package:go_router/go_router.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'ui/wizard/welcome_screen.dart';
-import 'ui/wizard/auth_screen.dart';
-import 'ui/wizard/login_screen.dart';
-import 'ui/wizard/register_screen.dart';
+import 'ui/wizard/auth/auth_screen.dart';
+import 'ui/wizard/auth/login_screen.dart';
+import 'ui/wizard/auth/register_screen.dart';
 import 'ui/error_screen.dart';
 import 'ui/home_screen.dart';
 import 'ui/sleep_screen.dart';

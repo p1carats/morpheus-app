@@ -1,39 +1,28 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ionicons/ionicons.dart';
 
-import '../../providers/user_auth_provider.dart';
-
-class WizardAuthScreen extends StatefulWidget {
-  const WizardAuthScreen({Key? key}) : super(key: key);
+class ForgottenScreen extends StatefulWidget {
+  const ForgottenScreen({Key? key}) : super(key: key);
 
   @override
-  State<WizardAuthScreen> createState() => _WizardAuthScreenState();
+  _ForgottenScreenState createState() => _ForgottenScreenState();
 }
 
-class _WizardAuthScreenState extends State<WizardAuthScreen> {
+class _ForgottenScreenState extends State<ForgottenScreen> {
   final _formKey = GlobalKey<FormState>();
   String _email = '';
-
-  void _submit() async {
-    if (_formKey.currentState!.validate()) {
-      _formKey.currentState!.save();
-      var isEmailRegistered =
-          await context.read<UserAuthProvider>().isEmailRegistered(_email);
-      if (isEmailRegistered) {
-        context.pushNamed('login');
-      } else {
-        context.pushNamed('register');
-      }
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Adresse mail'),
+        leading: IconButton(
+          icon: const Icon(Ionicons.arrow_back_outline),
+          onPressed: () => context.pop(),
+        ),
+        title: const Text('Mot de passe oublié'),
       ),
       body: Center(
         child: SingleChildScrollView(
@@ -60,6 +49,7 @@ class _WizardAuthScreenState extends State<WizardAuthScreen> {
                     _email = value!;
                   },
                 ),
+                const SizedBox(height: 20),
                 const SizedBox(height: 30),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
@@ -69,8 +59,25 @@ class _WizardAuthScreenState extends State<WizardAuthScreen> {
                       borderRadius: BorderRadius.circular(20),
                     ),
                   ),
-                  onPressed: _submit,
-                  child: const Text('Connexion'),
+                  onPressed: () async {
+                    if (_formKey.currentState!.validate()) {
+                      _formKey.currentState!.save();
+                      try {
+                        await FirebaseAuth.instance
+                            .sendPasswordResetEmail(email: _email);
+                        // Password reset email sent successfully
+                        // You can show a success message or navigate to a different screen
+                      } catch (e) {
+                        // Handle error - display an error message or perform any necessary actions
+                      }
+                    }
+                  },
+                  child: const Text('Réinitialiser le mot de passe'),
+                ),
+                const SizedBox(height: 10),
+                TextButton(
+                  child: const Text('Pas encore de compte ?'),
+                  onPressed: () => context.go('/register'),
                 ),
               ],
             ),

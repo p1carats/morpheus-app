@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-
-import '../models/user_model.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class UserDataService {
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // Get user's gender (there're only two of em)
+  // Get user's gender
   Future<String> getGender(String uid) async {
     var doc = await _firestore.collection('users').doc(uid).get();
     return doc['gender'] ?? '';
@@ -31,5 +31,11 @@ class UserDataService {
       {'birthDate': birthDate},
       SetOptions(merge: true),
     );
+  }
+
+  // Deletes the current user
+  Future<void> deleteUser() async {
+    var user = _firebaseAuth.currentUser!;
+    await user.delete();
   }
 }

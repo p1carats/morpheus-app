@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ionicons/ionicons.dart';
 
-import '../../providers/user_auth_provider.dart';
+import '../../../providers/user_auth_provider.dart';
 import 'forgotten_screen.dart';
 
 class WizardLoginScreen extends StatefulWidget {
@@ -40,6 +40,10 @@ class _WizardLoginScreenState extends State<WizardLoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Ionicons.arrow_back_outline),
+          onPressed: () => context.pop(),
+        ),
         title: const Text('Connexion'),
       ),
       body: Center(
@@ -107,10 +111,6 @@ class _WizardLoginScreenState extends State<WizardLoginScreen> {
                     context: context,
                     builder: (context) => const ForgottenScreen(),
                   ),
-                ),
-                TextButton(
-                  child: const Text('Pas encore de compte ?'),
-                  onPressed: () => context.go('/register'),
                 ),
               ],
             ),

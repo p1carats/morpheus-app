@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ionicons/ionicons.dart';
 
-import '../../providers/user_auth_provider.dart';
+import '../../../providers/user_auth_provider.dart';
 
 class WizardRegisterScreen extends StatefulWidget {
   const WizardRegisterScreen({Key? key}) : super(key: key);
@@ -58,6 +58,10 @@ class _WizardRegisterScreenState extends State<WizardRegisterScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Ionicons.arrow_back_outline),
+          onPressed: () => context.pop(),
+        ),
         title: const Text('Inscription'),
       ),
       body: Center(
@@ -165,10 +169,6 @@ class _WizardRegisterScreenState extends State<WizardRegisterScreen> {
                   child: const Text('Inscription'),
                 ),
                 const SizedBox(height: 10),
-                TextButton(
-                  child: const Text('J\'ai déjà un compte'),
-                  onPressed: () => context.go('/login'),
-                ),
                 TextButton.icon(
                   icon: const Icon(Ionicons.help_buoy_outline),
                   label: const Text(

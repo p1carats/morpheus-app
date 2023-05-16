@@ -4,6 +4,7 @@ import 'package:ionicons/ionicons.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/user_auth_provider.dart';
+import '../../providers/user_data_provider.dart';
 
 class SettingsMainScreen extends StatefulWidget {
   const SettingsMainScreen({Key? key}) : super(key: key);
@@ -15,10 +16,12 @@ class SettingsMainScreen extends StatefulWidget {
 class _SettingsMainScreenState extends State<SettingsMainScreen> {
   @override
   Widget build(BuildContext context) {
-    final authProvider = Provider.of<UserAuthProvider>(context);
+    final userAuthProvider = Provider.of<UserAuthProvider>(context);
+    final userDataProvider = Provider.of<UserDataProvider>(context);
 
     Widget contentWidget = Container();
-    if (authProvider.user != null && !authProvider.user!.isEmailVerified) {
+    if (userAuthProvider.user != null &&
+        !userAuthProvider.user!.isEmailVerified) {
       contentWidget = Padding(
         padding: const EdgeInsets.all(8.0),
         child: Container(
@@ -68,8 +71,8 @@ class _SettingsMainScreenState extends State<SettingsMainScreen> {
                       'https://image-uniservice.linternaute.com/image/450/3/1294835011/4443027.jpg'),
                 ),
                 const SizedBox(width: 10),
-                authProvider.user != null
-                    ? Text(authProvider.user!.name)
+                userAuthProvider.user != null
+                    ? Text(userAuthProvider.user!.name)
                     : const Text('Non connecté'),
               ],
             ),
@@ -118,14 +121,55 @@ class _SettingsMainScreenState extends State<SettingsMainScreen> {
             leading: const Icon(Ionicons.log_out_outline),
             title: const Text('Me déconnecter'),
             onTap: () async {
-              await authProvider.signOut();
-              context.goNamed('auth');
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text('Déconnexion'),
+                  content:
+                      const Text('Êtes-vous sûr de vouloir vous déconnecter ?'),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text('Annuler'),
+                    ),
+                    TextButton(
+                      onPressed: () async {
+                        await userAuthProvider.signOut();
+                        context.goNamed('auth');
+                      },
+                      child: const Text('Déconnexion'),
+                    ),
+                  ],
+                ),
+              );
             },
           ),
           ListTile(
             leading: const Icon(Ionicons.trash_bin_outline),
             title: const Text('Supprimer mon compte'),
-            onTap: () {},
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text('Supprimer mon compte'),
+                  content: const Text(
+                      'Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est défintive.'),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text('Annuler'),
+                    ),
+                    TextButton(
+                      onPressed: () async {
+                        await userDataProvider.deleteUser();
+                        context.goNamed('auth');
+                      },
+                      child: const Text('Supprimer'),
+                    ),
+                  ],
+                ),
+              );
+            },
           ),
         ],
       ),
