@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:ionicons/ionicons.dart';
 
 import '../../providers/user_auth_provider.dart';
-import 'forgotten_screen.dart';
 
 class AuthLoginScreen extends StatefulWidget {
   const AuthLoginScreen({Key? key, required this.email}) : super(key: key);
@@ -89,15 +89,82 @@ class _AuthLoginScreenState extends State<AuthLoginScreen> {
                 ),
                 const SizedBox(height: 10),
                 TextButton(
+                  onPressed: () {
+                    showModalBottomSheet(
+                      context: context,
+                      builder: (ctx) => Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              width: 40,
+                              height: 5,
+                              decoration: BoxDecoration(
+                                color: Colors.grey[300],
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            Text(
+                              'Réinitialisation du mot de passe',
+                              style: Theme.of(context).textTheme.headlineSmall,
+                            ),
+                            const SizedBox(height: 10),
+                            Text(
+                              'Êtes-vous sûr de vouloir réinitialiser votre mot de passe ? Un lien de confirmation sera envoyé à l\'adresse mail ${widget.email}.',
+                              style: Theme.of(context).textTheme.titleMedium,
+                              //textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 20),
+                            Row(
+                              children: [
+                                TextButton(
+                                  child: const Text('Oui'),
+                                  onPressed: () async {
+                                    Navigator.of(context)
+                                        .pop(); // close the bottom sheet
+                                    try {
+                                      await FirebaseAuth.instance
+                                          .sendPasswordResetEmail(
+                                              email: widget.email ?? '');
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                          content: const Text(
+                                              'Un mail de confirmation vous a été envoyé. Pensez à vérifier vos spams !'),
+                                          backgroundColor: Theme.of(context)
+                                              .colorScheme
+                                              .primary,
+                                        ),
+                                      );
+                                    } catch (err) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                          content: Text(err.toString()),
+                                          backgroundColor: Theme.of(context)
+                                              .colorScheme
+                                              .error,
+                                        ),
+                                      );
+                                    }
+                                  },
+                                ),
+                                TextButton(
+                                  child: const Text('Annuler'),
+                                  onPressed: () => Navigator.of(context).pop(),
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                    );
+                  },
                   child: const Text('Mot de passe oublié ?'),
-                  onPressed: () => showModalBottomSheet(
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                    ),
-                    context: context,
-                    builder: (context) => const ForgottenScreen(),
-                  ),
                 ),
+                const SizedBox(height: 10),
               ],
             ),
           ),
