@@ -12,8 +12,6 @@ import 'providers/dream_provider.dart';
 
 import 'services/user_auth_service.dart';
 import 'services/user_data_service.dart';
-import 'services/dream_service.dart';
-
 import 'firebase_options.dart';
 import 'app.dart';
 

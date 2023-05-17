@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 class UserModel {
   final String uid;
-  final String name;
+  late final String name;
   final String email;
   final String gender;
   final DateTime birthDate;

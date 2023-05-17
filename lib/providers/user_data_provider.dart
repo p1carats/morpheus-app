@@ -30,7 +30,7 @@ class UserDataProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Delete user
+  // Delete user with reauthentication
   Future<void> deleteUser() async {
     await _userDataService.deleteUser();
     _user = null;

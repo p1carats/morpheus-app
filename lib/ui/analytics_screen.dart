@@ -48,13 +48,13 @@ class _AnalyticsMainScreenState extends State<AnalyticsMainScreen>
         controller: _tabController,
         children: <Widget>[
           ListView(
-            children: [
-              const Placeholder(),
+            children: const [
+              Placeholder(),
             ],
           ),
           ListView(
-            children: [
-              const Placeholder(),
+            children: const [
+              Placeholder(),
             ],
           ),
         ],

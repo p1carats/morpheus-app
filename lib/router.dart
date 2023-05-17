@@ -19,6 +19,7 @@ import 'ui/settings/data_screen.dart';
 import 'ui/settings/profile_screen.dart';
 import 'ui/settings/email_screen.dart';
 import 'ui/settings/password_screen.dart';
+import 'ui/settings/name_screen.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _shellNavigatorKey = GlobalKey<NavigatorState>();
@@ -94,6 +95,12 @@ final GoRouter router = GoRouter(
               name: 'password',
               path: 'password',
               builder: (context, state) => const SettingsPasswordScreen(),
+            ),
+            GoRoute(
+              parentNavigatorKey: _rootNavigatorKey,
+              name: 'name',
+              path: 'name',
+              builder: (context, state) => const SettingsNameScreen(),
             ),
           ],
         ),

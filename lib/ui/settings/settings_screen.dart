@@ -4,7 +4,6 @@ import 'package:ionicons/ionicons.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/user_auth_provider.dart';
-import '../../providers/user_data_provider.dart';
 
 class SettingsMainScreen extends StatefulWidget {
   const SettingsMainScreen({Key? key}) : super(key: key);
@@ -17,7 +16,6 @@ class _SettingsMainScreenState extends State<SettingsMainScreen> {
   @override
   Widget build(BuildContext context) {
     final userAuthProvider = Provider.of<UserAuthProvider>(context);
-    final userDataProvider = Provider.of<UserDataProvider>(context);
 
     Widget contentWidget = Container();
     if (userAuthProvider.user != null &&
@@ -71,7 +69,9 @@ class _SettingsMainScreenState extends State<SettingsMainScreen> {
                       'https://i.pinimg.com/originals/65/25/a0/6525a08f1df98a2e3a545fe2ace4be47.jpg'),
                 ),
                 const SizedBox(width: 10),
-                Text(userAuthProvider.user!.name)
+                userAuthProvider.user != null
+                    ? Text(userAuthProvider.user!.name)
+                    : const Text(''),
               ],
             ),
           ),
