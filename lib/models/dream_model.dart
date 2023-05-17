@@ -25,7 +25,7 @@ class DreamModel {
       description: json['description'] ?? '',
       date: json['date'].toDate(),
       type: json['type'] ?? 'dream',
-      rating: json['rating'].toInt() ?? '1',
+      rating: json['rating'].toInt() ?? 1,
       isLucid: json['isLucid'] ?? false,
     );
   }

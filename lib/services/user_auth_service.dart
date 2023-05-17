@@ -10,6 +10,17 @@ class UserAuthService {
   UserAuthService({required UserDataService userDataService})
       : _userDataService = userDataService;
 
+  // Fetches user details
+  Future<UserModel> getUser(String uid) async {
+    var gender = await _userDataService.getGender(uid);
+    var birthDate = await _userDataService.getBirthDate(uid);
+    return UserModel.fromFirebaseUser(
+      _firebaseAuth.currentUser!,
+      gender: gender,
+      birthDate: birthDate,
+    );
+  }
+
   // Checks whether an email address is already registered
   Future<bool> isEmailRegistered(String email) async {
     var users = await _firebaseAuth.fetchSignInMethodsForEmail(email);

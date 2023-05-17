@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
+import 'package:intl/date_symbol_data_local.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ionicons/ionicons.dart';
@@ -61,10 +64,34 @@ class _DreamMainScreenState extends State<DreamMainScreen> {
                 itemCount: snapshot.data!.length,
                 itemBuilder: (context, index) {
                   DreamModel dream = snapshot.data![index];
-                  return ListTile(
-                    title: Text(dream.title),
-                    subtitle: Text(dream.description),
-                    trailing: Text(dream.type),
+                  return Card(
+                    child: ListTile(
+                      title: Text(
+                        dream.title,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      subtitle: Text(dream.description),
+                      trailing: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text(
+                            '${dream.date.day}',
+                            style: const TextStyle(
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            DateFormat('MMM').format(dream.date),
+                            style: const TextStyle(
+                              fontSize: 12.0,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   );
                 },
               );
