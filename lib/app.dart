@@ -16,6 +16,7 @@ class Morpheus extends StatelessWidget {
       theme: ThemeData(
         useMaterial3: true,
         fontFamily: 'Montserrat',
+        visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       routerConfig: router,
     );
