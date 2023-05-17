@@ -68,19 +68,19 @@ class _SettingsMainScreenState extends State<SettingsMainScreen> {
                 const CircleAvatar(
                   radius: 40,
                   backgroundImage: NetworkImage(
-                      'https://image-uniservice.linternaute.com/image/450/3/1294835011/4443027.jpg'),
+                      'https://i.pinimg.com/originals/65/25/a0/6525a08f1df98a2e3a545fe2ace4be47.jpg'),
                 ),
                 const SizedBox(width: 10),
-                userAuthProvider.user != null
-                    ? Text(userAuthProvider.user!.name)
-                    : const Text('Non connecté'),
+                Text(userAuthProvider.user!.name)
               ],
             ),
           ),
           const Divider(),
           // App Settings Section
-          const ListTile(
-            title: Text('Paramètres de l\'application'),
+          ListTile(
+            leading: const Icon(Ionicons.person_outline),
+            title: const Text('Gestion du profil'),
+            onTap: () => context.pushNamed('profile'),
           ),
           ListTile(
             leading: const Icon(Ionicons.medical_outline),
@@ -89,33 +89,8 @@ class _SettingsMainScreenState extends State<SettingsMainScreen> {
           ),
           ListTile(
             leading: const Icon(Ionicons.color_palette_outline),
-            title: const Text('Thème'),
+            title: const Text('Thème de l\'application'),
             onTap: () {},
-          ),
-          ListTile(
-            leading: const Icon(Ionicons.language_outline),
-            title: const Text('Langue'),
-            onTap: () {},
-          ),
-          const Divider(),
-          // Account Section
-          const ListTile(
-            title: Text('Paramètres du compte'),
-          ),
-          ListTile(
-            leading: const Icon(Ionicons.person_outline),
-            title: const Text('Mon profil'),
-            onTap: () => context.pushNamed('profile'),
-          ),
-          ListTile(
-            leading: const Icon(Ionicons.mail_outline),
-            title: const Text('Changer mon adresse mail'),
-            onTap: () => context.pushNamed('email'),
-          ),
-          ListTile(
-            leading: const Icon(Ionicons.lock_closed_outline),
-            title: const Text('Changer mon mot de passe'),
-            onTap: () => context.pushNamed('password'),
           ),
           ListTile(
             leading: const Icon(Ionicons.log_out_outline),
@@ -138,33 +113,6 @@ class _SettingsMainScreenState extends State<SettingsMainScreen> {
                         context.goNamed('auth');
                       },
                       child: const Text('Déconnexion'),
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
-          ListTile(
-            leading: const Icon(Ionicons.trash_bin_outline),
-            title: const Text('Supprimer mon compte'),
-            onTap: () {
-              showDialog(
-                context: context,
-                builder: (context) => AlertDialog(
-                  title: const Text('Supprimer mon compte'),
-                  content: const Text(
-                      'Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est défintive.'),
-                  actions: <Widget>[
-                    TextButton(
-                      onPressed: () => Navigator.pop(context),
-                      child: const Text('Annuler'),
-                    ),
-                    TextButton(
-                      onPressed: () async {
-                        await userDataProvider.deleteUser();
-                        context.goNamed('auth');
-                      },
-                      child: const Text('Supprimer'),
                     ),
                   ],
                 ),
