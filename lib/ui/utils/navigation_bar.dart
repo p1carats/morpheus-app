@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:morpheus/ui/analytics_screen.dart';
 import 'package:morpheus/ui/dreams_screen.dart';
 import 'package:morpheus/ui/home_screen.dart';
 import 'package:morpheus/ui/settings/settings_screen.dart';
@@ -18,6 +19,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
 
   final List<Widget> pages = [
     const HomeScreen(),
+    const AnalyticsMainScreen(),
     const SleepMainScreen(),
     const DreamsScreen(),
     const SettingsMainScreen(),
@@ -40,6 +42,11 @@ class _BottomNavBarState extends State<BottomNavBar> {
             selectedIcon: Icon(Ionicons.home),
             icon: Icon(Ionicons.home_outline),
             label: 'Accueil',
+          ),
+          NavigationDestination(
+            selectedIcon: Icon(Ionicons.stats_chart),
+            icon: Icon(Ionicons.stats_chart_outline),
+            label: 'Analyses',
           ),
           NavigationDestination(
             selectedIcon: Icon(Ionicons.bed),

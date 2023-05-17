@@ -9,6 +9,7 @@ import 'ui/wizard/welcome_screen.dart';
 import 'ui/utils/navigation_bar.dart';
 import 'ui/error_screen.dart';
 import 'ui/home_screen.dart';
+import 'ui/analytics_screen.dart';
 import 'ui/sleep_screen.dart';
 import 'ui/dreams_screen.dart';
 import 'ui/add_dream_screen.dart';
@@ -37,6 +38,12 @@ final GoRouter router = GoRouter(
           name: 'home',
           path: '/',
           builder: (context, state) => const HomeScreen(),
+        ),
+        GoRoute(
+          parentNavigatorKey: _shellNavigatorKey,
+          name: 'analytics',
+          path: '/analytics',
+          builder: (context, state) => const AnalyticsMainScreen(),
         ),
         GoRoute(
           parentNavigatorKey: _shellNavigatorKey,

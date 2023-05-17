@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:ionicons/ionicons.dart';
 
 import '../../providers/user_auth_provider.dart';
@@ -18,6 +19,7 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen> {
   String _name = '';
   String _email = '';
   String _password = '';
+  String _confirmPassword = '';
   String _gender = '';
   DateTime _birthDate = DateTime.now();
 
@@ -86,8 +88,9 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen> {
                   validator: (value) {
                     if (value!.isEmpty || value.length < 3) {
                       return 'Nom trop court ! (3 caractères minimum)';
+                    } else {
+                      return null;
                     }
-                    return null;
                   },
                   onSaved: (value) {
                     _name = value!;
@@ -102,14 +105,31 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen> {
                     prefixIcon: Icon(Ionicons.lock_closed_outline),
                   ),
                   validator: (value) {
-                    if (value!.isEmpty || value.length < 7) {
-                      return 'Le mot de passe doit contenir au moins 7 caractères.';
+                    if (value!.isEmpty ||
+                        value.length < 7 ||
+                        !RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(value) ||
+                        !RegExp(r'\d').hasMatch(value)) {
+                      return 'Le mot de passe doit contenir au moins 7 caractères, et contenir au moins un chiffre et un symbole.';
+                    } else {
+                      return null;
                     }
-                    return null;
                   },
                   onSaved: (value) {
                     _password = value!;
                   },
+                ),
+                const SizedBox(height: 20),
+                TextFormField(
+                  readOnly: true,
+                  decoration: const InputDecoration(
+                    labelText: 'Date de naissance',
+                    border: OutlineInputBorder(),
+                    prefixIcon: Icon(Ionicons.calendar_outline),
+                  ),
+                  onTap: () => _selectDate(context),
+                  controller: TextEditingController(
+                    text: DateFormat('dd/MM/yyyy').format(_birthDate),
+                  ),
                 ),
                 const SizedBox(height: 20),
                 SegmentedButton<String>(
@@ -137,11 +157,6 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen> {
                       _gender = newSelection.first;
                     });
                   },
-                ),
-                const SizedBox(height: 20),
-                TextButton(
-                  onPressed: () => _selectDate(context),
-                  child: const Text('Date de naissance'),
                 ),
                 const SizedBox(height: 30),
                 ElevatedButton(
