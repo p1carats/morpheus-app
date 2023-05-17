@@ -6,7 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:ionicons/ionicons.dart';
 
-import 'package:morpheus/providers/dream_provider.dart';
+import 'package:morpheus/providers/dream_data_provider.dart';
 
 class DreamAddScreen extends StatefulWidget {
   const DreamAddScreen({Key? key}) : super(key: key);
@@ -35,7 +35,7 @@ class _DreamAddScreenState extends State<DreamAddScreen>
     } else {
       _formKey.currentState!.save();
       try {
-        await Provider.of<DreamProvider>(context, listen: false).addDream(
+        await Provider.of<DreamDataProvider>(context, listen: false).addDream(
           FirebaseAuth.instance.currentUser!.uid,
           DreamModel(
             title: _title,

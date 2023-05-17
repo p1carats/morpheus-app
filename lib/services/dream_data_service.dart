@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../models/dream_model.dart';
 
-class DreamService {
+class DreamDataService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   // Get all the dreams from a user
