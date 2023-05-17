@@ -175,7 +175,43 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen> {
                   icon: const Icon(Ionicons.help_buoy_outline),
                   label: const Text(
                       'Pourquoi avons-nous besoin de ces informations ?'),
-                  onPressed: () {},
+                  onPressed: () {
+                    showModalBottomSheet(
+                      context: context,
+                      builder: (context) => Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              width: 40,
+                              height: 5,
+                              decoration: BoxDecoration(
+                                color: Colors.grey[300],
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            Text(
+                              'Pourquoi avons-nous besoin de ces informations ?',
+                              style: Theme.of(context).textTheme.headlineSmall,
+                            ),
+                            const SizedBox(height: 10),
+                            Text(
+                              'Les données de sommeil sont personnalisées en fonction de l\'âge et du genre. Ces informations sont donc nécessaires pour vous fournir des données précises.',
+                              style: Theme.of(context).textTheme.titleMedium,
+                              //textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 20),
+                            TextButton(
+                              child: const Text('Je comprends'),
+                              onPressed: () => Navigator.of(context).pop(),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
                 ),
               ],
             ),

@@ -92,7 +92,7 @@ class _AuthLoginScreenState extends State<AuthLoginScreen> {
                   onPressed: () {
                     showModalBottomSheet(
                       context: context,
-                      builder: (ctx) => Padding(
+                      builder: (context) => Padding(
                         padding: const EdgeInsets.all(16),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
