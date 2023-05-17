@@ -22,9 +22,13 @@ class _AuthMainScreenState extends State<AuthMainScreen> {
       var isEmailRegistered =
           await context.read<UserAuthProvider>().isEmailRegistered(_email);
       if (isEmailRegistered) {
-        context.pushNamed('login', queryParameters: {'email': _email});
+        if (context.mounted) {
+          context.pushNamed('login', queryParameters: {'email': _email});
+        }
       } else {
-        context.pushNamed('register', queryParameters: {'email': _email});
+        if (context.mounted) {
+          context.pushNamed('register', queryParameters: {'email': _email});
+        }
       }
     }
   }

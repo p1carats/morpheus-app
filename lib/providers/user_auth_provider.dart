@@ -5,7 +5,7 @@ import '../models/user_model.dart';
 import '../services/user_auth_service.dart';
 
 class UserAuthProvider with ChangeNotifier {
-  FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final UserAuthService _userAuthService;
 
   UserAuthProvider({required UserAuthService userAuthService})

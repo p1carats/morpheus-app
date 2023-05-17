@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:morpheus/models/dream_model.dart';
+import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:ionicons/ionicons.dart';
+
+import 'package:morpheus/providers/dream_provider.dart';
 
 class DreamAddScreen extends StatefulWidget {
   const DreamAddScreen({Key? key}) : super(key: key);
@@ -12,6 +17,7 @@ class DreamAddScreen extends StatefulWidget {
 
 class _DreamAddScreenState extends State<DreamAddScreen>
     with TickerProviderStateMixin {
+  final _formKey = GlobalKey<FormState>();
   late final TabController _tabController;
 
   String _title = '';
@@ -21,6 +27,36 @@ class _DreamAddScreenState extends State<DreamAddScreen>
   double _rating = 1;
   bool _isLucid = false;
   bool _isControllable = false;
+
+  void _submit() async {
+    final isValid = _formKey.currentState!.validate();
+    if (!isValid) {
+      return;
+    } else {
+      _formKey.currentState!.save();
+      try {
+        await Provider.of<DreamProvider>(context, listen: false).addDream(
+          FirebaseAuth.instance.currentUser!.uid,
+          DreamModel(
+            title: _title,
+            description: _description,
+            date: _date,
+            type: _type,
+            rating: _rating.toInt(),
+            isLucid: _isLucid,
+          ),
+        );
+        if (context.mounted) context.go('/');
+      } catch (err) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(err.toString()),
+            backgroundColor: Theme.of(context).colorScheme.error,
+          ),
+        );
+      }
+    }
+  }
 
   @override
   void initState() {
@@ -74,6 +110,7 @@ class _DreamAddScreenState extends State<DreamAddScreen>
       body: Padding(
         padding: const EdgeInsets.fromLTRB(20, 30, 20, 20),
         child: Form(
+          key: _formKey,
           child: TabBarView(
             controller: _tabController,
             children: <Widget>[
@@ -200,7 +237,7 @@ class _DreamAddScreenState extends State<DreamAddScreen>
       floatingActionButton: FloatingActionButton.extended(
         icon: const Icon(Ionicons.add_outline),
         label: const Text('Ajouter'),
-        onPressed: () => context.pop(),
+        onPressed: _submit,
       ),
     );
   }

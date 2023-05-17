@@ -110,7 +110,7 @@ class _SettingsMainScreenState extends State<SettingsMainScreen> {
                     TextButton(
                       onPressed: () async {
                         await userAuthProvider.signOut();
-                        context.goNamed('auth');
+                        if (context.mounted) context.goNamed('auth');
                       },
                       child: const Text('Déconnexion'),
                     ),

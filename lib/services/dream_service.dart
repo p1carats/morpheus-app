@@ -31,17 +31,19 @@ class DreamService {
     if (dreamSnapshot.exists) {
       return DreamModel.fromJson(dreamSnapshot.data() as Map<String, dynamic>);
     } else {
-      return null;
+      throw Exception('Rêve non trouvé.');
     }
   }
 
   // Add a new dream
-  Future<void> addDream(String uid, DreamModel dream) {
-    return _firestore
-        .collection('users')
-        .doc(uid)
-        .collection('dreams')
-        .add(dream.toJson());
+  Future<void> addDream(String uid, DreamModel dream) async {
+    try {
+      await _firestore.collection('users').doc(uid).collection('dreams').add(
+            dream.toJson(),
+          );
+    } catch (err) {
+      throw Exception(err);
+    }
   }
 
   // Update an existing dream
