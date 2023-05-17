@@ -49,13 +49,14 @@ class _AddDreamScreenState extends State<AddDreamScreen>
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 40, 20, 20),
+        padding: const EdgeInsets.fromLTRB(20, 30, 20, 20),
         child: Form(
           child: TabBarView(
             controller: _tabController,
             children: <Widget>[
               ListView(
                 children: [
+                  const SizedBox(height: 5),
                   TextFormField(
                     decoration: const InputDecoration(
                       labelText: 'Titre du rêve',
@@ -82,12 +83,12 @@ class _AddDreamScreenState extends State<AddDreamScreen>
               ),
               ListView(
                 children: [
-                  const Text('test mamene2'),
+                  const Text('date, type, rating'),
                 ],
               ),
               ListView(
                 children: [
-                  const Text('test mamene3'),
+                  const Text('isLucid'),
                 ],
               ),
             ],

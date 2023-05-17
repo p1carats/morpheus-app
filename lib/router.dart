@@ -42,7 +42,7 @@ final GoRouter router = GoRouter(
           parentNavigatorKey: _shellNavigatorKey,
           name: 'sleep',
           path: '/sleep',
-          builder: (context, state) => const SleepScreen(),
+          builder: (context, state) => const SleepMainScreen(),
         ),
         GoRoute(
           parentNavigatorKey: _shellNavigatorKey,

@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-class SleepScreen extends StatefulWidget {
-  const SleepScreen({Key? key}) : super(key: key);
+class SleepMainScreen extends StatefulWidget {
+  const SleepMainScreen({Key? key}) : super(key: key);
 
   @override
-  State<SleepScreen> createState() => _SleepScreenState();
+  State<SleepMainScreen> createState() => _SleepMainScreenState();
 }
 
-class _SleepScreenState extends State<SleepScreen> {
+class _SleepMainScreenState extends State<SleepMainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

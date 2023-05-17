@@ -38,10 +38,6 @@ class _DreamsScreenState extends State<DreamsScreen> {
       appBar: AppBar(
         title: const Text('Rêves'),
         actions: <Widget>[
-          IconButton(
-            icon: const Icon(Ionicons.refresh_outline),
-            onPressed: _refreshDreams,
-          ),
           TextButton.icon(
             icon: const Icon(Ionicons.add_outline),
             label: const Text('Nouveau rêve'),
@@ -59,7 +55,7 @@ class _DreamsScreenState extends State<DreamsScreen> {
             } else if (snapshot.hasError) {
               return Text('Error: ${snapshot.error}');
             } else if (snapshot.hasData && snapshot.data!.isEmpty) {
-              return Text('Aucun rêve n\'a été enregistré.');
+              return const Text('Aucun rêve n\'a été enregistré.');
             } else {
               return ListView.builder(
                 itemCount: snapshot.data!.length,
