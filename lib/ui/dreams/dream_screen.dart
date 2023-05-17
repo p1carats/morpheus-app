@@ -8,7 +8,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ionicons/ionicons.dart';
 
 import '../../models/dream_model.dart';
-import '../../services/dream_service.dart';
+import '../../services/dream_data_service.dart';
 
 class DreamMainScreen extends StatefulWidget {
   const DreamMainScreen({Key? key}) : super(key: key);
@@ -18,8 +18,8 @@ class DreamMainScreen extends StatefulWidget {
 }
 
 class _DreamMainScreenState extends State<DreamMainScreen> {
-  final DreamService _dreamService = DreamService();
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final DreamDataService _dreamService = DreamDataService();
 
   late Stream<List<DreamModel>> _dreamStream;
 
