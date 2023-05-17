@@ -4,17 +4,17 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ionicons/ionicons.dart';
 
-import '../models/dream_model.dart';
-import '../services/dream_service.dart';
+import '../../models/dream_model.dart';
+import '../../services/dream_service.dart';
 
-class DreamsScreen extends StatefulWidget {
-  const DreamsScreen({Key? key}) : super(key: key);
+class DreamMainScreen extends StatefulWidget {
+  const DreamMainScreen({Key? key}) : super(key: key);
 
   @override
-  State<DreamsScreen> createState() => _DreamsScreenState();
+  State<DreamMainScreen> createState() => _DreamMainScreenState();
 }
 
-class _DreamsScreenState extends State<DreamsScreen> {
+class _DreamMainScreenState extends State<DreamMainScreen> {
   final DreamService _dreamService = DreamService();
   final FirebaseAuth _auth = FirebaseAuth.instance;
 

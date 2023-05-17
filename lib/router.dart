@@ -11,8 +11,8 @@ import 'ui/error_screen.dart';
 import 'ui/home_screen.dart';
 import 'ui/analytics_screen.dart';
 import 'ui/sleep_screen.dart';
-import 'ui/dreams_screen.dart';
-import 'ui/add_dream_screen.dart';
+import 'ui/dreams/dream_screen.dart';
+import 'ui/dreams/add_screen.dart';
 
 import 'ui/settings/settings_screen.dart';
 import 'ui/settings/data_screen.dart';
@@ -55,13 +55,13 @@ final GoRouter router = GoRouter(
           parentNavigatorKey: _shellNavigatorKey,
           name: 'dreams',
           path: '/dreams',
-          builder: (context, state) => const DreamsScreen(),
+          builder: (context, state) => const DreamMainScreen(),
           routes: <RouteBase>[
             GoRoute(
               parentNavigatorKey: _rootNavigatorKey,
               name: 'add',
               path: 'add',
-              builder: (context, state) => const AddDreamScreen(),
+              builder: (context, state) => const DreamAddScreen(),
             ),
           ],
         ),

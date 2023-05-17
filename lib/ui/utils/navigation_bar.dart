@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:morpheus/ui/analytics_screen.dart';
-import 'package:morpheus/ui/dreams_screen.dart';
+import 'package:morpheus/ui/dreams/dream_screen.dart';
 import 'package:morpheus/ui/home_screen.dart';
 import 'package:morpheus/ui/settings/settings_screen.dart';
 import 'package:morpheus/ui/sleep_screen.dart';
@@ -21,7 +21,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
     const HomeScreen(),
     const AnalyticsMainScreen(),
     const SleepMainScreen(),
-    const DreamsScreen(),
+    const DreamMainScreen(),
     const SettingsMainScreen(),
   ];
 

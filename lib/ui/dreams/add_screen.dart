@@ -3,14 +3,14 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:ionicons/ionicons.dart';
 
-class AddDreamScreen extends StatefulWidget {
-  const AddDreamScreen({Key? key}) : super(key: key);
+class DreamAddScreen extends StatefulWidget {
+  const DreamAddScreen({Key? key}) : super(key: key);
 
   @override
-  State<AddDreamScreen> createState() => _AddDreamScreenState();
+  State<DreamAddScreen> createState() => _DreamAddScreenState();
 }
 
-class _AddDreamScreenState extends State<AddDreamScreen>
+class _DreamAddScreenState extends State<DreamAddScreen>
     with TickerProviderStateMixin {
   late final TabController _tabController;
 
