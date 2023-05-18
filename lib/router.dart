@@ -8,6 +8,7 @@ import 'ui/auth/auth_screen.dart';
 import 'ui/auth/login_screen.dart';
 import 'ui/auth/register_screen.dart';
 
+import 'ui/dreams/view_screen.dart';
 import 'ui/wizard/welcome_screen.dart';
 import 'ui/utils/navigation_bar.dart';
 import 'ui/error_screen.dart';
@@ -75,6 +76,12 @@ final GoRouter router = GoRouter(
               name: 'add',
               path: 'add',
               builder: (context, state) => const DreamAddScreen(),
+            ),
+            GoRoute(
+              parentNavigatorKey: _rootNavigatorKey,
+              name: 'view',
+              path: ':dreamId',
+              builder: (context, state) => const DreamDetailsScreen(),
             ),
           ],
         ),

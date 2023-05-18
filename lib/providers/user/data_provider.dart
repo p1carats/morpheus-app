@@ -36,4 +36,33 @@ class UserDataProvider extends ChangeNotifier {
     _user = null;
     notifyListeners();
   }
+
+  // Change email address with reauthentication
+  Future<void> changeEmail(String email) async {
+    await _userDataService.changeEmail(email);
+    _user!.email = email;
+    notifyListeners();
+  }
+
+  // Change password with reauthentication
+  Future<void> changePassword(String password) async {
+    await _userDataService.changePassword(password);
+  }
+
+  // Send a verification email
+  Future<void> sendVerificationEmail() async {
+    await _userDataService.sendVerificationEmail();
+  }
+
+  // Reauthenticate user
+  Future<void> reauthenticate(String password) async {
+    await _userDataService.reauthenticate(password);
+  }
+
+  // Disconnect user
+  Future<void> disconnect() async {
+    await _userDataService.disconnect();
+    _user = null;
+    notifyListeners();
+  }
 }

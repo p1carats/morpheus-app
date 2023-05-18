@@ -1,7 +1,7 @@
 class UserModel {
   final String uid;
   final String name;
-  final String email;
+  late final String email;
   final bool emailVerified;
   final DateTime creationTime;
   final DateTime birthDate;

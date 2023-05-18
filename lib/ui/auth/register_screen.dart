@@ -19,7 +19,6 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen> {
   String _name = '';
   String _email = '';
   String _password = '';
-  String _confirmPassword = '';
   String _gender = '';
   DateTime _birthDate = DateTime.now();
 

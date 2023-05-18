@@ -8,6 +8,7 @@ import '../../models/user_model.dart';
 import '../../models/dream_model.dart';
 
 import '../../providers/user/auth_provider.dart';
+import '../../providers/user/data_provider.dart';
 import '../../services/dream/data_service.dart';
 
 class DreamMainScreen extends StatefulWidget {
@@ -42,6 +43,7 @@ class _DreamMainScreenState extends State<DreamMainScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final userDataProvider = Provider.of<UserDataProvider>(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Rêves'),
@@ -71,6 +73,10 @@ class _DreamMainScreenState extends State<DreamMainScreen> {
                   DreamModel dream = snapshot.data![index];
                   return Card(
                     child: ListTile(
+                      // Push to the dream details screen with the dream as parameter
+                      onTap: () => context.pushNamed('view', pathParameters: {
+                        'dreamId': dream.title,
+                      }),
                       title: Text(
                         dream.title,
                         style: const TextStyle(

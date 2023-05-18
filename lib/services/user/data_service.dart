@@ -38,4 +38,37 @@ class UserDataService {
     var user = _firebaseAuth.currentUser!;
     await user.delete();
   }
+
+  // Changes the user's email address
+  Future<void> changeEmail(String email) async {
+    var user = _firebaseAuth.currentUser!;
+    await user.updateEmail(email);
+  }
+
+  // Changes the user's password
+  Future<void> changePassword(String password) async {
+    var user = _firebaseAuth.currentUser!;
+    await user.updatePassword(password);
+  }
+
+  // Sends a verification email
+  Future<void> sendVerificationEmail() async {
+    var user = _firebaseAuth.currentUser!;
+    await user.sendEmailVerification();
+  }
+
+  // Reauthenticates the user
+  Future<void> reauthenticate(String password) async {
+    var user = _firebaseAuth.currentUser!;
+    var credential = EmailAuthProvider.credential(
+      email: user.email!,
+      password: password,
+    );
+    await user.reauthenticateWithCredential(credential);
+  }
+
+  // Disconnects the user
+  Future<void> disconnect() async {
+    await _firebaseAuth.signOut();
+  }
 }

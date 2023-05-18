@@ -1,7 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:provider/provider.dart';
+import '/providers/user/data_provider.dart';
 
 class SettingsEmailScreen extends StatefulWidget {
   const SettingsEmailScreen({Key? key}) : super(key: key);
@@ -12,7 +13,7 @@ class SettingsEmailScreen extends StatefulWidget {
 
 class _SettingsEmailScreenState extends State<SettingsEmailScreen> {
   final _emailController = TextEditingController();
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,15 +53,18 @@ class _SettingsEmailScreenState extends State<SettingsEmailScreen> {
             child: ElevatedButton(
               onPressed: () {
                 try {
-                  _auth.currentUser!.updateEmail(_emailController.text);
+                  //update email
+                  context
+                      .read<UserDataProvider>()
+                      .changeEmail(_emailController.text);
+                  context.read<UserDataProvider>().sendVerificationEmail();
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: const Text('Adresse mail modifiée !'),
+                      content: Text(
+                          'Un email de confirmation a été envoyé à ${_emailController.text}.'),
                       backgroundColor: Theme.of(context).colorScheme.error,
                     ),
                   );
-                  //send mail to confirm new email
-                  _auth.currentUser!.sendEmailVerification();
                 } catch (err) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(

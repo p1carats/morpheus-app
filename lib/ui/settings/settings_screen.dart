@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../providers/theme_provider.dart';
 import '../../providers/user/auth_provider.dart';
@@ -20,6 +23,18 @@ class _SettingsMainScreenState extends State<SettingsMainScreen> {
     ThemeType.dark: 'Sombre',
     ThemeType.system: 'Système (par défaut)',
   };
+  File? _image;
+
+  Future<void> _pickImage() async {
+    final picker = ImagePicker();
+    final pickedImage = await picker.getImage(source: ImageSource.gallery);
+
+    if (pickedImage != null) {
+      setState(() {
+        _image = File(pickedImage.path);
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,9 +48,9 @@ class _SettingsMainScreenState extends State<SettingsMainScreen> {
         child: Container(
           color: Theme.of(context).colorScheme.error,
           padding: const EdgeInsets.all(8),
-          child: Row(
+          child: const Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
+            children: [
               Icon(Ionicons.warning_outline),
               SizedBox(width: 8),
               Text('Adresse mail non vérifiée !'),
@@ -68,10 +83,19 @@ class _SettingsMainScreenState extends State<SettingsMainScreen> {
           ListTile(
             subtitle: Row(
               children: <Widget>[
-                const CircleAvatar(
-                  radius: 40,
-                  backgroundImage: NetworkImage(
-                      'https://i.pinimg.com/originals/65/25/a0/6525a08f1df98a2e3a545fe2ace4be47.jpg'),
+                // Avatar who can be modified to support user profile images
+                GestureDetector(
+                  onTap: _pickImage,
+                  child: CircleAvatar(
+                    radius: 40,
+                    backgroundImage: _image != null ? FileImage(_image!) : null,
+                    child: _image == null
+                        ? const Icon(
+                            Icons.add_a_photo_outlined,
+                            size: 40,
+                          )
+                        : null,
+                  ),
                 ),
                 const SizedBox(width: 15),
                 Column(

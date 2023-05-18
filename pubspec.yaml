@@ -4,7 +4,7 @@ publish_to: 'none'
 version: 1.0.0+1
 
 environment:
-  sdk: '>=2.19.6 <3.0.0'
+  sdk: '>=2.19.6'
 
 dependencies:
   flutter:
@@ -19,6 +19,7 @@ dependencies:
   cloud_firestore: ^4.6.0
   ionicons: ^0.2.2
   intl: ^0.17.0
+  image_picker: ^0.8.7+5
   
 dev_dependencies:
   flutter_test:

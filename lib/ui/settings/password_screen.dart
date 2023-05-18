@@ -1,7 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:morpheus/providers/user/data_provider.dart';
+import 'package:provider/provider.dart';
 
 class SettingsPasswordScreen extends StatefulWidget {
   const SettingsPasswordScreen({Key? key}) : super(key: key);
@@ -11,7 +12,6 @@ class SettingsPasswordScreen extends StatefulWidget {
 }
 
 class _SettingsPasswordScreenState extends State<SettingsPasswordScreen> {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
   final _newpasswordController = TextEditingController();
   final _oldpasswordController = TextEditingController();
 
@@ -70,21 +70,42 @@ class _SettingsPasswordScreenState extends State<SettingsPasswordScreen> {
 
                 if (oldPassword.isNotEmpty && newPassword.isNotEmpty) {
                   try {
-                    final User? user = _auth.currentUser;
-                    final credential = EmailAuthProvider.credential(
-                        email: user!.email!, password: oldPassword);
-                    await user.reauthenticateWithCredential(credential);
-                    await user.updatePassword(newPassword);
                     if (context.mounted) {
+                      context
+                          .read<UserDataProvider>()
+                          .reauthenticate(oldPassword);
+                      context
+                          .read<UserDataProvider>()
+                          .changePassword(_newpasswordController.text);
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: const Text('Mot de passe modifié !'),
-                          backgroundColor: Theme.of(context).colorScheme.error,
+                          backgroundColor:
+                              Theme.of(context).colorScheme.primary,
                         ),
                       );
+
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: const Text('Déconnexion'),
+                              content:
+                                  const Text('Vous allez être déconnecté.'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    context
+                                        .read<UserDataProvider>()
+                                        .disconnect();
+                                    context.go('/auth');
+                                  },
+                                  child: const Text('OK'),
+                                ),
+                              ],
+                            );
+                          });
                     }
-                    // Envoyer un email pour confirmer le nouveau mot de passe
-                    await user.sendEmailVerification();
                   } catch (err) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
