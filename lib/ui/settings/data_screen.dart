@@ -18,7 +18,7 @@ class _SettingsDataScreenState extends State<SettingsDataScreen> {
           icon: const Icon(Ionicons.arrow_back_outline),
           onPressed: () => context.pop(),
         ),
-        title: const Text('Gestion des données de santé'),
+        title: const Text('Gestion des données'),
       ),
       body: const Placeholder(),
     );

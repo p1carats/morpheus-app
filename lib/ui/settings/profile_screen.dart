@@ -1,11 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:ionicons/ionicons.dart';
-import 'package:intl/intl.dart';
-import 'package:morpheus/providers/user_auth_provider.dart';
-import 'package:morpheus/providers/user_data_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
+import 'package:ionicons/ionicons.dart';
+
+import '../../providers/user_auth_provider.dart';
+import '../../providers/user_data_provider.dart';
 
 class SettingsProfileScreen extends StatefulWidget {
   const SettingsProfileScreen({Key? key}) : super(key: key);

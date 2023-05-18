@@ -11,14 +11,23 @@ class UserAuthService {
       : _userDataService = userDataService;
 
   // Fetches user details
-  Future<UserModel> getUser(String uid) async {
-    var gender = await _userDataService.getGender(uid);
-    var birthDate = await _userDataService.getBirthDate(uid);
-    return UserModel.fromFirebaseUser(
-      _firebaseAuth.currentUser!,
-      gender: gender,
-      birthDate: birthDate,
-    );
+  Future<UserModel?> getUser(String uid) async {
+    var firebaseUser = _firebaseAuth.currentUser;
+    if (firebaseUser != null) {
+      var gender = await _userDataService.getGender(uid);
+      var birthDate = await _userDataService.getBirthDate(uid);
+      return UserModel.fromParams(
+        firebaseUser.uid,
+        firebaseUser.displayName!,
+        firebaseUser.email!,
+        firebaseUser.emailVerified,
+        firebaseUser.metadata.creationTime!,
+        birthDate: birthDate,
+        gender: gender,
+      );
+    } else {
+      return null;
+    }
   }
 
   // Checks whether an email address is already registered
@@ -36,10 +45,14 @@ class UserAuthService {
     var user = authResult.user!;
     var gender = await _userDataService.getGender(user.uid);
     var birthDate = await _userDataService.getBirthDate(user.uid);
-    return UserModel.fromFirebaseUser(
-      user,
-      gender: gender,
+    return UserModel.fromParams(
+      user.uid,
+      user.displayName!,
+      user.email!,
+      user.emailVerified,
+      user.metadata.creationTime!,
       birthDate: birthDate,
+      gender: gender,
     );
   }
 
@@ -51,12 +64,23 @@ class UserAuthService {
       password: password,
     );
     var user = authResult.user!;
-    await user.updateDisplayName(name);
+    // Set the user details (custom fields)
     await _userDataService.setGender(user.uid, gender);
     await _userDataService.setBirthDate(user.uid, birthDate);
+    // Update the display name and send email verification
     await user.sendEmailVerification();
-    return UserModel.fromFirebaseUser(user,
-        gender: gender, birthDate: birthDate);
+    await user.updateDisplayName(name);
+    await user.reload();
+    // Return the user details
+    return UserModel.fromParams(
+      user.uid,
+      user.displayName!,
+      user.email!,
+      user.emailVerified,
+      user.metadata.creationTime!,
+      birthDate: birthDate,
+      gender: gender,
+    );
   }
 
   // Logs out the current user

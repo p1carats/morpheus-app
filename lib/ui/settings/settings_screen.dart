@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:ionicons/ionicons.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
+import 'package:ionicons/ionicons.dart';
 
 import '../../providers/user_auth_provider.dart';
 
@@ -18,12 +19,11 @@ class _SettingsMainScreenState extends State<SettingsMainScreen> {
     final userAuthProvider = Provider.of<UserAuthProvider>(context);
 
     Widget contentWidget = Container();
-    if (userAuthProvider.user != null &&
-        !userAuthProvider.user!.isEmailVerified) {
+    if (userAuthProvider.user?.emailVerified == false) {
       contentWidget = Padding(
         padding: const EdgeInsets.all(8.0),
         child: Container(
-          color: Colors.redAccent,
+          color: Theme.of(context).colorScheme.error,
           padding: const EdgeInsets.all(8),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -68,10 +68,21 @@ class _SettingsMainScreenState extends State<SettingsMainScreen> {
                   backgroundImage: NetworkImage(
                       'https://i.pinimg.com/originals/65/25/a0/6525a08f1df98a2e3a545fe2ace4be47.jpg'),
                 ),
-                const SizedBox(width: 10),
-                userAuthProvider.user != null
-                    ? Text(userAuthProvider.user!.name)
-                    : const Text(''),
+                const SizedBox(width: 15),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      userAuthProvider.user!.name,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                        'Membre depuis le ${DateFormat('dd/MM/yyyy').format(userAuthProvider.user!.creationTime)}'),
+                  ],
+                ),
               ],
             ),
           ),
@@ -84,7 +95,7 @@ class _SettingsMainScreenState extends State<SettingsMainScreen> {
           ),
           ListTile(
             leading: const Icon(Ionicons.medical_outline),
-            title: const Text('Accès aux données'),
+            title: const Text('Gestion des données'),
             onTap: () => context.pushNamed('data'),
           ),
           ListTile(

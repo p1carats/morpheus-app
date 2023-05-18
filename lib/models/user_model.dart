@@ -1,31 +1,33 @@
-import 'package:firebase_auth/firebase_auth.dart';
-
 class UserModel {
   final String uid;
-  late final String name;
+  final String name;
   final String email;
-  final String gender;
+  final bool emailVerified;
+  final DateTime creationTime;
   final DateTime birthDate;
-  final bool isEmailVerified;
+  final String gender;
 
   UserModel({
     required this.uid,
     required this.name,
     required this.email,
-    required this.gender,
+    required this.emailVerified,
+    required this.creationTime,
     required this.birthDate,
-    required this.isEmailVerified,
+    required this.gender,
   });
 
-  factory UserModel.fromFirebaseUser(User user,
-      {required String gender, required DateTime birthDate}) {
+  factory UserModel.fromParams(String uid, String name, String email,
+      bool emailVerified, DateTime creationTime,
+      {required DateTime birthDate, required String gender}) {
     return UserModel(
-      uid: user.uid,
-      email: user.email ?? '',
-      name: user.displayName ?? '',
+      uid: uid,
+      email: email,
+      emailVerified: emailVerified,
+      creationTime: creationTime,
+      name: name,
       gender: gender,
       birthDate: birthDate,
-      isEmailVerified: user.emailVerified,
     );
   }
 }

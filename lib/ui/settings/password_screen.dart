@@ -11,9 +11,9 @@ class SettingsPasswordScreen extends StatefulWidget {
 }
 
 class _SettingsPasswordScreenState extends State<SettingsPasswordScreen> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   final _newpasswordController = TextEditingController();
   final _oldpasswordController = TextEditingController();
-  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   String? _validatePassword(String? value) {
     if (value == null || value.isEmpty) {
@@ -42,7 +42,7 @@ class _SettingsPasswordScreenState extends State<SettingsPasswordScreen> {
               controller: _oldpasswordController,
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
-                labelText: 'Ancien Mot de passe',
+                labelText: 'Ancien mot de passe',
               ),
               validator: _validatePassword,
             ),
@@ -55,7 +55,7 @@ class _SettingsPasswordScreenState extends State<SettingsPasswordScreen> {
               controller: _newpasswordController,
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
-                labelText: 'Nouveau Mot de passe',
+                labelText: 'Nouveau mot de passe',
               ),
               validator: _validatePassword,
             ),
@@ -95,9 +95,9 @@ class _SettingsPasswordScreenState extends State<SettingsPasswordScreen> {
                   }
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Veuillez remplir tous les champs.'),
-                      backgroundColor: Colors.red,
+                    SnackBar(
+                      content: const Text('Veuillez remplir tous les champs.'),
+                      backgroundColor: Theme.of(context).colorScheme.error,
                     ),
                   );
                 }

@@ -36,28 +36,42 @@ class UserAuthProvider with ChangeNotifier {
       _user = await _userAuthService.signIn(email, password);
       notifyListeners();
     } on FirebaseAuthException catch (err) {
-      if (err.code == '') {
+      if (err.code == 'wrong-password') {
         throw Exception('Mot de passe incorrect.');
       } else {
-        throw Exception(err.message);
+        throw Exception('Une erreur est survenue : ${err.message}');
       }
     } catch (err) {
-      throw Exception(err.toString());
+      throw Exception('Une erreur est survenue : $err');
     }
   }
 
   // Sign up
   Future<void> signUp(String name, String email, String password, String gender,
       DateTime birthDate) async {
-    _user =
-        await _userAuthService.signUp(name, email, password, gender, birthDate);
-    notifyListeners();
+    try {
+      _user = await _userAuthService.signUp(
+          name, email, password, gender, birthDate);
+      notifyListeners();
+    } on FirebaseAuthException catch (err) {
+      if (err.code == 'email-already-in-use') {
+        throw Exception('Cette adresse email est déjà utilisée.');
+      } else {
+        throw Exception('Une erreur est survenue : ${err.message}');
+      }
+    } catch (err) {
+      throw Exception('Une erreur est survenue : $err');
+    }
   }
 
   // Sign out
   Future<void> signOut() async {
-    await _userAuthService.signOut();
-    _user = null;
-    notifyListeners();
+    try {
+      await _userAuthService.signOut();
+      _user = null;
+      notifyListeners();
+    } catch (err) {
+      throw Exception('Une erreur est survenue : $err');
+    }
   }
 }
