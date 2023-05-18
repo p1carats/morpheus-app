@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import 'providers/theme_provider.dart';
 import 'providers/user_auth_provider.dart';
 import 'providers/user_data_provider.dart';
 import 'providers/dream_data_provider.dart';
@@ -30,6 +31,7 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_) => ThemeProvider()),
         ChangeNotifierProvider<UserAuthProvider>(
           create: (_) => UserAuthProvider(
               userAuthService:

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:ionicons/ionicons.dart';
 
+import '../../providers/theme_provider.dart';
 import '../../providers/user_auth_provider.dart';
 
 class SettingsMainScreen extends StatefulWidget {
@@ -14,9 +15,16 @@ class SettingsMainScreen extends StatefulWidget {
 }
 
 class _SettingsMainScreenState extends State<SettingsMainScreen> {
+  final Map<ThemeType, String> themeTypeNames = {
+    ThemeType.light: 'Clair',
+    ThemeType.dark: 'Sombre',
+    ThemeType.system: 'Système (par défaut)',
+  };
+
   @override
   Widget build(BuildContext context) {
     final userAuthProvider = Provider.of<UserAuthProvider>(context);
+    final themeProvider = Provider.of<ThemeProvider>(context);
 
     Widget contentWidget = Container();
     if (userAuthProvider.user?.emailVerified == false) {
@@ -28,12 +36,9 @@ class _SettingsMainScreenState extends State<SettingsMainScreen> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: const [
-              Icon(Ionicons.warning_outline, color: Colors.white),
+              Icon(Ionicons.warning_outline),
               SizedBox(width: 8),
-              Text(
-                'Adresse mail non vérifiée !',
-                style: TextStyle(color: Colors.white),
-              ),
+              Text('Adresse mail non vérifiée !'),
             ],
           ),
         ),
@@ -101,7 +106,32 @@ class _SettingsMainScreenState extends State<SettingsMainScreen> {
           ListTile(
             leading: const Icon(Ionicons.color_palette_outline),
             title: const Text('Thème de l\'application'),
-            onTap: () {},
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: const Text('Sélection du thème'),
+                    content: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: ThemeType.values.map((ThemeType themeType) {
+                        return RadioListTile<ThemeType>(
+                          title: Text(themeTypeNames[themeType]!),
+                          value: themeType,
+                          groupValue: themeProvider.themeType,
+                          onChanged: (ThemeType? value) {
+                            if (value != null) {
+                              themeProvider.updateThemeType(value);
+                              Navigator.of(context).pop();
+                            }
+                          },
+                        );
+                      }).toList(),
+                    ),
+                  );
+                },
+              );
+            },
           ),
           ListTile(
             leading: const Icon(Ionicons.log_out_outline),
