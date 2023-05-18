@@ -6,7 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:ionicons/ionicons.dart';
 
-import 'package:morpheus/providers/dream_data_provider.dart';
+import 'package:morpheus/providers/dream/data_provider.dart';
 
 class DreamAddScreen extends StatefulWidget {
   const DreamAddScreen({Key? key}) : super(key: key);

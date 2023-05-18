@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:health/health.dart';
 
-import '../services/sleep_data_service.dart';
+import '../../services/sleep/data_service.dart';
 
 class HealthDataProvider with ChangeNotifier {
   List<HealthDataPoint> sleepData = [];

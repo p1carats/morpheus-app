@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:intl/date_symbol_data_local.dart';
-
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ionicons/ionicons.dart';
 
+import '../../models/user_model.dart';
 import '../../models/dream_model.dart';
-import '../../services/dream_data_service.dart';
+
+import '../../providers/user/auth_provider.dart';
+import '../../services/dream/data_service.dart';
 
 class DreamMainScreen extends StatefulWidget {
   const DreamMainScreen({Key? key}) : super(key: key);
@@ -18,7 +18,6 @@ class DreamMainScreen extends StatefulWidget {
 }
 
 class _DreamMainScreenState extends State<DreamMainScreen> {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
   final DreamDataService _dreamService = DreamDataService();
 
   late Stream<List<DreamModel>> _dreamStream;
@@ -26,12 +25,18 @@ class _DreamMainScreenState extends State<DreamMainScreen> {
   @override
   void initState() {
     super.initState();
-    _dreamStream = _dreamService.getDreams(_auth.currentUser!.uid);
+    final userAuthProvider =
+        Provider.of<UserAuthProvider>(context, listen: false);
+    final UserModel user = userAuthProvider.user!;
+    _dreamStream = _dreamService.getDreams(user.uid);
   }
 
   Future<void> _refreshDreams() async {
+    final userAuthProvider =
+        Provider.of<UserAuthProvider>(context, listen: false);
+    final UserModel user = userAuthProvider.user!;
     setState(() {
-      _dreamStream = _dreamService.getDreams(_auth.currentUser!.uid);
+      _dreamStream = _dreamService.getDreams(user.uid);
     });
   }
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../models/user_model.dart';
-import '../services/user_data_service.dart';
+import '../../models/user_model.dart';
+import '../../services/user/data_service.dart';
 
 class UserDataProvider extends ChangeNotifier {
   final UserDataService _userDataService;

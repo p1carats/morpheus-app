@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 
-import '../models/dream_model.dart';
-import '../services/dream_data_service.dart';
+import '../../models/dream_model.dart';
+import '../../services/dream/data_service.dart';
 
 class DreamDataProvider with ChangeNotifier {
   final DreamDataService _dreamDataService;

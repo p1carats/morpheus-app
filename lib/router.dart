@@ -1,9 +1,9 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:morpheus/providers/user_auth_provider.dart';
-import 'package:morpheus/services/user_auth_service.dart';
-import 'package:morpheus/services/user_data_service.dart';
+
+import 'package:morpheus/providers/user/auth_provider.dart';
+import 'package:morpheus/services/user/auth_service.dart';
+import 'package:morpheus/services/user/data_service.dart';
 
 import 'ui/auth/auth_screen.dart';
 import 'ui/auth/login_screen.dart';
@@ -145,5 +145,5 @@ final GoRouter router = GoRouter(
       ],
     ),
   ],
-  //errorBuilder: (context, state) => const ErrorScreen(),
+  errorBuilder: (context, state) => const ErrorScreen(),
 );

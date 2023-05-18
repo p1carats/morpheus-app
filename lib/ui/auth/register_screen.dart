@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:ionicons/ionicons.dart';
 
-import '../../providers/user_auth_provider.dart';
+import '../../providers/user/auth_provider.dart';
 
 class AuthRegisterScreen extends StatefulWidget {
   const AuthRegisterScreen({Key? key, required this.email}) : super(key: key);

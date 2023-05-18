@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:ionicons/ionicons.dart';
 
 import '../../providers/theme_provider.dart';
-import '../../providers/user_auth_provider.dart';
+import '../../providers/user/auth_provider.dart';
 
 class SettingsMainScreen extends StatefulWidget {
   const SettingsMainScreen({Key? key}) : super(key: key);
