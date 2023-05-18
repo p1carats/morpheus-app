@@ -1,5 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:morpheus/providers/user_auth_provider.dart';
+import 'package:morpheus/services/user_auth_service.dart';
+import 'package:morpheus/services/user_data_service.dart';
 
 import 'ui/auth/auth_screen.dart';
 import 'ui/auth/login_screen.dart';
@@ -24,8 +28,13 @@ import 'ui/settings/name_screen.dart';
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _shellNavigatorKey = GlobalKey<NavigatorState>();
 
+// init UserAuthProvider
+final userAuthProvider = UserAuthProvider(
+  userAuthService: UserAuthService(userDataService: UserDataService()),
+);
+
 final GoRouter router = GoRouter(
-  initialLocation: '/auth',
+  initialLocation: '/',
   navigatorKey: _rootNavigatorKey,
   routes: [
     ShellRoute(
@@ -39,6 +48,13 @@ final GoRouter router = GoRouter(
           name: 'home',
           path: '/',
           builder: (context, state) => const HomeScreen(),
+          redirect: (BuildContext context, GoRouterState state) {
+            if (userAuthProvider.user != null) {
+              return context.namedLocation('auth');
+            } else {
+              return null;
+            }
+          },
         ),
         GoRoute(
           parentNavigatorKey: _shellNavigatorKey,
@@ -129,5 +145,5 @@ final GoRouter router = GoRouter(
       ],
     ),
   ],
-  errorBuilder: (context, state) => const ErrorScreen(),
+  //errorBuilder: (context, state) => const ErrorScreen(),
 );
