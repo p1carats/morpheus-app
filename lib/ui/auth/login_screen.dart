@@ -26,7 +26,7 @@ class _AuthLoginScreenState extends State<AuthLoginScreen> {
       try {
         await Provider.of<UserAuthProvider>(context, listen: false)
             .signIn(_email, _password);
-        context.go('/');
+        if (context.mounted) context.go('/');
       } catch (err) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:morpheus/providers/user/auth_provider.dart';
-import 'package:morpheus/services/user/auth_service.dart';
-import 'package:morpheus/services/user/data_service.dart';
 
 import 'ui/auth/auth_screen.dart';
 import 'ui/auth/login_screen.dart';
@@ -28,11 +27,6 @@ import 'ui/settings/name_screen.dart';
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _shellNavigatorKey = GlobalKey<NavigatorState>();
 
-// init UserAuthProvider
-final userAuthProvider = UserAuthProvider(
-  userAuthService: UserAuthService(userDataService: UserDataService()),
-);
-
 final GoRouter router = GoRouter(
   initialLocation: '/',
   navigatorKey: _rootNavigatorKey,
@@ -49,8 +43,10 @@ final GoRouter router = GoRouter(
           path: '/',
           builder: (context, state) => const HomeScreen(),
           redirect: (BuildContext context, GoRouterState state) {
-            if (userAuthProvider.user != null) {
-              return context.namedLocation('auth');
+            final userAuthProvider =
+                Provider.of<UserAuthProvider>(context, listen: false);
+            if (userAuthProvider.user == null) {
+              return ('/auth');
             } else {
               return null;
             }

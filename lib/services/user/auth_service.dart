@@ -10,12 +10,12 @@ class UserAuthService {
   UserAuthService({required UserDataService userDataService})
       : _userDataService = userDataService;
 
-  // Fetches user details
-  Future<UserModel?> getUser(String uid) async {
+  // Check if a user is already logged in
+  Future<UserModel?> checkAuthentication() async {
     var firebaseUser = _firebaseAuth.currentUser;
     if (firebaseUser != null) {
-      var gender = await _userDataService.getGender(uid);
-      var birthDate = await _userDataService.getBirthDate(uid);
+      var gender = await _userDataService.getGender(firebaseUser.uid);
+      var birthDate = await _userDataService.getBirthDate(firebaseUser.uid);
       return UserModel.fromParams(
         firebaseUser.uid,
         firebaseUser.displayName!,

@@ -10,19 +10,20 @@ class UserAuthProvider with ChangeNotifier {
 
   UserAuthProvider({required UserAuthService userAuthService})
       : _userAuthService = userAuthService {
-    checkAuthentication();
+    _checkAuthentication();
   }
 
   UserModel? _user;
   UserModel? get user => _user;
 
-  // Check if a user is already logged in
-  Future<void> checkAuthentication() async {
-    var firebaseUser = _firebaseAuth.currentUser;
-    if (firebaseUser != null) {
-      _user = await _userAuthService.getUser(firebaseUser.uid);
+  // Checks if user is already authenticated
+  Future<void> _checkAuthentication() async {
+    _userAuthService.checkAuthentication().then((UserModel? user) {
+      _user = user;
       notifyListeners();
-    }
+    }).catchError((error) {
+      print('Error checking authentication: $error');
+    });
   }
 
   // Checks whether an email address is already registered

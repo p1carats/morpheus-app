@@ -30,7 +30,7 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen> {
       try {
         await Provider.of<UserAuthProvider>(context, listen: false)
             .signUp(_name, _email, _password, _gender, _birthDate);
-        context.goNamed('home');
+        if (context.mounted) context.goNamed('home');
       } catch (error) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
