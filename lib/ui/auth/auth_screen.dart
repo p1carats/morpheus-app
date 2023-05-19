@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ionicons/ionicons.dart';
 
-import '../../providers/user/auth_provider.dart';
+import '../../providers/user_provider.dart';
 
 class AuthMainScreen extends StatefulWidget {
   const AuthMainScreen({Key? key}) : super(key: key);
@@ -20,15 +20,12 @@ class _AuthMainScreenState extends State<AuthMainScreen> {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
       var isEmailRegistered =
-          await context.read<UserAuthProvider>().isEmailRegistered(_email);
-      if (isEmailRegistered) {
-        if (context.mounted) {
-          context.pushNamed('login', queryParameters: {'email': _email});
-        }
-      } else {
-        if (context.mounted) {
-          context.pushNamed('register', queryParameters: {'email': _email});
-        }
+          await Provider.of<UserProvider>(context, listen: false)
+              .isEmailRegistered(_email);
+      if (context.mounted) {
+        isEmailRegistered
+            ? context.pushNamed('login', queryParameters: {'email': _email})
+            : context.pushNamed('register', queryParameters: {'email': _email});
       }
     }
   }
@@ -55,7 +52,11 @@ class _AuthMainScreenState extends State<AuthMainScreen> {
                     prefixIcon: Icon(Ionicons.mail_outline),
                   ),
                   validator: (value) {
-                    if (value!.isEmpty || !value.contains('@')) {
+                    if (value == null || value.isEmpty) {
+                      return 'Veuillez entrer une adresse mail !';
+                    } else if (!RegExp(
+                            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                        .hasMatch(value)) {
                       return 'Adresse email invalide !';
                     }
                     return null;

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:morpheus/providers/user/auth_provider.dart';
+import 'providers/user_provider.dart';
 
 import 'ui/auth/auth_screen.dart';
 import 'ui/auth/login_screen.dart';
@@ -44,7 +44,7 @@ final GoRouter router = GoRouter(
           builder: (context, state) => const HomeScreen(),
           redirect: (BuildContext context, GoRouterState state) {
             final userAuthProvider =
-                Provider.of<UserAuthProvider>(context, listen: false);
+                Provider.of<UserProvider>(context, listen: false);
             if (userAuthProvider.user == null) {
               return ('/auth');
             } else {

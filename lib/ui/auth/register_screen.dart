@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:ionicons/ionicons.dart';
 
-import '../../providers/user/auth_provider.dart';
+import '../../providers/user_provider.dart';
 
 class AuthRegisterScreen extends StatefulWidget {
   const AuthRegisterScreen({Key? key, required this.email}) : super(key: key);
@@ -27,7 +27,7 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen> {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
       try {
-        await Provider.of<UserAuthProvider>(context, listen: false)
+        await Provider.of<UserProvider>(context, listen: false)
             .signUp(_name, _email, _password, _gender, _birthDate);
         if (context.mounted) context.goNamed('home');
       } catch (error) {
@@ -47,7 +47,7 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen> {
       context: context,
       initialDate: _birthDate,
       firstDate: DateTime(1900),
-      lastDate: DateTime(DateTime.now().year + 1),
+      lastDate: DateTime(DateTime.now().year - 13),
     );
 
     if (picked != null && picked != _birthDate) {
@@ -131,20 +131,22 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen> {
                   ),
                 ),
                 const SizedBox(height: 20),
+                const Text('Genre'),
+                const SizedBox(height: 5),
                 SegmentedButton<String>(
                   segments: const <ButtonSegment<String>>[
                     ButtonSegment<String>(
                       value: 'male',
-                      label: Text('Masculin'),
+                      label: Text('Homme'),
                       icon: Icon(Ionicons.male_outline),
                     ),
                     ButtonSegment<String>(
                       value: 'female',
-                      label: Text('Féminin'),
+                      label: Text('Femme'),
                       icon: Icon(Ionicons.female_outline),
                     ),
                     ButtonSegment<String>(
-                      value: 'other',
+                      value: 'nonbinary',
                       label: Text('Autre'),
                       icon: Icon(Ionicons.male_female_outline),
                     ),

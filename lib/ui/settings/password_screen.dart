@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ionicons/ionicons.dart';
-import 'package:morpheus/providers/user/data_provider.dart';
-import 'package:provider/provider.dart';
 
 class SettingsPasswordScreen extends StatefulWidget {
   const SettingsPasswordScreen({Key? key}) : super(key: key);
@@ -12,15 +11,10 @@ class SettingsPasswordScreen extends StatefulWidget {
 }
 
 class _SettingsPasswordScreenState extends State<SettingsPasswordScreen> {
-  final _newpasswordController = TextEditingController();
-  final _oldpasswordController = TextEditingController();
-
-  String? _validatePassword(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Veuillez entrer un mot de passe.';
-    }
-    return null;
-  }
+  final _formKey = GlobalKey<FormState>();
+  String _oldPassword = '';
+  String _newPassword = '';
+  String _confirmPassword = '';
 
   @override
   Widget build(BuildContext context) {
@@ -32,101 +26,91 @@ class _SettingsPasswordScreenState extends State<SettingsPasswordScreen> {
         ),
         title: const Text('Modifier mon mot de passe'),
       ),
-      body: Column(
-        children: [
-          const SizedBox(height: 16),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: TextFormField(
-              obscureText: true,
-              controller: _oldpasswordController,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Ancien mot de passe',
-              ),
-              validator: _validatePassword,
-            ),
-          ),
-          const SizedBox(height: 16),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: TextFormField(
-              obscureText: true,
-              controller: _newpasswordController,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Nouveau mot de passe',
-              ),
-              validator: _validatePassword,
-            ),
-          ),
-          const SizedBox(height: 16),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: ElevatedButton(
-              onPressed: () async {
-                final String oldPassword = _oldpasswordController.text.trim();
-                final String newPassword = _newpasswordController.text.trim();
-
-                if (oldPassword.isNotEmpty && newPassword.isNotEmpty) {
-                  try {
-                    if (context.mounted) {
-                      context
-                          .read<UserDataProvider>()
-                          .reauthenticate(oldPassword);
-                      context
-                          .read<UserDataProvider>()
-                          .changePassword(_newpasswordController.text);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: const Text('Mot de passe modifié !'),
-                          backgroundColor:
-                              Theme.of(context).colorScheme.primary,
-                        ),
-                      );
-
-                      showDialog(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              title: const Text('Déconnexion'),
-                              content:
-                                  const Text('Vous allez être déconnecté.'),
-                              actions: [
-                                TextButton(
-                                  onPressed: () {
-                                    context
-                                        .read<UserDataProvider>()
-                                        .disconnect();
-                                    context.go('/auth');
-                                  },
-                                  child: const Text('OK'),
-                                ),
-                              ],
-                            );
-                          });
-                    }
-                  } catch (err) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(err.toString()),
-                        backgroundColor: Theme.of(context).colorScheme.error,
-                      ),
-                    );
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: <Widget>[
+              TextFormField(
+                obscureText: true,
+                decoration: const InputDecoration(
+                  labelText: 'Ancien mot de passe',
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Ionicons.lock_closed_outline),
+                ),
+                validator: (value) {
+                  if (value!.isEmpty ||
+                      value.length < 7 ||
+                      !RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(value) ||
+                      !RegExp(r'\d').hasMatch(value)) {
+                    return 'Le mot de passe doit contenir au moins 7 caractères, et contenir au moins un chiffre et un symbole.';
+                  } else {
+                    return null;
                   }
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: const Text('Veuillez remplir tous les champs.'),
-                      backgroundColor: Theme.of(context).colorScheme.error,
-                    ),
-                  );
-                }
-              },
-              child: const Text('Enregistrer'),
-            ),
+                },
+                onSaved: (value) {
+                  _oldPassword = value!;
+                },
+              ),
+              const SizedBox(height: 20),
+              TextFormField(
+                obscureText: true,
+                decoration: const InputDecoration(
+                  labelText: 'Nouveau mot de passe',
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Ionicons.lock_closed_outline),
+                ),
+                validator: (value) {
+                  if (value!.isEmpty ||
+                      value.length < 7 ||
+                      !RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(value) ||
+                      !RegExp(r'\d').hasMatch(value)) {
+                    return 'Le mot de passe doit contenir au moins 7 caractères, et contenir au moins un chiffre et un symbole.';
+                  } else {
+                    return null;
+                  }
+                },
+                onSaved: (value) {
+                  _newPassword = value!;
+                },
+              ),
+              const SizedBox(height: 20),
+              TextFormField(
+                obscureText: true,
+                decoration: const InputDecoration(
+                  labelText: 'Confirmer le mot de passe',
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Ionicons.lock_closed_outline),
+                ),
+                validator: (value) {
+                  if (value!.isEmpty || value.length < 7) {
+                    return 'Le mot de passe doit contenir au moins 7 caractères.';
+                  }
+                  return null;
+                },
+                onSaved: (value) {
+                  _confirmPassword = value!;
+                },
+              ),
+              const SizedBox(height: 30),
+              const Text(
+                  'Par mesure de sécurité, vous serez déconnecté⸱e à l\'issue du changement de votre mot de passe.'),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 50, vertical: 10),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
+                onPressed: () {},
+                child: const Text('Changer mon mot de passe'),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

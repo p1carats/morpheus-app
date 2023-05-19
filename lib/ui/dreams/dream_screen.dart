@@ -7,9 +7,8 @@ import 'package:ionicons/ionicons.dart';
 import '../../models/user_model.dart';
 import '../../models/dream_model.dart';
 
-import '../../providers/user/auth_provider.dart';
-import '../../providers/user/data_provider.dart';
-import '../../services/dream/data_service.dart';
+import '../../providers/user_provider.dart';
+import '../../services/dream_service.dart';
 
 class DreamMainScreen extends StatefulWidget {
   const DreamMainScreen({Key? key}) : super(key: key);
@@ -26,15 +25,13 @@ class _DreamMainScreenState extends State<DreamMainScreen> {
   @override
   void initState() {
     super.initState();
-    final userAuthProvider =
-        Provider.of<UserAuthProvider>(context, listen: false);
+    final userAuthProvider = Provider.of<UserProvider>(context, listen: false);
     final UserModel user = userAuthProvider.user!;
     _dreamStream = _dreamService.getDreams(user.uid);
   }
 
   Future<void> _refreshDreams() async {
-    final userAuthProvider =
-        Provider.of<UserAuthProvider>(context, listen: false);
+    final userAuthProvider = Provider.of<UserProvider>(context, listen: false);
     final UserModel user = userAuthProvider.user!;
     setState(() {
       _dreamStream = _dreamService.getDreams(user.uid);
@@ -43,7 +40,6 @@ class _DreamMainScreenState extends State<DreamMainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final userDataProvider = Provider.of<UserDataProvider>(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Rêves'),

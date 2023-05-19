@@ -1,12 +1,12 @@
 import 'package:flutter/foundation.dart';
 
-import '../../models/dream_model.dart';
-import '../../services/dream/data_service.dart';
+import '../models/dream_model.dart';
+import '../services/dream_service.dart';
 
-class DreamDataProvider with ChangeNotifier {
+class DreamProvider with ChangeNotifier {
   final DreamDataService _dreamDataService;
 
-  DreamDataProvider({required DreamDataService dreamDataService})
+  DreamProvider({required DreamDataService dreamDataService})
       : _dreamDataService = dreamDataService;
 
   List<DreamModel> _dreams = [];

@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:ionicons/ionicons.dart';
 
-import '../../providers/user/auth_provider.dart';
+import '../../providers/user_provider.dart';
 
 class AuthLoginScreen extends StatefulWidget {
   const AuthLoginScreen({Key? key, required this.email}) : super(key: key);
@@ -24,7 +24,7 @@ class _AuthLoginScreenState extends State<AuthLoginScreen> {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
       try {
-        await Provider.of<UserAuthProvider>(context, listen: false)
+        await Provider.of<UserProvider>(context, listen: false)
             .signIn(_email, _password);
         if (context.mounted) context.go('/');
       } catch (err) {
@@ -56,7 +56,7 @@ class _AuthLoginScreenState extends State<AuthLoginScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 const SizedBox(height: 30),
-                Text('Connecté en tant que ${widget.email}'),
+                Text('Connecté⸱e en tant que ${widget.email}'),
                 const SizedBox(height: 20),
                 TextFormField(
                   obscureText: true,
@@ -66,10 +66,14 @@ class _AuthLoginScreenState extends State<AuthLoginScreen> {
                     prefixIcon: Icon(Ionicons.lock_closed_outline),
                   ),
                   validator: (value) {
-                    if (value!.isEmpty || value.length < 7) {
-                      return 'Le mot de passe doit contenir au moins 7 caractères.';
+                    if (value!.isEmpty ||
+                        value.length < 7 ||
+                        !RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(value) ||
+                        !RegExp(r'\d').hasMatch(value)) {
+                      return 'Le mot de passe doit contenir au moins 7 caractères, et contenir au moins un chiffre et un symbole.';
+                    } else {
+                      return null;
                     }
-                    return null;
                   },
                   onSaved: (value) {
                     _password = value!;
@@ -122,8 +126,7 @@ class _AuthLoginScreenState extends State<AuthLoginScreen> {
                                 TextButton(
                                   child: const Text('Oui'),
                                   onPressed: () async {
-                                    Navigator.of(context)
-                                        .pop(); // close the bottom sheet
+                                    Navigator.of(context).pop();
                                     try {
                                       await FirebaseAuth.instance
                                           .sendPasswordResetEmail(

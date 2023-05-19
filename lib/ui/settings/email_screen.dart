@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ionicons/ionicons.dart';
-import 'package:provider/provider.dart';
-import '/providers/user/data_provider.dart';
+
+import '/providers/user_provider.dart';
 
 class SettingsEmailScreen extends StatefulWidget {
   const SettingsEmailScreen({Key? key}) : super(key: key);
@@ -12,10 +13,14 @@ class SettingsEmailScreen extends StatefulWidget {
 }
 
 class _SettingsEmailScreenState extends State<SettingsEmailScreen> {
-  final _emailController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  String _email = '';
+  String _password = '';
 
   @override
   Widget build(BuildContext context) {
+    final currentEmail =
+        Provider.of<UserProvider>(context, listen: false).user!.email;
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -24,60 +29,74 @@ class _SettingsEmailScreenState extends State<SettingsEmailScreen> {
         ),
         title: const Text('Modifier mon adresse mail'),
       ),
-      body: Column(
-        children: [
-          const SizedBox(height: 16),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: TextFormField(
-              controller: _emailController,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Nouvelle adresse mail',
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: <Widget>[
+              const SizedBox(height: 5),
+              Text(
+                'Votre adresse mail actuelle : $currentEmail',
+                style: const TextStyle(
+                  color: Colors.grey,
+                  fontSize: 12,
+                ),
               ),
-            ),
-          ),
-          const SizedBox(height: 16),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            child: TextField(
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Mot de passe',
+              const SizedBox(height: 5),
+              TextFormField(
+                decoration: const InputDecoration(
+                  labelText: 'Adresse mail',
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Ionicons.lock_closed_outline),
+                ),
+                validator: (value) {
+                  if (value!.isEmpty || value.length < 7) {
+                    return 'Le mot de passe doit contenir au moins 7 caractères.';
+                  }
+                  return null;
+                },
+                onSaved: (value) {
+                  _email = value!;
+                },
               ),
-            ),
+              const SizedBox(height: 20),
+              TextFormField(
+                obscureText: true,
+                decoration: const InputDecoration(
+                  labelText: 'Mot de passe',
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Ionicons.lock_closed_outline),
+                ),
+                validator: (value) {
+                  if (value!.isEmpty ||
+                      value.length < 7 ||
+                      !RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(value) ||
+                      !RegExp(r'\d').hasMatch(value)) {
+                    return 'Le mot de passe doit contenir au moins 7 caractères, et contenir au moins un chiffre et un symbole.';
+                  } else {
+                    return null;
+                  }
+                },
+                onSaved: (value) {
+                  _password = value!;
+                },
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 50, vertical: 10),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
+                onPressed: () {},
+                child: const Text('Modifier mon adresse mail'),
+              ),
+            ],
           ),
-          const SizedBox(height: 16),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: ElevatedButton(
-              onPressed: () {
-                try {
-                  //update email
-                  context
-                      .read<UserDataProvider>()
-                      .changeEmail(_emailController.text);
-                  context.read<UserDataProvider>().sendVerificationEmail();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                          'Un email de confirmation a été envoyé à ${_emailController.text}.'),
-                      backgroundColor: Theme.of(context).colorScheme.error,
-                    ),
-                  );
-                } catch (err) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(err.toString()),
-                      backgroundColor: Theme.of(context).colorScheme.error,
-                    ),
-                  );
-                }
-              },
-              child: const Text('Enregistrer'),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
