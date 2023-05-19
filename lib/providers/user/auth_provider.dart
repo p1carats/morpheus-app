@@ -8,15 +8,13 @@ class UserAuthProvider with ChangeNotifier {
   final UserAuthService _userAuthService;
 
   UserAuthProvider({required UserAuthService userAuthService})
-      : _userAuthService = userAuthService {
-    _checkAuthentication();
-  }
+      : _userAuthService = userAuthService;
 
   UserModel? _user;
   UserModel? get user => _user;
 
   // Checks if user is already authenticated
-  Future<void> _checkAuthentication() async {
+  Future<void> checkAuthentication() async {
     _userAuthService.checkAuthentication().then((UserModel? user) {
       _user = user;
       notifyListeners();

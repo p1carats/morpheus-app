@@ -9,6 +9,7 @@ import 'package:image_picker/image_picker.dart';
 
 import '../../providers/theme_provider.dart';
 import '../../providers/user/auth_provider.dart';
+import '../../providers/user/data_provider.dart';
 
 class SettingsMainScreen extends StatefulWidget {
   const SettingsMainScreen({Key? key}) : super(key: key);
@@ -23,11 +24,17 @@ class _SettingsMainScreenState extends State<SettingsMainScreen> {
     ThemeType.dark: 'Sombre',
     ThemeType.system: 'Système (par défaut)',
   };
+
+  final Map<String, String> genders = {
+    'male': 'Homme',
+    'female': 'Femme',
+    'other': 'Non-binaire',
+  };
   File? _image;
 
   Future<void> _pickImage() async {
     final picker = ImagePicker();
-    final pickedImage = await picker.getImage(source: ImageSource.gallery);
+    final pickedImage = await picker.pickImage(source: ImageSource.gallery);
 
     if (pickedImage != null) {
       setState(() {
@@ -38,8 +45,9 @@ class _SettingsMainScreenState extends State<SettingsMainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final userAuthProvider = Provider.of<UserAuthProvider>(context);
     final themeProvider = Provider.of<ThemeProvider>(context);
+    final userAuthProvider = Provider.of<UserAuthProvider>(context);
+    final userDataProvider = Provider.of<UserDataProvider>(context);
 
     Widget contentWidget = Container();
     if (userAuthProvider.user?.emailVerified == false) {
@@ -48,9 +56,9 @@ class _SettingsMainScreenState extends State<SettingsMainScreen> {
         child: Container(
           color: Theme.of(context).colorScheme.error,
           padding: const EdgeInsets.all(8),
-          child: const Row(
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: [
+            children: const [
               Icon(Ionicons.warning_outline),
               SizedBox(width: 8),
               Text('Adresse mail non vérifiée !'),
@@ -66,24 +74,31 @@ class _SettingsMainScreenState extends State<SettingsMainScreen> {
         actions: <Widget>[
           IconButton(
             icon: const Icon(Ionicons.help_circle_outline),
-            tooltip: 'Feedback',
+            tooltip: 'Plus',
             onPressed: () {},
           ),
           IconButton(
             icon: const Icon(Ionicons.ellipsis_vertical_outline),
-            tooltip: 'Plus',
-            onPressed: () {},
+            tooltip: 'Feedback',
+            onPressed: () => showLicensePage(
+              context: context,
+              applicationName: 'Morpheus',
+              applicationVersion: '1.0.0',
+              applicationLegalese: '© 2023 Morpheus',
+            ),
           ),
         ],
       ),
       body: ListView(
         children: <Widget>[
-          contentWidget,
+          Container(
+            padding: const EdgeInsets.all(8),
+            child: contentWidget,
+          ),
           // Profile Section
           ListTile(
             subtitle: Row(
               children: <Widget>[
-                // Avatar who can be modified to support user profile images
                 GestureDetector(
                   onTap: _pickImage,
                   child: CircleAvatar(
@@ -91,7 +106,7 @@ class _SettingsMainScreenState extends State<SettingsMainScreen> {
                     backgroundImage: _image != null ? FileImage(_image!) : null,
                     child: _image == null
                         ? const Icon(
-                            Icons.add_a_photo_outlined,
+                            Ionicons.phone_portrait_outline,
                             size: 40,
                           )
                         : null,
@@ -116,20 +131,19 @@ class _SettingsMainScreenState extends State<SettingsMainScreen> {
             ),
           ),
           const Divider(),
-          // App Settings Section
-          ListTile(
-            leading: const Icon(Ionicons.person_outline),
-            title: const Text('Gestion du profil'),
-            onTap: () => context.pushNamed('profile'),
+          const ListTile(
+            title: Text('Paramètres de l\'application'),
           ),
           ListTile(
             leading: const Icon(Ionicons.medical_outline),
             title: const Text('Gestion des données'),
+            trailing: const Icon(Ionicons.chevron_forward_outline),
             onTap: () => context.pushNamed('data'),
           ),
           ListTile(
             leading: const Icon(Ionicons.color_palette_outline),
             title: const Text('Thème de l\'application'),
+            trailing: const Icon(Ionicons.chevron_forward_outline),
             onTap: () {
               showDialog(
                 context: context,
@@ -158,8 +172,59 @@ class _SettingsMainScreenState extends State<SettingsMainScreen> {
             },
           ),
           ListTile(
+            leading: const Icon(Ionicons.language_outline),
+            title: const Text('Langue'),
+            trailing: const Icon(Ionicons.chevron_forward_outline),
+            onTap: () => context.pushNamed('data'),
+          ),
+          const ListTile(
+            title: Text('Paramètres du compte'),
+          ),
+          ListTile(
+            leading: const Icon(Ionicons.camera_outline),
+            title: const Text('Photo de profil'),
+            trailing: const Icon(Ionicons.chevron_forward_outline),
+            onTap: () => _pickImage,
+          ),
+          ListTile(
+            leading: const Icon(Ionicons.person_outline),
+            title: const Text('Nom'),
+            subtitle: Text(userAuthProvider.user!.name),
+            trailing: const Icon(Ionicons.chevron_forward_outline),
+            onTap: () => context.goNamed('name'),
+          ),
+          ListTile(
+            leading: const Icon(Ionicons.mail_outline),
+            title: const Text('Adresse mail'),
+            subtitle: Text(userAuthProvider.user!.email),
+            trailing: const Icon(Ionicons.chevron_forward_outline),
+            onTap: () => context.goNamed('email'),
+          ),
+          ListTile(
+            leading: const Icon(Ionicons.calendar_outline),
+            title: const Text('Date de naissance'),
+            subtitle: Text(DateFormat('dd/MM/yyyy')
+                .format(userAuthProvider.user!.birthDate)),
+            trailing: const Icon(Ionicons.chevron_forward_outline),
+            onTap: () => context.go('/settings/profile/birthdate'),
+          ),
+          ListTile(
+            leading: const Icon(Ionicons.male_female_outline),
+            title: const Text('Genre'),
+            subtitle: Text(genders[userAuthProvider.user!.gender]!),
+            trailing: const Icon(Ionicons.chevron_forward_outline),
+            onTap: () => context.go('/settings/profile/gender'),
+          ),
+          ListTile(
+            leading: const Icon(Ionicons.lock_closed_outline),
+            title: const Text('Mot de passe'),
+            trailing: const Icon(Ionicons.chevron_forward_outline),
+            onTap: () => context.pushNamed('password'),
+          ),
+          ListTile(
             leading: const Icon(Ionicons.log_out_outline),
             title: const Text('Me déconnecter'),
+            trailing: const Icon(Ionicons.chevron_forward_outline),
             onTap: () async {
               showDialog(
                 context: context,
@@ -183,6 +248,32 @@ class _SettingsMainScreenState extends State<SettingsMainScreen> {
                 ),
               );
             },
+          ),
+          ListTile(
+            leading: const Icon(Ionicons.trash_bin_outline),
+            title: const Text('Supprimer mon compte'),
+            trailing: const Icon(Ionicons.chevron_forward_outline),
+            onTap: () => showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                title: const Text('Supprimer mon compte'),
+                content: const Text(
+                    'Êtes-vous sûr de vouloir supprimer votre compte ? Toutes vos données seront supprimées. Cette action est défintive.'),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text('Annuler'),
+                  ),
+                  TextButton(
+                    onPressed: () async {
+                      await userDataProvider.deleteUser();
+                      if (context.mounted) context.goNamed('auth');
+                    },
+                    child: const Text('Supprimer'),
+                  ),
+                ],
+              ),
+            ),
           ),
         ],
       ),

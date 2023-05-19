@@ -20,7 +20,6 @@ import 'ui/dreams/add_screen.dart';
 
 import 'ui/settings/settings_screen.dart';
 import 'ui/settings/data_screen.dart';
-import 'ui/settings/profile_screen.dart';
 import 'ui/settings/email_screen.dart';
 import 'ui/settings/password_screen.dart';
 import 'ui/settings/name_screen.dart';
@@ -96,12 +95,6 @@ final GoRouter router = GoRouter(
               name: 'data',
               path: 'data',
               builder: (context, state) => const SettingsDataScreen(),
-            ),
-            GoRoute(
-              parentNavigatorKey: _rootNavigatorKey,
-              name: 'profile',
-              path: 'profile',
-              builder: (context, state) => const SettingsProfileScreen(),
             ),
             GoRoute(
               parentNavigatorKey: _rootNavigatorKey,

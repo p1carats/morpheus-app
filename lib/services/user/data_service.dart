@@ -36,6 +36,7 @@ class UserDataService {
   // Deletes the current user
   Future<void> deleteUser() async {
     var user = _firebaseAuth.currentUser!;
+    FirebaseAuth.instance.currentUser?.reload();
     await user.delete();
   }
 
