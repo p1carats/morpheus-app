@@ -20,9 +20,9 @@ import 'ui/dreams/add_screen.dart';
 
 import 'ui/settings/settings_screen.dart';
 import 'ui/settings/data_screen.dart';
+import 'ui/settings/profile_screen.dart';
 import 'ui/settings/email_screen.dart';
 import 'ui/settings/password_screen.dart';
-import 'ui/settings/name_screen.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _shellNavigatorKey = GlobalKey<NavigatorState>();
@@ -43,9 +43,9 @@ final GoRouter router = GoRouter(
           path: '/',
           builder: (context, state) => const HomeScreen(),
           redirect: (BuildContext context, GoRouterState state) {
-            final userAuthProvider =
+            final userProvider =
                 Provider.of<UserProvider>(context, listen: false);
-            if (userAuthProvider.user == null) {
+            if (userProvider.checkAuthentication() == false) {
               return ('/auth');
             } else {
               return null;
@@ -98,6 +98,12 @@ final GoRouter router = GoRouter(
             ),
             GoRoute(
               parentNavigatorKey: _rootNavigatorKey,
+              name: 'profile',
+              path: 'profile',
+              builder: (context, state) => const SettingsProfileScreen(),
+            ),
+            GoRoute(
+              parentNavigatorKey: _rootNavigatorKey,
               name: 'email',
               path: 'email',
               builder: (context, state) => const SettingsEmailScreen(),
@@ -107,12 +113,6 @@ final GoRouter router = GoRouter(
               name: 'password',
               path: 'password',
               builder: (context, state) => const SettingsPasswordScreen(),
-            ),
-            GoRoute(
-              parentNavigatorKey: _rootNavigatorKey,
-              name: 'name',
-              path: 'name',
-              builder: (context, state) => const SettingsNameScreen(),
             ),
           ],
         ),

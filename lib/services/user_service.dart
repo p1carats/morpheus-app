@@ -9,21 +9,25 @@ class UserService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // Checks if a user is already logged in
+  // Checks if an user is already logged in
   Future<UserModel?> checkAuthentication() async {
     var user = _auth.currentUser;
     if (user != null) {
       var doc = await _firestore.collection('users').doc(user.uid).get();
-      return UserModel.fromParams(
-        user.uid,
-        user.displayName!,
-        user.email!,
-        user.emailVerified,
-        user.photoURL!,
-        user.metadata.creationTime!,
-        birthDate: (doc['birthDate'] as Timestamp).toDate(),
-        gender: doc['gender'],
-      );
+      if (doc.exists) {
+        return UserModel.fromParams(
+          user.uid,
+          user.displayName!,
+          user.email!,
+          user.emailVerified,
+          user.photoURL!,
+          user.metadata.creationTime!,
+          birthDate: (doc['birthDate'] as Timestamp).toDate(),
+          gender: doc['gender'],
+        );
+      } else {
+        return null;
+      }
     } else {
       return null;
     }
@@ -56,7 +60,7 @@ class UserService {
   }
 
   // Registers a new user
-  Future<UserModel?> signUp(String name, String email, String password,
+  Future<UserModel> signUp(String name, String email, String password,
       String gender, DateTime birthDate) async {
     var authResult = await _auth.createUserWithEmailAndPassword(
       email: email,
@@ -72,16 +76,17 @@ class UserService {
     await user.updateDisplayName(name);
     await user.updatePhotoURL(
         'https://image-uniservice.linternaute.com/image/450/3/1294835011/4443027.jpg');
-    await user.reload();
     await user.sendEmailVerification();
+    await Future.delayed(const Duration(milliseconds: 1500));
+    await user.reload();
+    user = _auth.currentUser!;
     // Return the user details
     return UserModel.fromParams(
       user.uid,
       user.displayName!,
       user.email!,
       user.emailVerified,
-      user.photoURL ??
-          'https://image-uniservice.linternaute.com/image/450/3/1294835011/4443027.jpg',
+      user.photoURL!,
       user.metadata.creationTime!,
       birthDate: birthDate,
       gender: gender,
@@ -93,20 +98,23 @@ class UserService {
     return await _auth.signOut();
   }
 
+  // Updates the user's profile picture
+  Future<void> updateProfilePicture(String uid, File image) async {
+    User? user = _auth.currentUser;
+    var ref = FirebaseStorage.instance.ref().child('users/$uid/profile.jpg');
+    var snapshot = await ref.putFile(image).whenComplete(() => null);
+    var link = await snapshot.ref.getDownloadURL();
+    return await user?.updatePhotoURL(link);
+  }
+
   // Updates the user's display name
   Future<void> updateDisplayName(String uid, String name) async {
     User? user = _auth.currentUser;
     return await user?.updateDisplayName(name);
   }
 
-  // Updates the user's profile picture
-  Future<void> updateProfilePicture(String uid, String url) async {
-    User? user = _auth.currentUser;
-    return await user?.updatePhotoURL(url);
-  }
-
   // Updates the user's email address
-  Future<void> updateEmail(String uid, String email) async {
+  Future<void> updateEmail(String uid, String email, String password) async {
     User? user = _auth.currentUser;
     return await user?.updateEmail(email);
   }
@@ -116,11 +124,29 @@ class UserService {
     return await _auth.sendPasswordResetEmail(email: email);
   }
 
-  // Uploads a profile picture
-  Future<String> uploadProfilePicture(File file, String uid) async {
-    var ref = FirebaseStorage.instance.ref().child('users/$uid/profile.jpg');
-    var uploadTask = ref.putFile(file);
-    var snapshot = await uploadTask.whenComplete(() => null);
-    return await snapshot.ref.getDownloadURL();
+  Future<void> changePassword(String oldPassword, String newPassword) async {
+    User? user = _auth.currentUser;
+    if (user != null) {
+      AuthCredential credentials = EmailAuthProvider.credential(
+        email: _auth.currentUser!.email!,
+        password: oldPassword,
+      );
+      await user.reauthenticateWithCredential(credentials);
+      await user.updatePassword(newPassword);
+    }
+  }
+
+  // Deletes the current user
+  Future<void> deleteUser(String password) async {
+    User? user = _auth.currentUser;
+    if (user != null) {
+      AuthCredential credentials = EmailAuthProvider.credential(
+        email: _auth.currentUser!.email!,
+        password: password,
+      );
+      await user.reauthenticateWithCredential(credentials);
+      await _firestore.collection('users').doc(user.uid).delete();
+      await user.delete();
+    }
   }
 }

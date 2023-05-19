@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
@@ -5,16 +6,35 @@ import 'package:ionicons/ionicons.dart';
 
 import 'package:morpheus/providers/user_provider.dart';
 
-class SettingsNameScreen extends StatefulWidget {
-  const SettingsNameScreen({Key? key}) : super(key: key);
+class SettingsProfileScreen extends StatefulWidget {
+  const SettingsProfileScreen({Key? key}) : super(key: key);
 
   @override
-  State<SettingsNameScreen> createState() => _SettingsNameScreenState();
+  State<SettingsProfileScreen> createState() => _SettingsProfileScreenState();
 }
 
-class _SettingsNameScreenState extends State<SettingsNameScreen> {
+class _SettingsProfileScreenState extends State<SettingsProfileScreen> {
   final _formKey = GlobalKey<FormState>();
   String _name = '';
+
+  void _submit() async {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+      try {
+        await Provider.of<UserProvider>(context, listen: false)
+            .updateDisplayName(userProvider.user!.uid, _name);
+        if (context.mounted) context.goNamed('settings');
+      } catch (error) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(error.toString()),
+            backgroundColor: Theme.of(context).colorScheme.error,
+          ),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +79,7 @@ class _SettingsNameScreenState extends State<SettingsNameScreen> {
                     borderRadius: BorderRadius.circular(20),
                   ),
                 ),
-                onPressed: () {},
+                onPressed: () => _submit(),
                 child: const Text('Valider'),
               ),
             ],

@@ -47,7 +47,7 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen> {
       context: context,
       initialDate: _birthDate,
       firstDate: DateTime(1900),
-      lastDate: DateTime(DateTime.now().year - 13),
+      lastDate: DateTime(DateTime.now().year + 1),
     );
 
     if (picked != null && picked != _birthDate) {

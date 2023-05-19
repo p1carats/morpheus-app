@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -10,14 +11,14 @@ class UserProvider with ChangeNotifier {
   UserModel? _user;
   UserModel? get user => _user;
 
-  // Checks if user is already authenticated
+  // Checks if an user is already logged in
   Future<void> checkAuthentication() async {
-    _userService.checkAuthentication().then((UserModel? user) {
-      _user = user;
-      notifyListeners();
-    }).catchError((error) {
+    try {
+      _user = await _userService.checkAuthentication();
+    } catch (error) {
       print('Error checking authentication: $error');
-    });
+    }
+    notifyListeners();
   }
 
   // Checks whether an email address is already registered
@@ -25,7 +26,7 @@ class UserProvider with ChangeNotifier {
     return await _userService.isEmailRegistered(email);
   }
 
-  // Sign in
+  // Logs in an existing user
   Future<void> signIn(String email, String password) async {
     try {
       _user = await _userService.signIn(email, password);
@@ -41,7 +42,7 @@ class UserProvider with ChangeNotifier {
     }
   }
 
-  // Sign up
+  // Registers a new user
   Future<void> signUp(String name, String email, String password, String gender,
       DateTime birthDate) async {
     try {
@@ -59,7 +60,7 @@ class UserProvider with ChangeNotifier {
     }
   }
 
-  // Sign out
+  // Logs out the current user
   Future<void> signOut() async {
     try {
       await _userService.signOut();
@@ -70,10 +71,33 @@ class UserProvider with ChangeNotifier {
     }
   }
 
-  // Update user's display name
+  // updateProfilePicture
+  Future<void> updateProfilePicture(String uid, File image) async {
+    try {
+      await _userService.updateProfilePicture(uid, image);
+      _user = await _userService.checkAuthentication();
+      notifyListeners();
+    } catch (err) {
+      throw Exception('Une erreur est survenue : $err');
+    }
+  }
+
+  // updateDisplayName
   Future<void> updateDisplayName(String uid, String name) async {
     try {
-      _user = _userService.updateDisplayName(uid, name) as UserModel?;
+      await _userService.updateDisplayName(uid, name);
+      _user = await _userService.checkAuthentication();
+      notifyListeners();
+    } catch (err) {
+      throw Exception('Une erreur est survenue : $err');
+    }
+  }
+
+  // update email
+  Future<void> updateEmail(String uid, String name, String password) async {
+    try {
+      await _userService.updateEmail(uid, name, password);
+      _user = await _userService.checkAuthentication();
       notifyListeners();
     } catch (err) {
       throw Exception('Une erreur est survenue : $err');
@@ -84,6 +108,25 @@ class UserProvider with ChangeNotifier {
   Future<void> sendPasswordResetEmail(String email) async {
     try {
       await _userService.sendPasswordResetEmail(email);
+    } catch (err) {
+      throw Exception('Une erreur est survenue : $err');
+    }
+  }
+
+  Future<void> changePassword(String oldPassword, String newPassword) async {
+    try {
+      await _userService.changePassword(oldPassword, newPassword);
+    } catch (err) {
+      throw Exception('Une erreur est survenue : $err');
+    }
+  }
+
+  // Deletes the current user
+  Future<void> deleteUser(String password) async {
+    try {
+      await _userService.deleteUser(password);
+      _user = null;
+      notifyListeners();
     } catch (err) {
       throw Exception('Une erreur est survenue : $err');
     }

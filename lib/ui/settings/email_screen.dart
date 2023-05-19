@@ -17,6 +17,25 @@ class _SettingsEmailScreenState extends State<SettingsEmailScreen> {
   String _email = '';
   String _password = '';
 
+  void _submit() async {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+      try {
+        await Provider.of<UserProvider>(context, listen: false)
+            .updateEmail(userProvider.user!.uid, _email, _password);
+        if (context.mounted) context.goNamed('settings');
+      } catch (error) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(error.toString()),
+            backgroundColor: Theme.of(context).colorScheme.error,
+          ),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final currentEmail =
@@ -91,7 +110,7 @@ class _SettingsEmailScreenState extends State<SettingsEmailScreen> {
                     borderRadius: BorderRadius.circular(20),
                   ),
                 ),
-                onPressed: () {},
+                onPressed: () => _submit(),
                 child: const Text('Modifier mon adresse mail'),
               ),
             ],

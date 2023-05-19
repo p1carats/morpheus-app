@@ -178,7 +178,7 @@ class _SettingsMainScreenState extends State<SettingsMainScreen> {
             leading: const Icon(Ionicons.person_outline),
             title: const Text('Mon profil'),
             trailing: const Icon(Ionicons.chevron_forward_outline),
-            onTap: () => context.goNamed('name'),
+            onTap: () => context.goNamed('profile'),
           ),
           ListTile(
             leading: const Icon(Ionicons.mail_outline),
@@ -258,8 +258,8 @@ class _SettingsMainScreenState extends State<SettingsMainScreen> {
                     ),
                     TextButton(
                       onPressed: () async {
-                        //await userProvider.deleteUser(passwordController.text);
-                        //if (context.mounted) context.goNamed('auth');
+                        await userProvider.deleteUser(passwordController.text);
+                        if (context.mounted) context.goNamed('auth');
                       },
                       child: const Text('Supprimer'),
                     ),

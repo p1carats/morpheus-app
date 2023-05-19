@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ionicons/ionicons.dart';
 
+import '../../providers/user_provider.dart';
+
 class SettingsPasswordScreen extends StatefulWidget {
   const SettingsPasswordScreen({Key? key}) : super(key: key);
 
@@ -15,6 +17,25 @@ class _SettingsPasswordScreenState extends State<SettingsPasswordScreen> {
   String _oldPassword = '';
   String _newPassword = '';
   String _confirmPassword = '';
+
+  void _submit() async {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+      try {
+        await userProvider.changePassword(_oldPassword, _newPassword);
+        await userProvider.signOut();
+        if (context.mounted) context.goNamed('auth');
+      } catch (error) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(error.toString()),
+            backgroundColor: Theme.of(context).colorScheme.error,
+          ),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -105,7 +126,7 @@ class _SettingsPasswordScreenState extends State<SettingsPasswordScreen> {
                     borderRadius: BorderRadius.circular(20),
                   ),
                 ),
-                onPressed: () {},
+                onPressed: () => _submit(),
                 child: const Text('Changer mon mot de passe'),
               ),
             ],
