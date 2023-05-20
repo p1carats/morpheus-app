@@ -34,7 +34,7 @@ class _AuthMainScreenState extends State<AuthMainScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Adresse mail'),
+        title: const Text('Bienvenue sur Morpheus !'),
       ),
       body: Center(
         child: SingleChildScrollView(
@@ -75,7 +75,7 @@ class _AuthMainScreenState extends State<AuthMainScreen> {
                     ),
                   ),
                   onPressed: _submit,
-                  child: const Text('Connexion'),
+                  child: const Text('Continuer'),
                 ),
               ],
             ),

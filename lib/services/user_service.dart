@@ -72,12 +72,14 @@ class UserService {
       'birthDate': birthDate,
       'gender': gender,
     });
-    // Update the user's name and profile picture, and send email verification
+    // Update the user's name
     await user.updateDisplayName(name);
-    await user.updatePhotoURL(
-        'https://image-uniservice.linternaute.com/image/450/3/1294835011/4443027.jpg');
+    // Set the user's profile picture
+    var ref = FirebaseStorage.instance.ref().child('users/default.jpg');
+    await user.updatePhotoURL(await ref.getDownloadURL());
+    // Send a verification email
     await user.sendEmailVerification();
-    await Future.delayed(const Duration(milliseconds: 1500));
+    //await Future.delayed(const Duration(milliseconds: 1500));
     await user.reload();
     user = _auth.currentUser!;
     // Return the user details

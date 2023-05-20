@@ -23,13 +23,13 @@ class DreamService {
   }
 
   // Get one specific dream from a user by its unique ID
-  Future<DreamModel> getDream(String uid, String dreamId) async {
+  Future<DreamModel> getDream(String uid, String id) async {
     try {
       DocumentSnapshot snapshot = await _firestore
           .collection('users')
           .doc(uid)
           .collection('dreams')
-          .doc(dreamId)
+          .doc(id)
           .get();
       if (snapshot.exists) {
         return DreamModel.fromJson({
@@ -59,13 +59,13 @@ class DreamService {
   }
 
   // Update an existing dream
-  Future<void> updateDream(String uid, String dreamId, DreamModel dream) async {
+  Future<void> updateDream(String uid, String id, DreamModel dream) async {
     try {
       await _firestore
           .collection('users')
           .doc(uid)
           .collection('dreams')
-          .doc(dreamId)
+          .doc(id)
           .update(dream.toJson());
     } catch (e) {
       throw Exception('Error updating dream: $e');

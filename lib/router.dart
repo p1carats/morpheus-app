@@ -9,9 +9,10 @@ import 'ui/utils/navigation_bar.dart';
 import 'ui/home_screen.dart';
 import 'ui/analytics_screen.dart';
 import 'ui/sleep_screen.dart';
-import 'ui/dreams/view_screen.dart';
 import 'ui/dreams/dream_screen.dart';
+import 'ui/dreams/view_screen.dart';
 import 'ui/dreams/add_screen.dart';
+import 'ui/dreams/edit_screen.dart';
 import 'ui/settings/settings_screen.dart';
 import 'ui/settings/data_screen.dart';
 import 'ui/settings/profile_screen.dart';
@@ -78,23 +79,25 @@ final GoRouter router = GoRouter(
           routes: <RouteBase>[
             GoRoute(
               parentNavigatorKey: _rootNavigatorKey,
+              name: 'view',
+              path: 'view/:id',
+              builder: (context, state) => DreamDetailsScreen(
+                id: state.pathParameters['id']!,
+              ),
+            ),
+            GoRoute(
+              parentNavigatorKey: _rootNavigatorKey,
               name: 'add',
               path: 'add',
               builder: (context, state) => const DreamAddScreen(),
             ),
             GoRoute(
               parentNavigatorKey: _rootNavigatorKey,
-              name: 'view',
-              path: 'view/:dreamId',
-              builder: (context, state) => DreamDetailsScreen(
-                id: state.queryParameters['id'],
-              ),
-            ),
-            GoRoute(
-              parentNavigatorKey: _rootNavigatorKey,
               name: 'edit',
-              path: 'edit/:dreamId',
-              builder: (context, state) => const DreamAddScreen(),
+              path: 'edit/:id',
+              builder: (context, state) => DreamEditScreen(
+                id: state.pathParameters['id']!,
+              ),
             ),
           ],
         ),

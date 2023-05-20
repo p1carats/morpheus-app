@@ -116,121 +116,127 @@ class _DreamAddScreenState extends State<DreamAddScreen>
           child: TabBarView(
             controller: _tabController,
             children: <Widget>[
-              ListView(
-                children: [
-                  const SizedBox(height: 5),
-                  TextFormField(
-                    decoration: const InputDecoration(
-                      labelText: 'Titre du rêve',
-                      border: OutlineInputBorder(),
-                      prefixIcon: Icon(Ionicons.eye_outline),
-                    ),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Le titre ne peut pas être vide.';
-                      } else {
-                        return null;
-                      }
-                    },
-                    onSaved: (value) {
-                      _title = value!;
-                    },
-                  ),
-                  const SizedBox(height: 20),
-                  TextFormField(
-                    maxLines: 6,
-                    decoration: const InputDecoration(
-                      labelText: 'Description',
-                      border: OutlineInputBorder(),
-                      prefixIcon: Icon(Ionicons.journal_outline),
-                    ),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'La description ne peut pas être vide.';
-                      } else {
-                        return null;
-                      }
-                    },
-                    onSaved: (value) {
-                      _description = value!;
-                    },
-                  ),
-                ],
-              ),
-              ListView(
-                children: [
-                  const SizedBox(height: 5),
-                  TextFormField(
-                    readOnly: true,
-                    decoration: const InputDecoration(
-                      labelText: 'Date du rêve',
-                      border: OutlineInputBorder(),
-                      prefixIcon: Icon(Ionicons.calendar_outline),
-                    ),
-                    onTap: () => _selectDate(context),
-                    controller: TextEditingController(
-                      text: DateFormat('dd/MM/yyyy').format(_date),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  const Text('Type de rêve'),
-                  SegmentedButton<String>(
-                    segments: const <ButtonSegment<String>>[
-                      ButtonSegment<String>(
-                        value: 'dream',
-                        label: Text('Rêve'),
-                        icon: Icon(Ionicons.sunny_outline),
+              SingleChildScrollView(
+                child: Column(
+                  children: [
+                    const SizedBox(height: 5),
+                    TextFormField(
+                      decoration: const InputDecoration(
+                        labelText: 'Titre du rêve',
+                        border: OutlineInputBorder(),
+                        prefixIcon: Icon(Ionicons.eye_outline),
                       ),
-                      ButtonSegment<String>(
-                        value: 'nightmare',
-                        label: Text('Cauchemar'),
-                        icon: Icon(Ionicons.thunderstorm_outline),
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Le titre ne peut pas être vide.';
+                        } else {
+                          return null;
+                        }
+                      },
+                      onSaved: (value) {
+                        _title = value!;
+                      },
+                    ),
+                    const SizedBox(height: 20),
+                    TextFormField(
+                      maxLines: 6,
+                      decoration: const InputDecoration(
+                        labelText: 'Description',
+                        border: OutlineInputBorder(),
+                        prefixIcon: Icon(Ionicons.journal_outline),
                       ),
-                    ],
-                    selected: <String>{_type},
-                    showSelectedIcon: false,
-                    onSelectionChanged: (Set<String> newSelection) {
-                      setState(() {
-                        _type = newSelection.first;
-                      });
-                    },
-                  ),
-                  const SizedBox(height: 20),
-                  const Text('Note du rêve'),
-                  Slider(
-                    value: _rating,
-                    min: 1,
-                    max: 5,
-                    divisions: 4,
-                    label: _rating.round().toString(),
-                    onChanged: (double value) {
-                      setState(() {
-                        _rating = value;
-                      });
-                    },
-                  ),
-                ],
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'La description ne peut pas être vide.';
+                        } else {
+                          return null;
+                        }
+                      },
+                      onSaved: (value) {
+                        _description = value!;
+                      },
+                    ),
+                  ],
+                ),
               ),
-              ListView(
-                children: [
-                  Switch(
-                    value: _isLucid,
-                    onChanged: (bool value) {
-                      setState(
-                        () => _isLucid = value,
-                      );
-                    },
-                  ),
-                  const SizedBox(height: 20),
-                  Switch(
-                    value: _isControllable,
-                    onChanged: (bool value) {
-                      setState(
-                        () => _isControllable = value,
-                      );
-                    },
-                  ),
-                ],
+              SingleChildScrollView(
+                child: Column(
+                  children: [
+                    const SizedBox(height: 5),
+                    TextFormField(
+                      readOnly: true,
+                      decoration: const InputDecoration(
+                        labelText: 'Date du rêve',
+                        border: OutlineInputBorder(),
+                        prefixIcon: Icon(Ionicons.calendar_outline),
+                      ),
+                      onTap: () => _selectDate(context),
+                      controller: TextEditingController(
+                        text: DateFormat('dd/MM/yyyy').format(_date),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    const Text('Type de rêve'),
+                    SegmentedButton<String>(
+                      segments: const <ButtonSegment<String>>[
+                        ButtonSegment<String>(
+                          value: 'dream',
+                          label: Text('Rêve'),
+                          icon: Icon(Ionicons.sunny_outline),
+                        ),
+                        ButtonSegment<String>(
+                          value: 'nightmare',
+                          label: Text('Cauchemar'),
+                          icon: Icon(Ionicons.thunderstorm_outline),
+                        ),
+                      ],
+                      selected: <String>{_type},
+                      showSelectedIcon: false,
+                      onSelectionChanged: (Set<String> newSelection) {
+                        setState(() {
+                          _type = newSelection.first;
+                        });
+                      },
+                    ),
+                    const SizedBox(height: 20),
+                    const Text('Note du rêve'),
+                    Slider(
+                      value: _rating,
+                      min: 1,
+                      max: 5,
+                      divisions: 4,
+                      label: _rating.round().toString(),
+                      onChanged: (double value) {
+                        setState(() {
+                          _rating = value;
+                        });
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Switch(
+                      value: _isLucid,
+                      onChanged: (bool value) {
+                        setState(
+                          () => _isLucid = value,
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 20),
+                    Switch(
+                      value: _isControllable,
+                      onChanged: (bool value) {
+                        setState(
+                          () => _isControllable = value,
+                        );
+                      },
+                    ),
+                  ],
+                ),
               ),
             ],
           ),

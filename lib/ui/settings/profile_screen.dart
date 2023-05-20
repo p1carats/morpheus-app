@@ -1,7 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:ionicons/ionicons.dart';
 
 import 'package:morpheus/providers/user_provider.dart';
@@ -15,15 +16,22 @@ class SettingsProfileScreen extends StatefulWidget {
 
 class _SettingsProfileScreenState extends State<SettingsProfileScreen> {
   final _formKey = GlobalKey<FormState>();
-  String _name = '';
+  File? _image;
+  String? _name;
 
   void _submit() async {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
       try {
-        await Provider.of<UserProvider>(context, listen: false)
-            .updateDisplayName(userProvider.user!.uid, _name);
+        if (_name != null) {
+          await Provider.of<UserProvider>(context, listen: false)
+              .updateDisplayName(userProvider.user!.uid, _name!);
+        }
+        if (_image != null) {
+          await Provider.of<UserProvider>(context, listen: false)
+              .updateProfilePicture(userProvider.user!.uid, _image!);
+        }
         if (context.mounted) context.goNamed('settings');
       } catch (error) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -36,9 +44,21 @@ class _SettingsProfileScreenState extends State<SettingsProfileScreen> {
     }
   }
 
+  Future<void> _selectImage() async {
+    final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path);
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<UserProvider>(context, listen: false).user?.name;
+    final profilePicture =
+        Provider.of<UserProvider>(context, listen: false).user?.profilePicture;
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -53,6 +73,31 @@ class _SettingsProfileScreenState extends State<SettingsProfileScreen> {
           key: _formKey,
           child: Column(
             children: <Widget>[
+              Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CircleAvatar(
+                      radius: 40,
+                      backgroundImage: _image != null
+                          ? FileImage(_image!) as ImageProvider<Object>?
+                          : NetworkImage(profilePicture!),
+                    ),
+                    const SizedBox(width: 20),
+                    TextButton(
+                      onPressed: _selectImage,
+                      child: Row(
+                        children: const [
+                          Icon(Ionicons.camera_outline),
+                          SizedBox(width: 5),
+                          Text('Changer de photo'),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 30),
               TextFormField(
                 initialValue: user,
                 decoration: const InputDecoration(

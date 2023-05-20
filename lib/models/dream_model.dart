@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class DreamModel {
   final String? id;
   final String title;
@@ -35,7 +37,7 @@ class DreamModel {
   // Conversion from JSON to Dream object
   factory DreamModel.fromJson(Map<String, dynamic> json) {
     return DreamModel(
-      id: json['id'] as String,
+      id: json['id'] as String?,
       title: json['title'] as String,
       description: json['description'] as String,
       date: json['date'].toDate(),
