@@ -46,7 +46,8 @@ class _DreamDetailsScreenState extends State<DreamDetailsScreen> {
           IconButton(
             icon: const Icon(Ionicons.create_outline),
             tooltip: 'Modifier',
-            onPressed: () {},
+            onPressed: () =>
+                context.pushNamed('edit', pathParameters: {'id': widget.id}),
           ),
           IconButton(
             icon: const Icon(Ionicons.trash_outline),
