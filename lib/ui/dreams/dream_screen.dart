@@ -27,14 +27,14 @@ class _DreamMainScreenState extends State<DreamMainScreen> {
     super.initState();
     final userAuthProvider = Provider.of<UserProvider>(context, listen: false);
     final UserModel user = userAuthProvider.user!;
-    _dreamStream = _dreamService.getDreams(user.uid);
+    _dreamStream = _dreamService.fetchAllDreams(user.uid);
   }
 
   Future<void> _refreshDreams() async {
     final userAuthProvider = Provider.of<UserProvider>(context, listen: false);
     final UserModel user = userAuthProvider.user!;
     setState(() {
-      _dreamStream = _dreamService.getDreams(user.uid);
+      _dreamStream = _dreamService.fetchAllDreams(user.uid);
     });
   }
 
@@ -69,9 +69,8 @@ class _DreamMainScreenState extends State<DreamMainScreen> {
                   DreamModel dream = snapshot.data![index];
                   return Card(
                     child: ListTile(
-                      // Push to the dream details screen with the dream as parameter
                       onTap: () => context.pushNamed('view', pathParameters: {
-                        'dreamId': dream.title,
+                        'dreamId': dream.id!,
                       }),
                       title: Text(
                         dream.title,

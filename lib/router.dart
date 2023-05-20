@@ -48,7 +48,7 @@ final GoRouter router = GoRouter(
             final userProvider =
                 Provider.of<UserProvider>(context, listen: false);
             if (!appProvider.hasCompletedOnboarding) {
-              if (userProvider.checkAuthentication() == false) {
+              if (userProvider.user == null) {
                 return ('/auth');
               } else {
                 return null;
@@ -86,7 +86,9 @@ final GoRouter router = GoRouter(
               parentNavigatorKey: _rootNavigatorKey,
               name: 'view',
               path: 'view/:dreamId',
-              builder: (context, state) => const DreamDetailsScreen(),
+              builder: (context, state) => DreamDetailsScreen(
+                id: state.queryParameters['id'],
+              ),
             ),
             GoRoute(
               parentNavigatorKey: _rootNavigatorKey,

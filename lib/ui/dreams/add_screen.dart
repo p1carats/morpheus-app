@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:morpheus/models/dream_model.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:ionicons/ionicons.dart';
 
-import 'package:morpheus/providers/dream_provider.dart';
+import '../../models/dream_model.dart';
+
+import '../../providers/user_provider.dart';
+import '../../providers/dream_provider.dart';
 
 class DreamAddScreen extends StatefulWidget {
   const DreamAddScreen({Key? key}) : super(key: key);
@@ -36,18 +37,18 @@ class _DreamAddScreenState extends State<DreamAddScreen>
       _formKey.currentState!.save();
       try {
         await Provider.of<DreamProvider>(context, listen: false).addDream(
-          FirebaseAuth.instance.currentUser!.uid,
+          Provider.of<UserProvider>(context, listen: false).user!.uid,
           DreamModel(
-            id: 'id',
             title: _title,
             description: _description,
             date: _date,
             type: _type,
             rating: _rating.toInt(),
             isLucid: _isLucid,
+            isControllable: _isControllable,
           ),
         );
-        if (context.mounted) context.go('/');
+        if (context.mounted) context.pop();
       } catch (err) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
