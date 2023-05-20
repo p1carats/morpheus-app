@@ -120,7 +120,7 @@ class UserService {
   }
 
   // Sends a password reset email
-  Future<void> sendPasswordResetEmail(String email) async {
+  Future<void> resetPassword(String email) async {
     return await _auth.sendPasswordResetEmail(email: email);
   }
 

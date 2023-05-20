@@ -18,7 +18,7 @@ class DreamMainScreen extends StatefulWidget {
 }
 
 class _DreamMainScreenState extends State<DreamMainScreen> {
-  final DreamDataService _dreamService = DreamDataService();
+  final DreamService _dreamService = DreamService();
 
   late Stream<List<DreamModel>> _dreamStream;
 

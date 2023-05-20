@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:ionicons/ionicons.dart';
 
 import '../../providers/user_provider.dart';
@@ -126,22 +125,25 @@ class _AuthLoginScreenState extends State<AuthLoginScreen> {
                                 TextButton(
                                   child: const Text('Oui'),
                                   onPressed: () async {
-                                    Navigator.of(context).pop();
                                     try {
-                                      await FirebaseAuth.instance
-                                          .sendPasswordResetEmail(
-                                              email: widget.email ?? '');
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        SnackBar(
-                                          content: const Text(
-                                              'Un mail de confirmation vous a été envoyé. Pensez à vérifier vos spams !'),
-                                          backgroundColor: Theme.of(context)
-                                              .colorScheme
-                                              .primary,
-                                        ),
-                                      );
+                                      await Provider.of<UserProvider>(context,
+                                              listen: false)
+                                          .resetPassword(widget.email!);
+                                      if (context.mounted) {
+                                        Navigator.of(context).pop();
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          SnackBar(
+                                            content: const Text(
+                                                'Un mail de confirmation vous a été envoyé. Pensez à vérifier vos spams !'),
+                                            backgroundColor: Theme.of(context)
+                                                .colorScheme
+                                                .primary,
+                                          ),
+                                        );
+                                      }
                                     } catch (err) {
+                                      Navigator.of(context).pop();
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(
                                         SnackBar(

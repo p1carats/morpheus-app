@@ -1,40 +1,50 @@
-
 import 'package:health/health.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+import '../models/sleep_model.dart';
 
 class HealthService {
-  List<HealthDataPoint> _healthDataList = [];
+  final HealthFactory health = HealthFactory(useHealthConnectIfAvailable: true);
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  Future<List<HealthDataPoint>> getSleepData() async {
-    DateTime endDate = DateTime.now();
-    DateTime startDate = DateTime.now().subtract(const Duration(days: 7));
+  // Health data types that we want to fetch
+  List<HealthDataType> types = [
+    HealthDataType.SLEEP_ASLEEP,
+    HealthDataType.SLEEP_AWAKE,
+    HealthDataType.SLEEP_IN_BED
+  ];
 
-    // Create a HealthFactory for use in the app
-    HealthFactory health = HealthFactory(useHealthConnectIfAvailable: true);
+  // Get the neccessary autorisations and permissions from the user
+  Future authorize() async {
+    // (Android) Reading sleep data requires the ACTIVITY_RECOGNITION permission
+    await Permission.activityRecognition.request();
 
-    // Define the types to get
-    List<HealthDataType> types = [
-      HealthDataType.SLEEP_ASLEEP,
-      HealthDataType.SLEEP_AWAKE,
-      HealthDataType.SLEEP_IN_BED,
-    ];
+    // Check if we have permission
+    final permissions = types.map((e) => HealthDataAccess.READ_WRITE).toList();
+    bool? hasPermissions =
+        await health.hasPermissions(types, permissions: permissions);
+    hasPermissions = false;
 
-    // Requesting access to the data types before reading them
-    bool accessWasGranted = await health.requestAuthorization(types);
-
-    if (accessWasGranted) {
+    bool authorized = false;
+    if (!hasPermissions) {
       try {
-        for (HealthDataType type in types) {
-          List<HealthDataPoint> healthData =
-              await health.getHealthDataFromTypes(startDate, endDate, types);
-          _healthDataList.addAll(healthData);
-        }
-
-        _healthDataList = HealthFactory.removeDuplicates(_healthDataList);
-      } catch (exception) {
-        print(exception.toString());
+        authorized =
+            await health.requestAuthorization(types, permissions: permissions);
+      } catch (err) {
+        throw Exception('Exception in authorize: $err');
       }
     }
 
-    return _healthDataList;
+    return authorized;
+  }
+
+  // Revoke access to the data types
+  Future revokeAccess() async {
+    try {
+      await health.revokePermissions();
+    } catch (error) {
+      print("Caught exception in revokeAccess: $error");
+    }
   }
 }

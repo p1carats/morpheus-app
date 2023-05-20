@@ -1,4 +1,5 @@
 class DreamModel {
+  final String id;
   final String title;
   final String description;
   final DateTime date;
@@ -7,6 +8,7 @@ class DreamModel {
   final bool isLucid;
 
   DreamModel({
+    required this.id,
     required this.title,
     required this.description,
     required this.date,
@@ -18,8 +20,9 @@ class DreamModel {
   // Conversion from JSON to Dream object
   factory DreamModel.fromJson(Map<String, dynamic> json) {
     return DreamModel(
-      title: json['title'] ?? '',
-      description: json['description'] ?? '',
+      id: json['id'],
+      title: json['title'],
+      description: json['description'],
       date: json['date'].toDate(),
       type: json['type'] ?? 'dream',
       rating: json['rating'].toInt() ?? 1,
@@ -30,6 +33,7 @@ class DreamModel {
   // Conversion from Dream object to JSON
   Map<String, dynamic> toJson() {
     return {
+      'id': id,
       'title': title,
       'description': description,
       'date': date,

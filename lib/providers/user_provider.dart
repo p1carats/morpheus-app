@@ -105,9 +105,9 @@ class UserProvider with ChangeNotifier {
   }
 
   // Send password reset email
-  Future<void> sendPasswordResetEmail(String email) async {
+  Future<void> resetPassword(String email) async {
     try {
-      await _userService.sendPasswordResetEmail(email);
+      await _userService.resetPassword(email);
     } catch (err) {
       throw Exception('Une erreur est survenue : $err');
     }

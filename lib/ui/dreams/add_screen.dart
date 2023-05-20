@@ -38,6 +38,7 @@ class _DreamAddScreenState extends State<DreamAddScreen>
         await Provider.of<DreamProvider>(context, listen: false).addDream(
           FirebaseAuth.instance.currentUser!.uid,
           DreamModel(
+            id: 'id',
             title: _title,
             description: _description,
             date: _date,

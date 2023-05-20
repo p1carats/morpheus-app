@@ -4,31 +4,28 @@ import '../models/dream_model.dart';
 import '../services/dream_service.dart';
 
 class DreamProvider with ChangeNotifier {
-  final DreamDataService _dreamDataService;
-
-  DreamProvider({required DreamDataService dreamDataService})
-      : _dreamDataService = dreamDataService;
+  final DreamService _dreamService = DreamService();
 
   List<DreamModel> _dreams = [];
   List<DreamModel> get dreams => _dreams;
 
   Future<void> fetchDreams(String uid) async {
-    _dreams = await _dreamDataService.getDreams(uid).first;
+    _dreams = await _dreamService.getDreams(uid).first;
     notifyListeners();
   }
 
   Future<void> addDream(String uid, DreamModel dream) async {
-    await _dreamDataService.addDream(uid, dream);
+    await _dreamService.addDream(uid, dream);
     await fetchDreams(uid);
   }
 
   Future<void> updateDream(String uid, String dreamId, DreamModel dream) async {
-    await _dreamDataService.updateDream(uid, dreamId, dream);
+    await _dreamService.updateDream(uid, dreamId, dream);
     await fetchDreams(uid);
   }
 
   Future<void> deleteDream(String uid, String dreamId) async {
-    await _dreamDataService.deleteDream(uid, dreamId);
+    await _dreamService.deleteDream(uid, dreamId);
     await fetchDreams(uid);
   }
 }
