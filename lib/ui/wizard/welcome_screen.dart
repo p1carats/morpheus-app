@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
+
+import '../../providers/app_provider.dart';
 
 class WizardWelcomeScreen extends StatefulWidget {
   const WizardWelcomeScreen({Key? key}) : super(key: key);
@@ -15,7 +18,16 @@ class _WizardWelcomeScreenState extends State<WizardWelcomeScreen> {
       appBar: AppBar(
         title: const Text('Bienvenue !'),
       ),
-      body: const Placeholder(),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: const <Widget>[
+            Text(
+              'HEY',
+            )
+          ],
+        ),
+      ),
     );
   }
 }

@@ -123,12 +123,8 @@ class UserProvider with ChangeNotifier {
 
   // Deletes the current user
   Future<void> deleteUser(String password) async {
-    try {
-      await _userService.deleteUser(password);
-      _user = null;
-      notifyListeners();
-    } catch (err) {
-      throw Exception('Une erreur est survenue : $err');
-    }
+    await _userService.deleteUser(password);
+    _user = null;
+    notifyListeners();
   }
 }

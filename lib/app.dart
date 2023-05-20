@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-import 'providers/theme_provider.dart';
+import 'providers/app_provider.dart';
 import 'router.dart';
 
 class Morpheus extends StatelessWidget {
-  final SharedPreferences sharedPreferences;
-  const Morpheus({Key? key, required this.sharedPreferences}) : super(key: key);
+  const Morpheus({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final themeProvider = Provider.of<ThemeProvider>(context);
+    final themeProvider = Provider.of<AppProvider>(context);
 
     ThemeMode themeMode;
     switch (themeProvider.themeType) {

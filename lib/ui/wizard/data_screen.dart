@@ -15,7 +15,17 @@ class _WizardDataScreenState extends State<WizardDataScreen> {
       appBar: AppBar(
         title: const Text('Récupération des données'),
       ),
-      body: const Placeholder(),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            ElevatedButton(
+              onPressed: () => context.go('/'),
+              child: const Text('Récupérer mes données'),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

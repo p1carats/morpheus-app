@@ -2,27 +2,27 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 
+import 'providers/app_provider.dart';
 import 'providers/user_provider.dart';
 
-import 'ui/auth/auth_screen.dart';
-import 'ui/auth/login_screen.dart';
-import 'ui/auth/register_screen.dart';
-
-import 'ui/dreams/view_screen.dart';
-import 'ui/wizard/welcome_screen.dart';
 import 'ui/utils/navigation_bar.dart';
-import 'ui/error_screen.dart';
 import 'ui/home_screen.dart';
 import 'ui/analytics_screen.dart';
 import 'ui/sleep_screen.dart';
+import 'ui/dreams/view_screen.dart';
 import 'ui/dreams/dream_screen.dart';
 import 'ui/dreams/add_screen.dart';
-
 import 'ui/settings/settings_screen.dart';
 import 'ui/settings/data_screen.dart';
 import 'ui/settings/profile_screen.dart';
 import 'ui/settings/email_screen.dart';
 import 'ui/settings/password_screen.dart';
+import 'ui/auth/auth_screen.dart';
+import 'ui/auth/login_screen.dart';
+import 'ui/auth/register_screen.dart';
+import 'ui/wizard/welcome_screen.dart';
+import 'ui/wizard/data_screen.dart';
+import 'ui/error_screen.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _shellNavigatorKey = GlobalKey<NavigatorState>();
@@ -43,12 +43,18 @@ final GoRouter router = GoRouter(
           path: '/',
           builder: (context, state) => const HomeScreen(),
           redirect: (BuildContext context, GoRouterState state) {
+            final appProvider =
+                Provider.of<AppProvider>(context, listen: false);
             final userProvider =
                 Provider.of<UserProvider>(context, listen: false);
-            if (userProvider.checkAuthentication() == false) {
-              return ('/auth');
+            if (!appProvider.hasCompletedOnboarding) {
+              if (userProvider.checkAuthentication() == false) {
+                return ('/auth');
+              } else {
+                return null;
+              }
             } else {
-              return null;
+              return ('/welcome');
             }
           },
         ),
@@ -79,8 +85,14 @@ final GoRouter router = GoRouter(
             GoRoute(
               parentNavigatorKey: _rootNavigatorKey,
               name: 'view',
-              path: ':dreamId',
+              path: 'view/:dreamId',
               builder: (context, state) => const DreamDetailsScreen(),
+            ),
+            GoRoute(
+              parentNavigatorKey: _rootNavigatorKey,
+              name: 'edit',
+              path: 'edit/:dreamId',
+              builder: (context, state) => const DreamAddScreen(),
             ),
           ],
         ),
@@ -92,7 +104,7 @@ final GoRouter router = GoRouter(
           routes: <RouteBase>[
             GoRoute(
               parentNavigatorKey: _rootNavigatorKey,
-              name: 'data',
+              name: 'settingsdata',
               path: 'data',
               builder: (context, state) => const SettingsDataScreen(),
             ),
@@ -139,6 +151,18 @@ final GoRouter router = GoRouter(
           ),
         ),
       ],
+    ),
+    GoRoute(
+      parentNavigatorKey: _rootNavigatorKey,
+      name: 'welcome',
+      path: '/welcome',
+      builder: (context, state) => const WizardWelcomeScreen(),
+    ),
+    GoRoute(
+      parentNavigatorKey: _rootNavigatorKey,
+      name: 'data',
+      path: '/data',
+      builder: (context, state) => const WizardDataScreen(),
     ),
   ],
   errorBuilder: (context, state) => const ErrorScreen(),

@@ -19,8 +19,9 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen> {
   String _name = '';
   String _email = '';
   String _password = '';
-  String _gender = '';
+  String _confirmPassword = '';
   DateTime _birthDate = DateTime.now();
+  String _gender = '';
 
   void _submit() async {
     _email = widget.email ?? '';
@@ -29,7 +30,7 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen> {
       try {
         await Provider.of<UserProvider>(context, listen: false)
             .signUp(_name, _email, _password, _gender, _birthDate);
-        if (context.mounted) context.goNamed('home');
+        if (context.mounted) context.goNamed('data');
       } catch (error) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -115,6 +116,28 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen> {
                   },
                   onSaved: (value) {
                     _password = value!;
+                  },
+                ),
+                const SizedBox(height: 20),
+                TextFormField(
+                  obscureText: true,
+                  decoration: const InputDecoration(
+                    labelText: 'Confirmer le mot de passe',
+                    border: OutlineInputBorder(),
+                    prefixIcon: Icon(Ionicons.lock_closed_outline),
+                  ),
+                  validator: (value) {
+                    if (value!.isEmpty ||
+                        value.length < 7 ||
+                        !RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(value) ||
+                        !RegExp(r'\d').hasMatch(value)) {
+                      return 'Le mot de passe doit contenir au moins 7 caractères, et contenir au moins un chiffre et un symbole.';
+                    } else {
+                      return null;
+                    }
+                  },
+                  onSaved: (value) {
+                    _confirmPassword = value!;
                   },
                 ),
                 const SizedBox(height: 20),

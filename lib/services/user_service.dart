@@ -144,9 +144,19 @@ class UserService {
         email: _auth.currentUser!.email!,
         password: password,
       );
-      await user.reauthenticateWithCredential(credentials);
-      await _firestore.collection('users').doc(user.uid).delete();
-      await user.delete();
+      try {
+        await user.reauthenticateWithCredential(credentials);
+        await _firestore.collection('users').doc(user.uid).delete();
+        await user.delete();
+      } on FirebaseAuthException catch (err) {
+        if (err.code == 'wrong-password') {
+          throw ('Mot de passe incorrect, merci de réessayer.');
+        } else {
+          throw Exception('An error occurred');
+        }
+      } catch (err) {
+        throw Exception('An error occurred');
+      }
     }
   }
 }

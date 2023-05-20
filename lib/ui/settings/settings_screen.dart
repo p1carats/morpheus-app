@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:ionicons/ionicons.dart';
 
-import '../../providers/theme_provider.dart';
+import '../../providers/app_provider.dart';
 import '../../providers/user_provider.dart';
 
 class SettingsMainScreen extends StatefulWidget {
@@ -30,7 +30,7 @@ class _SettingsMainScreenState extends State<SettingsMainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final themeProvider = Provider.of<ThemeProvider>(context);
+    final appProvider = Provider.of<AppProvider>(context);
     final userProvider = Provider.of<UserProvider>(context, listen: false);
 
     Widget contentWidget = Container();
@@ -150,10 +150,10 @@ class _SettingsMainScreenState extends State<SettingsMainScreen> {
                         return RadioListTile<ThemeType>(
                           title: Text(themeTypeNames[themeType]!),
                           value: themeType,
-                          groupValue: themeProvider.themeType,
+                          groupValue: appProvider.themeType,
                           onChanged: (ThemeType? value) {
                             if (value != null) {
-                              themeProvider.updateThemeType(value);
+                              appProvider.updateThemeType(value);
                               Navigator.of(context).pop();
                             }
                           },
@@ -235,7 +235,7 @@ class _SettingsMainScreenState extends State<SettingsMainScreen> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       const Text(
-                          'Êtes-vous sûr de vouloir supprimer votre compte ? Toutes vos données seront supprimées. Cette action est défintive.'),
+                          'Êtes-vous sûr de vouloir supprimer votre compte ? Toutes vos données seront supprimées. Cette action est irréversible.'),
                       const SizedBox(height: 15),
                       const Text(
                           'Merci de confirmer votre mot de passe pour continuer.'),
@@ -253,13 +253,25 @@ class _SettingsMainScreenState extends State<SettingsMainScreen> {
                   ),
                   actions: <Widget>[
                     TextButton(
-                      onPressed: () => Navigator.pop(context),
+                      onPressed: () => Navigator.of(context).pop(),
                       child: const Text('Annuler'),
                     ),
                     TextButton(
                       onPressed: () async {
-                        await userProvider.deleteUser(passwordController.text);
-                        if (context.mounted) context.goNamed('auth');
+                        try {
+                          await userProvider
+                              .deleteUser(passwordController.text);
+                          if (context.mounted) context.goNamed('auth');
+                        } catch (err) {
+                          Navigator.of(context).pop();
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(err.toString()),
+                              backgroundColor:
+                                  Theme.of(context).colorScheme.error,
+                            ),
+                          );
+                        }
                       },
                       child: const Text('Supprimer'),
                     ),
