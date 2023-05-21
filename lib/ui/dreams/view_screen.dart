@@ -72,8 +72,10 @@ class _DreamDetailsScreenState extends State<DreamDetailsScreen> {
                                 .uid;
                         await Provider.of<DreamProvider>(context, listen: false)
                             .deleteDream(user, widget.id);
-                        if (context.mounted) context.pop();
-                        if (context.mounted) context.pop();
+                        if (context.mounted) {
+                          context.pop();
+                          context.pop();
+                        }
                       },
                       child: const Text('Supprimer'),
                     ),

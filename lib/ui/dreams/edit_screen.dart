@@ -26,37 +26,38 @@ class _DreamEditScreenState extends State<DreamEditScreen>
 
   bool _isLoading = false;
 
-  String _title = '';
-  String _description = '';
-  DateTime _date = DateTime.now();
-  String _type = 'dream';
-  double _rating = 1;
-  bool _isLucid = false;
-  bool _isControllable = false;
+  late final ValueNotifier<String> _title = ValueNotifier<String>('');
+  late final ValueNotifier<String> _description = ValueNotifier<String>('');
+  late final ValueNotifier<DateTime> _date =
+      ValueNotifier<DateTime>(DateTime.now());
+  late final ValueNotifier<String> _type = ValueNotifier<String>('');
+  late final ValueNotifier<double> _rating = ValueNotifier<double>(0);
+  late final ValueNotifier<bool> _isLucid = ValueNotifier<bool>(false);
+  late final ValueNotifier<bool> _isControllable = ValueNotifier<bool>(false);
 
   void _onTabDataChanged(String field, dynamic value) {
     setState(() {
       switch (field) {
         case 'title':
-          _title = value;
+          _title.value = value;
           break;
         case 'description':
-          _description = value;
+          _description.value = value;
           break;
         case 'date':
-          _date = value;
+          _date.value = value;
           break;
         case 'type':
-          _type = value;
+          _type.value = value;
           break;
         case 'rating':
-          _rating = value;
+          _rating.value = value;
           break;
         case 'isLucid':
-          _isLucid = value;
+          _isLucid.value = value;
           break;
         case 'isControllable':
-          _isControllable = value;
+          _isControllable.value = value;
           break;
       }
     });
@@ -109,6 +110,13 @@ class _DreamEditScreenState extends State<DreamEditScreen>
     );
     setState(() {
       _dream = dream;
+      _title.value = _dream!.title;
+      _description.value = _dream!.description;
+      _date.value = _dream!.date;
+      _type.value = _dream!.type;
+      _rating.value = _dream!.rating.toDouble();
+      _isLucid.value = _dream!.isLucid;
+      _isControllable.value = _dream!.isControllable;
     });
   }
 
@@ -126,6 +134,44 @@ class _DreamEditScreenState extends State<DreamEditScreen>
     return Scaffold(
       appBar: AppBar(
         title: const Text('Modifier un rêve'),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Ionicons.trash_outline),
+            tooltip: 'Supprimer',
+            onPressed: () async {
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text('Suppression du rêve'),
+                  content: const Text(
+                      'Êtes-vous sûr de vouloir supprimer ce rêve ? Cette action est irréversible.'),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () => context.pop(),
+                      child: const Text('Annuler'),
+                    ),
+                    TextButton(
+                      onPressed: () async {
+                        String user =
+                            Provider.of<UserProvider>(context, listen: false)
+                                .user!
+                                .uid;
+                        await Provider.of<DreamProvider>(context, listen: false)
+                            .deleteDream(user, widget.id);
+                        if (context.mounted) {
+                          context.pop();
+                          context.pop();
+                          context.pop();
+                        }
+                      },
+                      child: const Text('Supprimer'),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ],
         bottom: TabBar(
           controller: _tabController,
           tabs: const <Widget>[
@@ -153,9 +199,22 @@ class _DreamEditScreenState extends State<DreamEditScreen>
               child: TabBarView(
                 controller: _tabController,
                 children: <Widget>[
-                  DreamAddScreenNarrativeTab(onChanged: _onTabDataChanged),
-                  DreamAddScreenDetailsTab(onChanged: _onTabDataChanged),
-                  DreamAddScreenLucidityTab(onChanged: _onTabDataChanged),
+                  DreamAddScreenNarrativeTab(
+                    onChanged: _onTabDataChanged,
+                    titleNotifier: _title,
+                    descriptionNotifier: _description,
+                  ),
+                  DreamAddScreenDetailsTab(
+                    onChanged: _onTabDataChanged,
+                    dateNotifier: _date,
+                    typeNotifier: _type,
+                    ratingNotifier: _rating,
+                  ),
+                  DreamAddScreenLucidityTab(
+                    onChanged: _onTabDataChanged,
+                    lucidNotifier: _isLucid,
+                    controllableNotifier: _isControllable,
+                  ),
                 ],
               ),
             ),
@@ -174,9 +233,13 @@ class _DreamEditScreenState extends State<DreamEditScreen>
 
 class DreamAddScreenNarrativeTab extends StatefulWidget {
   final Function(String, dynamic) onChanged;
+  final ValueNotifier<String> titleNotifier;
+  final ValueNotifier<String> descriptionNotifier;
   const DreamAddScreenNarrativeTab({
     Key? key,
     required this.onChanged,
+    required this.titleNotifier,
+    required this.descriptionNotifier,
   }) : super(key: key);
 
   @override
@@ -186,24 +249,30 @@ class DreamAddScreenNarrativeTab extends StatefulWidget {
 
 class _DreamAddScreenNarrativeTabState extends State<DreamAddScreenNarrativeTab>
     with AutomaticKeepAliveClientMixin {
-  final _titleController = TextEditingController();
-  final _descriptionController = TextEditingController();
+  String _title = '';
+  String _description = '';
 
   @override
   void initState() {
     super.initState();
-    _titleController.addListener(() {
-      widget.onChanged('title', _titleController.text);
+    _title = widget.titleNotifier.value;
+    widget.titleNotifier.addListener(() {
+      setState(() {
+        _title = widget.titleNotifier.value;
+      });
     });
-    _descriptionController.addListener(() {
-      widget.onChanged('description', _descriptionController.text);
+    _description = widget.descriptionNotifier.value;
+    widget.descriptionNotifier.addListener(() {
+      setState(() {
+        _description = widget.descriptionNotifier.value;
+      });
     });
   }
 
   @override
   void dispose() {
-    _titleController.dispose();
-    _descriptionController.dispose();
+    widget.titleNotifier.removeListener(() {});
+    widget.descriptionNotifier.removeListener(() {});
     super.dispose();
   }
 
@@ -215,6 +284,7 @@ class _DreamAddScreenNarrativeTabState extends State<DreamAddScreenNarrativeTab>
         children: [
           const SizedBox(height: 5),
           TextFormField(
+            initialValue: widget.titleNotifier.value,
             decoration: const InputDecoration(
               labelText: 'Titre du rêve',
               border: OutlineInputBorder(),
@@ -227,10 +297,14 @@ class _DreamAddScreenNarrativeTabState extends State<DreamAddScreenNarrativeTab>
                 return null;
               }
             },
-            controller: _titleController,
+            onChanged: (value) {
+              widget.titleNotifier.value = value;
+              widget.onChanged('title', value);
+            },
           ),
           const SizedBox(height: 20),
           TextFormField(
+            initialValue: widget.descriptionNotifier.value,
             maxLines: 6,
             decoration: const InputDecoration(
               labelText: 'Description',
@@ -244,7 +318,10 @@ class _DreamAddScreenNarrativeTabState extends State<DreamAddScreenNarrativeTab>
                 return null;
               }
             },
-            controller: _descriptionController,
+            onChanged: (value) {
+              widget.descriptionNotifier.value = value;
+              widget.onChanged('description', value);
+            },
           ),
         ],
       ),
@@ -257,9 +334,15 @@ class _DreamAddScreenNarrativeTabState extends State<DreamAddScreenNarrativeTab>
 
 class DreamAddScreenDetailsTab extends StatefulWidget {
   final Function(String, dynamic) onChanged;
+  final ValueNotifier<DateTime> dateNotifier;
+  final ValueNotifier<String> typeNotifier;
+  final ValueNotifier<double> ratingNotifier;
   const DreamAddScreenDetailsTab({
     Key? key,
     required this.onChanged,
+    required this.dateNotifier,
+    required this.typeNotifier,
+    required this.ratingNotifier,
   }) : super(key: key);
 
   @override
@@ -276,16 +359,45 @@ class _DreamAddScreenDetailsTabState extends State<DreamAddScreenDetailsTab>
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: _date,
+      initialDate: widget.dateNotifier.value,
       firstDate: DateTime(2000),
       lastDate: DateTime(DateTime.now().year + 1),
     );
     if (picked != null) {
-      setState(() {
-        _date = picked;
-      });
-      widget.onChanged('date', _date);
+      widget.dateNotifier.value = picked;
+      widget.onChanged('date', picked);
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _date = widget.dateNotifier.value;
+    widget.dateNotifier.addListener(() {
+      setState(() {
+        _date = widget.dateNotifier.value;
+      });
+    });
+    _type = widget.typeNotifier.value;
+    widget.typeNotifier.addListener(() {
+      setState(() {
+        _type = widget.typeNotifier.value;
+      });
+    });
+    _rating = widget.ratingNotifier.value;
+    widget.ratingNotifier.addListener(() {
+      setState(() {
+        _rating = widget.ratingNotifier.value;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    widget.dateNotifier.removeListener(() {});
+    widget.typeNotifier.removeListener(() {});
+    widget.ratingNotifier.removeListener(() {});
+    super.dispose();
   }
 
   @override
@@ -325,10 +437,8 @@ class _DreamAddScreenDetailsTabState extends State<DreamAddScreenDetailsTab>
             selected: <String>{_type},
             showSelectedIcon: false,
             onSelectionChanged: (Set<String> newSelection) {
-              setState(() {
-                _type = newSelection.first;
-              });
-              widget.onChanged('type', _type);
+              widget.typeNotifier.value = newSelection.first;
+              widget.onChanged('type', newSelection.first);
             },
           ),
           const SizedBox(height: 20),
@@ -339,11 +449,9 @@ class _DreamAddScreenDetailsTabState extends State<DreamAddScreenDetailsTab>
             max: 5,
             divisions: 4,
             label: _rating.round().toString(),
-            onChanged: (double value) {
-              setState(() {
-                _rating = value;
-              });
-              widget.onChanged('rating', _rating);
+            onChanged: (double newValue) {
+              widget.ratingNotifier.value = newValue;
+              widget.onChanged('rating', newValue);
             },
           ),
         ],
@@ -357,9 +465,13 @@ class _DreamAddScreenDetailsTabState extends State<DreamAddScreenDetailsTab>
 
 class DreamAddScreenLucidityTab extends StatefulWidget {
   final Function(String, dynamic) onChanged;
+  final ValueNotifier<bool> lucidNotifier;
+  final ValueNotifier<bool> controllableNotifier;
   const DreamAddScreenLucidityTab({
     Key? key,
     required this.onChanged,
+    required this.lucidNotifier,
+    required this.controllableNotifier,
   }) : super(key: key);
 
   @override
@@ -373,6 +485,31 @@ class _DreamAddScreenLucidityTabState extends State<DreamAddScreenLucidityTab>
   bool _isControllable = false;
 
   @override
+  void initState() {
+    super.initState();
+    _isLucid = widget.lucidNotifier.value;
+    _isControllable = widget.controllableNotifier.value;
+    widget.lucidNotifier.addListener(() {
+      setState(() {
+        _isLucid = widget.lucidNotifier.value;
+      });
+    });
+    _isControllable = widget.controllableNotifier.value;
+    widget.controllableNotifier.addListener(() {
+      setState(() {
+        _isControllable = widget.controllableNotifier.value;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    widget.lucidNotifier.removeListener(() {});
+    widget.controllableNotifier.removeListener(() {});
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     super.build(context);
     return SingleChildScrollView(
@@ -383,20 +520,16 @@ class _DreamAddScreenLucidityTabState extends State<DreamAddScreenLucidityTab>
             title: const Text('Rêve lucide'),
             value: _isLucid,
             onChanged: (bool value) {
-              setState(
-                () => _isLucid = value,
-              );
-              widget.onChanged('isLucid', _isLucid);
+              widget.lucidNotifier.value = value;
+              widget.onChanged('lucid', value);
             },
           ),
           SwitchListTile(
             title: const Text('Rêve contrôlable'),
             value: _isControllable,
             onChanged: (bool value) {
-              setState(
-                () => _isControllable = value,
-              );
-              widget.onChanged('isControllable', _isControllable);
+              widget.controllableNotifier.value = value;
+              widget.onChanged('controlled', value);
             },
           ),
         ],

@@ -101,9 +101,9 @@ class _DreamMainScreenState extends State<DreamMainScreen> {
                   const SizedBox(height: 10),
                   Expanded(
                     child: ListView.builder(
-                      itemCount: provider.dreams.length,
+                      itemCount: provider.filteredDreams.length,
                       itemBuilder: (context, index) {
-                        DreamModel dream = provider.dreams[index];
+                        DreamModel dream = provider.filteredDreams[index];
                         final String id = dream.id!;
                         return Card(
                           child: ListTile(
