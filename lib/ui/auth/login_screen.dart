@@ -45,6 +45,7 @@ class _AuthLoginScreenState extends State<AuthLoginScreen> {
           icon: const Icon(Ionicons.arrow_back_outline),
           onPressed: () => context.pop(),
         ),
+        title: const Text('Connexion'),
       ),
       body: Center(
         child: SingleChildScrollView(

@@ -20,16 +20,26 @@ class _HomeScreenState extends State<HomeScreen> {
       body: CustomScrollView(
         slivers: <Widget>[
           SliverAppBar.large(
-            title: Text('Bonjour ${userProvider.user!.name} !'),
+            flexibleSpace: FlexibleSpaceBar(
+              title: Text('Bonjour ${userProvider.user!.name} !'),
+              background: Container(
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('assets/images/banner.jpg'),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+            ),
           ),
           SliverList(
             delegate: SliverChildListDelegate([
               Card(
                 child: Container(
                   padding: const EdgeInsets.all(10),
-                  child: const Column(
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
+                    children: const <Widget>[
                       Text(
                         'Ma dernière nuit de sommeil',
                         style: TextStyle(

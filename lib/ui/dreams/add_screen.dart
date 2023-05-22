@@ -371,8 +371,8 @@ class _DreamAddScreenLucidityTabState extends State<DreamAddScreenLucidityTab>
           SizedBox(
             height: 100, // set a fixed height for the ListTile
             child: ListTile(
-              title: const Row(
-                children: [
+              title: Row(
+                children: const [
                   Text('Rêve lucide'),
                   SizedBox(width: 10),
                   Tooltip(
@@ -407,8 +407,8 @@ class _DreamAddScreenLucidityTabState extends State<DreamAddScreenLucidityTab>
           SizedBox(
             height: 100, // set a fixed height for the ListTile
             child: ListTile(
-              title: const Row(
-                children: [
+              title: Row(
+                children: const [
                   Text('Rêve contrôlable'),
                   SizedBox(width: 10),
                   Tooltip(

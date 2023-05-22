@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:ionicons/ionicons.dart';
 
 import '../../models/dream_model.dart';
@@ -43,6 +44,11 @@ class _DreamDetailsScreenState extends State<DreamDetailsScreen> {
           onPressed: () => context.pop(),
         ),
         actions: <Widget>[
+          IconButton(
+            icon: const Icon(Ionicons.share_outline),
+            tooltip: 'Modifier',
+            onPressed: () => Share.share('J\'ai rêvé cette nuit !'),
+          ),
           IconButton(
             icon: const Icon(Ionicons.create_outline),
             tooltip: 'Modifier',
@@ -96,7 +102,7 @@ class _DreamDetailsScreenState extends State<DreamDetailsScreen> {
           } else {
             DreamModel? dream = snapshot.data;
             return Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
@@ -107,10 +113,12 @@ class _DreamDetailsScreenState extends State<DreamDetailsScreen> {
                         color: Theme.of(context).colorScheme.secondary,
                         //size: 16,
                       ),
-                      const SizedBox(width: 5),
-                      Text(
-                        dream.title,
-                        style: Theme.of(context).textTheme.headlineSmall,
+                      const SizedBox(width: 10),
+                      Flexible(
+                        child: Text(
+                          dream.title,
+                          style: Theme.of(context).textTheme.headlineSmall,
+                        ),
                       ),
                     ],
                   ),

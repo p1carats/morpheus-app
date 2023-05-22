@@ -14,6 +14,7 @@ dependencies:
   intl: ^0.17.0
   shared_preferences: ^2.1.1
   image_picker: ^0.8.7+5
+  share_plus: ^7.0.1
   permission_handler: ^10.2.0
   health: ^6.0.0
   firebase_core: ^2.13.0
@@ -35,3 +36,5 @@ flutter:
     - family: Montserrat
       fonts:
         - asset: assets/fonts/Montserrat-Medium.ttf
+  assets:
+    - assets/images/

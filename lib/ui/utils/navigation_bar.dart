@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ionicons/ionicons.dart';
-import 'package:morpheus/ui/analytics_screen.dart';
-import 'package:morpheus/ui/dreams/dream_screen.dart';
-import 'package:morpheus/ui/home_screen.dart';
-import 'package:morpheus/ui/settings/settings_screen.dart';
-import 'package:morpheus/ui/sleep_screen.dart';
+
+import '../../ui/analytics_screen.dart';
+import '../../ui/dreams/dream_screen.dart';
+import '../../ui/home_screen.dart';
+import '../../ui/settings/settings_screen.dart';
+import '../../ui/sleep_screen.dart';
 
 class BottomNavBar extends StatefulWidget {
   const BottomNavBar({Key? key}) : super(key: key);
@@ -59,8 +60,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
             label: 'Rêves',
           ),
           NavigationDestination(
-            selectedIcon: Icon(Ionicons.cog),
-            icon: Icon(Ionicons.cog_outline),
+            selectedIcon: Icon(Ionicons.settings),
+            icon: Icon(Ionicons.settings_outline),
             label: 'Réglages',
           ),
         ],

@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:ionicons/ionicons.dart';
 
-import 'package:morpheus/providers/user_provider.dart';
+import '../../providers/user_provider.dart';
 
 class SettingsProfileScreen extends StatefulWidget {
   const SettingsProfileScreen({Key? key}) : super(key: key);
