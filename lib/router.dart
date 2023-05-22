@@ -111,7 +111,7 @@ final GoRouter router = GoRouter(
               parentNavigatorKey: _rootNavigatorKey,
               name: 'settingsdata',
               path: 'data',
-              builder: (context, state) => const SettingsDataScreen(),
+              builder: (context, state) => const SleepDataPage(),
             ),
             GoRoute(
               parentNavigatorKey: _rootNavigatorKey,

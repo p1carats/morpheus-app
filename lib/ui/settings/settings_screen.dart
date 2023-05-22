@@ -132,7 +132,7 @@ class _SettingsMainScreenState extends State<SettingsMainScreen> {
             leading: const Icon(Ionicons.medical_outline),
             title: const Text('Gestion des données'),
             trailing: const Icon(Ionicons.chevron_forward_outline),
-            onTap: () => context.pushNamed('data'),
+            onTap: () => context.pushNamed('settingsdata'),
           ),
           ListTile(
             leading: const Icon(Ionicons.color_palette_outline),
