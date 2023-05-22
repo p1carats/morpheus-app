@@ -368,25 +368,77 @@ class _DreamAddScreenLucidityTabState extends State<DreamAddScreenLucidityTab>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SwitchListTile(
-            title: const Text('Rêve lucide'),
-            value: _isLucid,
-            onChanged: (bool value) {
-              setState(
-                () => _isLucid = value,
-              );
-              widget.onChanged('isLucid', _isLucid);
-            },
+          SizedBox(
+            height: 100, // set a fixed height for the ListTile
+            child: ListTile(
+              title: const Row(
+                children: [
+                  Text('Rêve lucide'),
+                  SizedBox(width: 10),
+                  Tooltip(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 6.0, vertical: 6.0),
+                    margin:
+                        EdgeInsets.symmetric(horizontal: 30.0, vertical: 6.0),
+                    preferBelow: true,
+                    richMessage: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: 'Un rêve lucide est un rêve dans lequel le '
+                              'rêveur est conscient qu’il rêve.',
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      ],
+                    ),
+                    triggerMode: TooltipTriggerMode.tap,
+                    child: Icon(Icons.help_outline),
+                  ),
+                ],
+              ),
+              trailing: Switch(
+                value: _isLucid,
+                onChanged: (bool value) {
+                  setState(() => _isLucid = value);
+                  widget.onChanged('isControllable', _isLucid);
+                },
+              ),
+            ),
           ),
-          SwitchListTile(
-            title: const Text('Rêve contrôlable'),
-            value: _isControllable,
-            onChanged: (bool value) {
-              setState(
-                () => _isControllable = value,
-              );
-              widget.onChanged('isControllable', _isControllable);
-            },
+          SizedBox(
+            height: 100, // set a fixed height for the ListTile
+            child: ListTile(
+              title: const Row(
+                children: [
+                  Text('Rêve contrôlable'),
+                  SizedBox(width: 10),
+                  Tooltip(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 6.0, vertical: 6.0),
+                    margin:
+                        EdgeInsets.symmetric(horizontal: 30.0, vertical: 6.0),
+                    preferBelow: true,
+                    richMessage: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: 'Un rêve contrôlable est un rêve dans lequel '
+                              'le rêveur peut contrôler ses actions.',
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      ],
+                    ),
+                    triggerMode: TooltipTriggerMode.tap,
+                    child: Icon(Icons.help_outline),
+                  ),
+                ],
+              ),
+              trailing: Switch(
+                value: _isControllable,
+                onChanged: (bool value) {
+                  setState(() => _isControllable = value);
+                  widget.onChanged('isControllable', _isControllable);
+                },
+              ),
+            ),
           ),
         ],
       ),

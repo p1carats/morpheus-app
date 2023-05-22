@@ -27,9 +27,9 @@ class _HomeScreenState extends State<HomeScreen> {
               Card(
                 child: Container(
                   padding: const EdgeInsets.all(10),
-                  child: Column(
+                  child: const Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const <Widget>[
+                    children: <Widget>[
                       Text(
                         'Ma dernière nuit de sommeil',
                         style: TextStyle(
@@ -41,6 +41,23 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
               ),
+              Card(
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  side: BorderSide(
+                    color: Theme.of(context).colorScheme.outline,
+                  ),
+                  borderRadius: const BorderRadius.all(Radius.circular(12)),
+                ),
+                child: const SizedBox(
+                  width: 400,
+                  height: 200,
+                  child: Center(
+                    child: Text(
+                        'Un rêve lucide est un rêve dans lequel le rêveur est conscient qu’il est en train de rêver. Il peut alors prendre le contrôle de son rêve et faire ce qu’il veut.'),
+                  ),
+                ),
+              )
             ]),
           ),
         ],
