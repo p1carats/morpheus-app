@@ -15,11 +15,36 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Accueil'),
+      body: CustomScrollView(
+        slivers: <Widget>[
+          SliverAppBar.large(
+            title: Text('Bonjour ${userProvider.user!.name} !'),
+          ),
+          SliverList(
+            delegate: SliverChildListDelegate([
+              Card(
+                child: Container(
+                  padding: const EdgeInsets.all(10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const <Widget>[
+                      Text(
+                        'Ma dernière nuit de sommeil',
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(height: 10),
+                      Text('Un résumé...'),
+                    ],
+                  ),
+                ),
+              ),
+            ]),
+          ),
+        ],
       ),
-      body: const Placeholder(),
     );
   }
 }

@@ -2,10 +2,9 @@ import 'package:health/health.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import '../models/sleep_model.dart';
-
-class HealthService {
-  final HealthFactory health = HealthFactory(useHealthConnectIfAvailable: true);
+class SleepService {
+  final HealthFactory health =
+      HealthFactory(useHealthConnectIfAvailable: false);
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   // Health data types that we want to fetch
