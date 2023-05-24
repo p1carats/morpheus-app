@@ -54,7 +54,7 @@ class _SleepMainScreenState extends State<SleepMainScreen> {
                       'Vous n\'avez pas autorisé l\'accès à vos données de sommeil. Elles ne sont donc pas disponibles dans l\'application pour le moment.',
                       textAlign: TextAlign.center,
                     ),
-                    const SizedBox(height: 15),
+                    const SizedBox(height: 10),
                     ElevatedButton(
                       onPressed: () => context.pushNamed('settingsdata'),
                       child: const Text('Accéder aux paramètres'),

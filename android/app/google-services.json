@@ -31,10 +31,10 @@
               "client_type": 3
             },
             {
-              "client_id": "166357141239-2po871sp1mmtupdiflnfgfmm25irr3od.apps.googleusercontent.com",
+              "client_id": "166357141239-41rdnojvqm7l6r84fb7i9qjmv28tophi.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.example.morpheus"
+                "bundle_id": "com.uphoria.morpheus"
               }
             }
           ]
