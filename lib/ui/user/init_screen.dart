@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import "package:flutter/services.dart";
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
@@ -17,6 +17,7 @@ class UserInitScreen extends StatefulWidget {
 
 class _UserInitScreenState extends State<UserInitScreen> {
   final _formKey = GlobalKey<FormState>();
+  bool _isLoading = false;
   File? _image;
   int? _desiredSleepDuration;
 
@@ -24,6 +25,7 @@ class _UserInitScreenState extends State<UserInitScreen> {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
+      setState(() => _isLoading = true);
       try {
         if (_image != null) {
           await userProvider.updateProfilePicture(
@@ -33,25 +35,38 @@ class _UserInitScreenState extends State<UserInitScreen> {
           await userProvider.updateDesiredSleepDuration(
               userProvider.user!.uid, _desiredSleepDuration!);
         }
-        if (context.mounted) context.goNamed('settings');
-      } catch (error) {
+        if (context.mounted) context.pushNamed('data');
+      } catch (err) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(error.toString()),
+            content: const Text(
+                'Une erreur s\'est produite lors du traitement de la requête. Merci de réessayer.'),
             backgroundColor: Theme.of(context).colorScheme.error,
           ),
         );
+      } finally {
+        setState(() => _isLoading = false);
       }
     }
   }
 
   Future<void> _selectImage() async {
-    final pickedFile =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      setState(() {
-        _image = File(pickedFile.path);
-      });
+    try {
+      final pickedFile =
+          await ImagePicker().pickImage(source: ImageSource.gallery);
+      if (pickedFile != null && mounted) {
+        setState(() {
+          _image = File(pickedFile.path);
+        });
+      }
+    } catch (err) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text(
+              'Une erreur s\'est produite lors du chargement de votre image. Merci de réessayer.'),
+          backgroundColor: Theme.of(context).colorScheme.error,
+        ),
+      );
     }
   }
 
@@ -89,7 +104,7 @@ class _UserInitScreenState extends State<UserInitScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        //title: const Text('Mon profil'),
+        title: const Text('Mon profil'),
         actions: [
           TextButton.icon(
             icon: const Icon(Ionicons.help_outline),
@@ -112,8 +127,11 @@ class _UserInitScreenState extends State<UserInitScreen> {
                 style: Theme.of(context).textTheme.titleLarge,
               ),
               const SizedBox(height: 20.0),
-              const Text(
-                  'Suivez vos données de santé et notez vos rêves avec notre appli de malade mental. Créez votre profil sans plus attendre !'),
+              Text(
+                'Découvrez l\'expérience unique de suivi du sommeil avec Morpheus pour améliorer vos nuits et analyser vos rêves. Créez votre profil sans plus attendre !',
+                style: Theme.of(context).textTheme.bodyMedium,
+                textAlign: TextAlign.center,
+              ),
               const SizedBox(height: 20.0),
               Center(
                 child: Row(
@@ -155,8 +173,12 @@ class _UserInitScreenState extends State<UserInitScreen> {
                   FilteringTextInputFormatter.digitsOnly
                 ],
                 validator: (value) {
-                  if (value == null || value.isEmpty) {
+                  if (value == null ||
+                      value.isEmpty ||
+                      int.tryParse(value) == null) {
                     return 'Merci d\'entrer une valeur valide !';
+                  } else if (int.parse(value) < 1 || int.parse(value) > 24) {
+                    return 'Le nombre d\'heures de sommeil doit être compris entre 1 et 24.';
                   } else {
                     return null;
                   }
@@ -168,17 +190,24 @@ class _UserInitScreenState extends State<UserInitScreen> {
                 },
               ),
               const SizedBox(height: 20),
-              const Text(
-                  'Notez que la modification de cette valeur, tout comme le non respect de celle-ci n\'est pas recommandée par défaut. Ne la modifiez qu\'en connaissance de cause !'),
+              Text(
+                'Notez que la modification de cette valeur en-dessous de la valeur recommandée est pas fortement déconseillée. Une durée de sommeil insuffisante peut avoir des conséquences néfastes sur votre bien-être général.',
+                style: Theme.of(context).textTheme.bodySmall,
+                //textAlign: TextAlign.center,
+              ),
               const SizedBox(height: 20.0),
-              ElevatedButton(
-                onPressed: () => _submit(),
-                child: const Text('Créer mon profil'),
-              ),
-              TextButton(
-                onPressed: () => context.go('/'),
-                child: const Text('Passer cette étape'),
-              ),
+              _isLoading
+                  ? const CircularProgressIndicator()
+                  : ElevatedButton(
+                      onPressed: () => _submit(),
+                      child: const Text('Créer mon profil'),
+                    ),
+              _isLoading
+                  ? Container()
+                  : TextButton(
+                      onPressed: () => context.go('/'),
+                      child: const Text('Passer cette étape'),
+                    ),
             ],
           ),
         ),

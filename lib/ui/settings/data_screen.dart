@@ -135,10 +135,8 @@ class _SleepDataPageState extends State<SleepDataPage> {
               ),
               const SizedBox(height: 10.0),
               const Text(
-                  'Pour vous proposer des analyses de merde, Morpheus a besoin de vos données de sommeil.\nElles ne sont pas stockées sur nos serveurs, et sont uniquement utilisées pour vous proposer des analyses personnalisées.\nVous pouvez révoquer l\'accès à vos données à tout moment.'),
-              if (Provider.of<SleepProvider>(context).checkIfUserIsAuthorized()
-                      is Future<bool> ==
-                  false) ...[
+                  'Afin de vous proposer des statistiques personnalisées, Morpheus a besoin d\'accéder à vos données de sommeil.\nElles ne sont pas stockées sur nos serveurs, et sont uniquement utilisées pour vous proposer des analyses adaptées à votre profil.\nVous pouvez révoquer l\'accès à vos données à tout moment.'),
+              if (true == false) ...[
                 const SizedBox(height: 10.0),
                 // checkbox
                 ElevatedButton(

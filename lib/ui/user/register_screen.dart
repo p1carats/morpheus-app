@@ -16,37 +16,57 @@ class UserRegisterScreen extends StatefulWidget {
 
 class _UserRegisterScreenState extends State<UserRegisterScreen> {
   final _formKey = GlobalKey<FormState>();
+  final FocusNode _passwordFocusNode = FocusNode();
+  final FocusNode _confirmPasswordFocusNode = FocusNode();
+  bool _isLoading = false;
+  bool _obscureConfirmPassword = true;
   String _name = '';
   String _email = '';
   String _password = '';
-  String _confirmPassword = '';
+  String? _checkPassword;
   DateTime _birthDate = DateTime.now();
   String _gender = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _email = widget.email ?? '';
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _passwordFocusNode.requestFocus();
+    });
+  }
+
+  @override
+  void dispose() {
+    _passwordFocusNode.dispose();
+    _confirmPasswordFocusNode.dispose();
+    super.dispose();
+  }
 
   void _submit() async {
     _email = widget.email ?? '';
     if (_formKey.currentState!.validate()) {
-      if (_password != _confirmPassword) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: const Text('Les mots de passe ne correspondent pas !'),
-            backgroundColor: Theme.of(context).colorScheme.error,
-          ),
-        );
-        return;
-      }
       _formKey.currentState!.save();
+      setState(() {
+        _isLoading = true;
+      });
       try {
         await Provider.of<UserProvider>(context, listen: false)
             .signUp(_name, _email, _password, _gender, _birthDate);
         if (context.mounted) context.goNamed('init');
-      } catch (error) {
+      } catch (err) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(error.toString()),
+            content: Text(err.toString()),
             backgroundColor: Theme.of(context).colorScheme.error,
           ),
         );
+      } finally {
+        setState(() {
+          _password = '';
+          _checkPassword = '';
+          _isLoading = false;
+        });
       }
     }
   }
@@ -104,9 +124,15 @@ class _UserRegisterScreenState extends State<UserRegisterScreen> {
                   onSaved: (value) {
                     _name = value!;
                   },
+                  textInputAction: TextInputAction.next,
+                  onFieldSubmitted: (_) {
+                    FocusScope.of(context).requestFocus(_passwordFocusNode);
+                  },
+                  autofillHints: const [AutofillHints.givenName],
                 ),
                 const SizedBox(height: 20),
                 TextFormField(
+                  focusNode: _passwordFocusNode,
                   obscureText: true,
                   decoration: const InputDecoration(
                     labelText: 'Mot de passe',
@@ -114,40 +140,61 @@ class _UserRegisterScreenState extends State<UserRegisterScreen> {
                     prefixIcon: Icon(Ionicons.lock_closed_outline),
                   ),
                   validator: (value) {
-                    if (value!.isEmpty ||
-                        value.length < 7 ||
-                        !RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(value) ||
-                        !RegExp(r'\d').hasMatch(value)) {
-                      return 'Le mot de passe doit contenir au moins 7 caractères, et contenir au moins un chiffre et un symbole.';
+                    if (value!.isEmpty) {
+                      return 'Merci d\'entrer un mot de passe';
+                    } else if (value.length < 7) {
+                      return 'Le mot de passe doit contenir au moins 7 caractères';
+                    } else if (!RegExp(r'\d').hasMatch(value)) {
+                      return 'Le mot de passe doit contenir au moins un chiffre';
+                    } else if (!RegExp(r'[!@#$%^&*(),.?":{}|<>]')
+                        .hasMatch(value)) {
+                      return 'Le mot de passe doit contenir au moins un caractère spécial';
                     } else {
+                      _checkPassword = value;
                       return null;
                     }
                   },
                   onSaved: (value) {
                     _password = value!;
+                    _checkPassword = value;
                   },
+                  textInputAction: TextInputAction.next,
+                  onFieldSubmitted: (_) {
+                    FocusScope.of(context)
+                        .requestFocus(_confirmPasswordFocusNode);
+                  },
+                  autofillHints: const [AutofillHints.newPassword],
                 ),
                 const SizedBox(height: 20),
                 TextFormField(
-                  obscureText: true,
-                  decoration: const InputDecoration(
+                  focusNode: _confirmPasswordFocusNode,
+                  obscureText: _obscureConfirmPassword,
+                  decoration: InputDecoration(
                     labelText: 'Confirmer le mot de passe',
-                    border: OutlineInputBorder(),
-                    prefixIcon: Icon(Ionicons.lock_closed_outline),
+                    border: const OutlineInputBorder(),
+                    prefixIcon: const Icon(Ionicons.lock_closed_outline),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _obscureConfirmPassword
+                            ? Ionicons.eye_off_outline
+                            : Ionicons.eye_outline,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _obscureConfirmPassword = !_obscureConfirmPassword;
+                        });
+                      },
+                    ),
                   ),
                   validator: (value) {
-                    if (value!.isEmpty ||
-                        value.length < 7 ||
-                        !RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(value) ||
-                        !RegExp(r'\d').hasMatch(value)) {
-                      return 'Le mot de passe doit contenir au moins 7 caractères, et contenir au moins un chiffre et un symbole.';
+                    if (value!.isEmpty || value != _checkPassword) {
+                      return 'Les mots de passe ne correspondent pas !';
                     } else {
                       return null;
                     }
                   },
-                  onSaved: (value) {
-                    _confirmPassword = value!;
-                  },
+                  onSaved: (value) {},
+                  autofillHints: const [AutofillHints.newPassword],
                 ),
                 const SizedBox(height: 20),
                 TextFormField(
@@ -190,17 +237,19 @@ class _UserRegisterScreenState extends State<UserRegisterScreen> {
                   },
                 ),
                 const SizedBox(height: 30),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 50, vertical: 10),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                  ),
-                  onPressed: _submit,
-                  child: const Text('Inscription'),
-                ),
+                _isLoading
+                    ? const CircularProgressIndicator()
+                    : ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 50, vertical: 10),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                        ),
+                        onPressed: _submit,
+                        child: const Text('Inscription'),
+                      ),
                 const SizedBox(height: 10),
                 TextButton.icon(
                   icon: const Icon(Ionicons.help_buoy_outline),

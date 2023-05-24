@@ -22,6 +22,7 @@ import 'ui/user/auth_screen.dart';
 import 'ui/user/login_screen.dart';
 import 'ui/user/register_screen.dart';
 import 'ui/user/init_screen.dart';
+import 'ui/wizard/data_screen.dart';
 import 'ui/wizard/welcome_screen.dart';
 import 'ui/error_screen.dart';
 
@@ -162,6 +163,12 @@ final GoRouter router = GoRouter(
       name: 'init',
       path: '/init',
       builder: (context, state) => const UserInitScreen(),
+    ),
+    GoRoute(
+      parentNavigatorKey: _rootNavigatorKey,
+      name: 'data',
+      path: '/data',
+      builder: (context, state) => const WizardDataScreen(),
     ),
     GoRoute(
       parentNavigatorKey: _rootNavigatorKey,

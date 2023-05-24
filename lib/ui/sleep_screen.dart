@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:ionicons/ionicons.dart';
-
-import '../providers/sleep_provider.dart';
+import 'package:morpheus/providers/sleep_provider.dart';
+import 'package:provider/provider.dart';
 
 class SleepMainScreen extends StatefulWidget {
   const SleepMainScreen({Key? key}) : super(key: key);
 
   @override
-  _SleepMainScreenState createState() => _SleepMainScreenState();
+  State<SleepMainScreen> createState() => _SleepMainScreenState();
 }
 
 class _SleepMainScreenState extends State<SleepMainScreen> {
@@ -25,12 +22,9 @@ class _SleepMainScreenState extends State<SleepMainScreen> {
   }
 
   void _updateWeekDays() {
-    _weekDays = List<DateTime>.generate(7,
-        (i) => DateTime.now().subtract(Duration(days: i + _selectedWeek * 7)));
-
-    // Fetch sleep data for current week
-    Provider.of<SleepProvider>(context, listen: false)
-        .fetchSleepDataForWeek(_weekDays.first);
+    _weekDays = List<DateTime>.generate(
+        7, (i) => DateTime.now().add(Duration(days: i + _selectedWeek * 7)));
+    //SleepProvider().fetchSleepData();
   }
 
   @override
@@ -40,30 +34,15 @@ class _SleepMainScreenState extends State<SleepMainScreen> {
         title: const Text('Sommeil'),
       ),
       body: Consumer<SleepProvider>(
-        builder: (context, provider, child) {
-          // Fetch sleep data for selected day
-          if (provider.sleepData.isEmpty ||
-              provider.checkIfUserIsAuthorized() as bool == false) {
-            return Center(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text(
-                      'Vous n\'avez pas autorisé l\'accès à vos données de sommeil. Elles ne sont donc pas disponibles dans l\'application pour le moment.',
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 10),
-                    ElevatedButton(
-                      onPressed: () => context.pushNamed('settingsdata'),
-                      child: const Text('Accéder aux paramètres'),
-                    ),
-                  ],
-                ),
-              ),
-            );
+        builder: (context, sleepProvider, _) {
+          final sleepData = sleepProvider.sleepData;
+
+          // Fetch sleep data for at least today if not available
+          if (sleepData.isEmpty) {
+            sleepProvider.fetchSleepData();
+            return const Center(child: CircularProgressIndicator());
           }
+
           return Column(
             children: <Widget>[
               Padding(
@@ -78,6 +57,7 @@ class _SleepMainScreenState extends State<SleepMainScreen> {
                           _selectedWeek--;
                           _selectedDay = 0;
                           _updateWeekDays();
+                          sleepProvider.fetchSleepDataForWeek(_weekDays.first);
                         });
                       },
                     ),
@@ -91,6 +71,7 @@ class _SleepMainScreenState extends State<SleepMainScreen> {
                           _selectedWeek++;
                           _selectedDay = 0;
                           _updateWeekDays();
+                          sleepProvider.fetchSleepDataForWeek(_weekDays.first);
                         });
                       },
                     ),
@@ -106,7 +87,7 @@ class _SleepMainScreenState extends State<SleepMainScreen> {
                       onTap: () {
                         setState(() {
                           _selectedDay = index;
-                          provider
+                          sleepProvider
                               .fetchSleepDataForDay(_weekDays[_selectedDay]);
                         });
                       },
@@ -145,9 +126,13 @@ class _SleepMainScreenState extends State<SleepMainScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      // Here you may need to adapt according to your sleepData structure and value extraction
+                      // if _selectedDay > DateTime.now().day, then show 0
+                      if (_selectedDay > DateTime.now().day)
+                        const Text(
+                          'Heures de sommeil : 0',
+                        ),
                       Text(
-                        '${provider.sleepData[_selectedDay].value}h de sommeil',
+                        'Heures de sommeil : ${sleepData[_selectedDay].value}',
                       ),
                       const SizedBox(height: 20),
                       Text(
