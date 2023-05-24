@@ -105,7 +105,7 @@ class _SleepTabState extends State<SleepTab> {
     final desiredSleepDuration = userProvider.user!.desiredSleepDuration;
 
     final currentDate = DateTime.now();
-    int age = currentDate.month < birthDate!.month ||
+    int age = currentDate.month < birthDate.month ||
             (currentDate.month == birthDate.month &&
                 currentDate.day < birthDate.day)
         ? currentDate.year - birthDate.year - 1

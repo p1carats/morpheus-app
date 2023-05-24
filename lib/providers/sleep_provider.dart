@@ -125,10 +125,4 @@ class SleepProvider with ChangeNotifier {
       print('Error fetching sleep data: $error');
     }
   }
-
-  //@override
-  //void dispose() {
-  //  _healthService.revokeAccess();
-  //  super.dispose();
-  //}
 }

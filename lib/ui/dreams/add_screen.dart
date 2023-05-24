@@ -451,12 +451,12 @@ class _DreamAddScreenLucidityTabState extends State<DreamAddScreenLucidityTab>
             ),
             const SizedBox(height: 8),
             const Text(
-              'Les rêves lucides consistent à avoir conscience de rêver pendant le rêve. On estime que 55% des adultes font au moins un rêve lucide au cours de leur vie, et que près 23% en feraient plusieurs chaque mois.',
+              'Les rêves lucides consistent à avoir conscience de rêver pendant le rêve.',
               textAlign: TextAlign.justify,
             ),
             const SizedBox(height: 8),
             const Text(
-              'Dans un tiers des cas, les rêveurs lucides seraient aussi capables d’exercer une forme de contrôle sur leur rêve, par exemple en changeant de lieu ou en choisissant délibérément de se réveiller : on parle alors de rêve contrôlable.',
+              'Certains rêveurs lucides sont aussi capables d’exercer une forme de contrôle sur leur rêve, par exemple en changeant de lieu ou en choisissant délibérément de se réveiller : on parle alors de rêve contrôlable.',
               textAlign: TextAlign.justify,
             ),
             const SizedBox(height: 8),
@@ -510,31 +510,11 @@ class _DreamAddScreenLucidityTabState extends State<DreamAddScreenLucidityTab>
                 ),
               ],
             ),
-            value: _isLucid,
+            value: _isControllable,
             onChanged: (bool value) {
               setState(() => _isControllable = value);
               widget.onChanged('isControllable', _isControllable);
             },
-          ),
-          const SizedBox(height: 20),
-          const Card(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(10)),
-            ),
-            child: Padding(
-              padding: EdgeInsets.all(5),
-              child: ListTile(
-                //leading: Icon(Ionicons.information_circle_outline),
-                title: Text(
-                  'Comment favoriser les rêves lucides ?',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                subtitle: Text(
-                  'Jsp c\'est le job de Théo ça',
-                  style: TextStyle(fontSize: 14),
-                ),
-              ),
-            ),
           ),
         ],
       ),

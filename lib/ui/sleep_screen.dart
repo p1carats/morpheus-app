@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:morpheus/providers/sleep_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:health/health.dart';
+import 'package:intl/intl.dart';
+import 'package:ionicons/ionicons.dart';
+
+import 'package:morpheus/providers/sleep_provider.dart';
 
 class SleepMainScreen extends StatefulWidget {
   const SleepMainScreen({Key? key}) : super(key: key);
@@ -24,7 +27,6 @@ class _SleepMainScreenState extends State<SleepMainScreen> {
   void _updateWeekDays() {
     _weekDays = List<DateTime>.generate(
         7, (i) => DateTime.now().add(Duration(days: i + _selectedWeek * 7)));
-    //SleepProvider().fetchSleepData();
   }
 
   @override
@@ -36,6 +38,12 @@ class _SleepMainScreenState extends State<SleepMainScreen> {
       body: Consumer<SleepProvider>(
         builder: (context, provider, child) {
           final sleepData = provider.sleepData;
+
+          int totalMinutes =
+              double.parse(sleepData[_selectedDay].value.toString()).round();
+          int hours = totalMinutes ~/ 60;
+          int minutes = totalMinutes % 60;
+          String sleepDuration = '$hours h $minutes';
 
           // Fetch sleep data for at least today if not available
           if (sleepData.isEmpty) {
@@ -95,44 +103,73 @@ class _SleepMainScreenState extends State<SleepMainScreen> {
                           provider.fetchSleepDataForDay(dateTime);
                         });
                       },
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          CircleAvatar(
-                            radius: 25,
-                            backgroundColor: _selectedDay == index
-                                ? Theme.of(context).colorScheme.onPrimary
-                                : Colors.transparent,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  DateFormat.E('fr_FR')
-                                      .format(dateTime)
-                                      .toLowerCase(),
-                                  style: const TextStyle(fontSize: 9),
-                                ),
-                                Text(
-                                  DateFormat.d().format(dateTime),
-                                  style: const TextStyle(fontSize: 18),
-                                ),
-                              ],
+                      child: Card(
+                        color: _selectedDay < sleepData.length &&
+                                sleepData[_selectedDay] != null
+                            ? Theme.of(context).colorScheme.surface
+                            : Colors.grey[200],
+                        elevation: 5,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            CircleAvatar(
+                              radius: 25,
+                              backgroundColor: _selectedDay == index
+                                  ? Theme.of(context).colorScheme.onPrimary
+                                  : Colors.transparent,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    DateFormat.E('fr_FR')
+                                        .format(dateTime)
+                                        .toLowerCase(),
+                                    style: const TextStyle(fontSize: 9),
+                                  ),
+                                  Text(
+                                    DateFormat.d().format(dateTime),
+                                    style: const TextStyle(fontSize: 18),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   );
                 }).toList(),
               ),
+              // Sleep data for selected day...
               Expanded(
                 child: Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
-                        'Heures de sommeil : ${sleepData[_selectedDay].value}',
-                      ),
+                      if (_selectedDay < sleepData.length &&
+                          sleepData[_selectedDay] != null) ...[
+                        Text(
+                          'Heures de sommeil : $sleepDuration',
+                        ),
+                        // Check if sleep duration is more than 7 hours...
+                        if (totalMinutes >= 7 * 60)
+                          const Text(
+                            'Vous avez dormi plus de 7 heures. Bravo !',
+                            style: TextStyle(
+                              color: Colors.green,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          )
+                        else
+                          const Text(
+                            'Vous avez dormi moins de 7 heures. Essayez de dormir un peu plus.',
+                            style: TextStyle(
+                              color: Colors.red,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                      ] else
+                        const Text('No data for this day'),
                       const SizedBox(height: 20),
                     ],
                   ),
