@@ -3,8 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ionicons/ionicons.dart';
 
-import '../../providers/app_provider.dart';
-import '../../providers/user_provider.dart';
 import '../../providers/sleep_provider.dart';
 
 class WizardDataScreen extends StatefulWidget {
@@ -17,6 +15,7 @@ class WizardDataScreen extends StatefulWidget {
 class _WizardDataScreenState extends State<WizardDataScreen> {
   @override
   Widget build(BuildContext context) {
+    final sleepProvider = Provider.of<SleepProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -44,7 +43,10 @@ class _WizardDataScreenState extends State<WizardDataScreen> {
                     borderRadius: BorderRadius.circular(20),
                   ),
                 ),
-                onPressed: () {},
+                onPressed: () async {
+                  await sleepProvider.authorize();
+                  if (context.mounted) context.goNamed('home');
+                },
                 child: const Text('Récupérer mes données'),
               ),
               //const SizedBox(height: 15),

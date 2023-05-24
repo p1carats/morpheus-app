@@ -14,6 +14,7 @@ class SettingsEmailScreen extends StatefulWidget {
 
 class _SettingsEmailScreenState extends State<SettingsEmailScreen> {
   final _formKey = GlobalKey<FormState>();
+  bool _isLoading = false;
   String _email = '';
   String _password = '';
 
@@ -21,6 +22,7 @@ class _SettingsEmailScreenState extends State<SettingsEmailScreen> {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
+      setState(() => _isLoading = true);
       try {
         await Provider.of<UserProvider>(context, listen: false)
             .updateEmail(userProvider.user!.uid, _email, _password);
@@ -32,6 +34,8 @@ class _SettingsEmailScreenState extends State<SettingsEmailScreen> {
             backgroundColor: Theme.of(context).colorScheme.error,
           ),
         );
+      } finally {
+        setState(() => _isLoading = false);
       }
     }
   }
@@ -102,17 +106,19 @@ class _SettingsEmailScreenState extends State<SettingsEmailScreen> {
                 },
               ),
               const SizedBox(height: 20),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 50, vertical: 10),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                ),
-                onPressed: () => _submit(),
-                child: const Text('Modifier mon adresse mail'),
-              ),
+              _isLoading
+                  ? const CircularProgressIndicator()
+                  : ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 50, vertical: 10),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
+                      onPressed: () => _submit(),
+                      child: const Text('Modifier mon adresse mail'),
+                    ),
             ],
           ),
         ),

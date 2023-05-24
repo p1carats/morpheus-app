@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:health/health.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../services/sleep_service.dart';
 
@@ -7,12 +8,37 @@ class SleepProvider with ChangeNotifier {
   final SleepService _healthService = SleepService();
   List<HealthDataPoint> _sleepData = [];
   List<HealthDataPoint> get sleepData => _sleepData;
+
+  Future<bool> isAuthorized() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('isSleepAuthorized') ?? false;
+  }
+
+  Future<bool> authorize() async {
+    bool? res = await _healthService.authorize();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (res == true) {
+      await prefs.setBool('isSleepAuthorized', true);
+    } else {
+      await prefs.setBool('isSleepAuthorized', false);
+    }
+    return prefs.getBool('isSleepAuthorized') ?? false;
+  }
+
+  // revoke access
+  Future<void> revokeAuthorization() async {
+    await _healthService.revokeAccess();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isSleepAuthorized', false);
+  }
+
   Future<void> fetchSleepData() async {
-    bool authorized = await _healthService.authorize();
+    // Handle authentication failure
+    bool authorized = await isAuthorized();
     if (!authorized) {
-      // Handle authorization failure
       return;
     }
+
     final now = DateTime.now();
     final start = DateTime(now.year, now.month - 1, now.day);
     final end = DateTime(now.year, now.month, now.day);
@@ -32,9 +58,9 @@ class SleepProvider with ChangeNotifier {
 
   // Fetch sleep data for a specific day
   Future<void> fetchSleepDataForDay(DateTime day) async {
-    bool authorized = await _healthService.authorize();
+    // Handle authentication failure
+    bool authorized = await isAuthorized();
     if (!authorized) {
-      // Handle authorization failure
       return;
     }
 
@@ -58,9 +84,9 @@ class SleepProvider with ChangeNotifier {
 
   // Fetch sleep data for a specific week
   Future<void> fetchSleepDataForWeek(DateTime day) async {
-    bool authorized = await _healthService.authorize();
+    // Handle authentication failure
+    bool authorized = await isAuthorized();
     if (!authorized) {
-      // Handle authorization failure
       return;
     }
 
@@ -82,9 +108,9 @@ class SleepProvider with ChangeNotifier {
     }
   }
 
-  @override
-  void dispose() {
-    _healthService.revokeAccess();
-    super.dispose();
-  }
+  //@override
+  //void dispose() {
+  //  _healthService.revokeAccess();
+  //  super.dispose();
+  //}
 }

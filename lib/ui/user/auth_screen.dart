@@ -48,6 +48,11 @@ class _UserAuthScreenState extends State<UserAuthScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
+                Text(
+                  'Merci d\'entrer votre adresse mail pour continuer. Votre compte Morpheus vous permettra de sauvegarder votre profil en ligne et de retrouver vos rêves sur tous vos appareils.',
+                  style: Theme.of(context).textTheme.bodyMedium,
+                  textAlign: TextAlign.center,
+                ),
                 const SizedBox(height: 30),
                 TextFormField(
                   decoration: const InputDecoration(

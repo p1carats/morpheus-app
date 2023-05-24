@@ -16,12 +16,14 @@ class SleepDataPage extends StatefulWidget {
 
 class _SleepDataPageState extends State<SleepDataPage> {
   final _formKey = GlobalKey<FormState>();
+  bool _isLoading = false;
   int? _desiredSleepDuration;
 
   void _submit() async {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
+      setState(() => _isLoading = true);
       try {
         await userProvider.updateDesiredSleepDuration(
             userProvider.user!.uid, _desiredSleepDuration!);
@@ -33,12 +35,15 @@ class _SleepDataPageState extends State<SleepDataPage> {
             backgroundColor: Theme.of(context).colorScheme.error,
           ),
         );
+      } finally {
+        setState(() => _isLoading = false);
       }
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final sleepProvider = Provider.of<SleepProvider>(context);
     final birthDate =
         Provider.of<UserProvider>(context, listen: false).user?.birthDate;
     final desiredSleepDuration =
@@ -119,10 +124,12 @@ class _SleepDataPageState extends State<SleepDataPage> {
               const Text(
                   'Notez que la modification de cette valeur, tout comme le non respect de celle-ci n\'est pas recommandée par défaut. Ne la modifiez qu\'en connaissance de cause !'),
               const SizedBox(height: 20.0),
-              ElevatedButton(
-                onPressed: () => _submit(),
-                child: const Text('Mettre à jour'),
-              ),
+              _isLoading
+                  ? const CircularProgressIndicator()
+                  : ElevatedButton(
+                      onPressed: () => _submit(),
+                      child: const Text('Mettre à jour'),
+                    ),
               const SizedBox(height: 20.0),
               const Divider(),
               const SizedBox(height: 20.0),
@@ -136,20 +143,49 @@ class _SleepDataPageState extends State<SleepDataPage> {
               const SizedBox(height: 10.0),
               const Text(
                   'Afin de vous proposer des statistiques personnalisées, Morpheus a besoin d\'accéder à vos données de sommeil.\nElles ne sont pas stockées sur nos serveurs, et sont uniquement utilisées pour vous proposer des analyses adaptées à votre profil.\nVous pouvez révoquer l\'accès à vos données à tout moment.'),
-              if (true == false) ...[
-                const SizedBox(height: 10.0),
-                // checkbox
-                ElevatedButton(
-                  onPressed: () {},
-                  child: const Text('Révoquer l\'accès à mes données'),
-                ),
-              ] else ...[
-                const SizedBox(height: 10.0),
-                ElevatedButton(
-                  onPressed: () {},
-                  child: const Text('Autoriser l\'accès à mes données'),
-                ),
-              ],
+              FutureBuilder<bool>(
+                future: sleepProvider.isAuthorized(),
+                builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    // The Future is still running, return a loading indicator
+                    return const CircularProgressIndicator();
+                  } else if (snapshot.hasError) {
+                    // The Future completed with an error, return an error widget
+                    return Text('Error: ${snapshot.error}');
+                  } else {
+                    // The Future completed with a result, return the appropriate widgets
+                    if (snapshot.data == true) {
+                      return Column(
+                        children: [
+                          const SizedBox(height: 10.0),
+                          ElevatedButton(
+                            onPressed: () async {
+                              await sleepProvider.revokeAuthorization();
+                              if (context.mounted) context.pop();
+                            },
+                            child:
+                                const Text('Révoquer l\'accès à mes données'),
+                          ),
+                        ],
+                      );
+                    } else {
+                      return Column(
+                        children: [
+                          const SizedBox(height: 10.0),
+                          ElevatedButton(
+                            onPressed: () async {
+                              sleepProvider.authorize();
+                              if (context.mounted) context.pop();
+                            },
+                            child:
+                                const Text('Autoriser l\'accès à mes données'),
+                          ),
+                        ],
+                      );
+                    }
+                  }
+                },
+              )
             ],
           ),
         ),

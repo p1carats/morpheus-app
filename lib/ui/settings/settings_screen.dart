@@ -196,10 +196,22 @@ class _SettingsMainScreenState extends State<SettingsMainScreen> {
                           title: Text(themeTypeNames[themeType]!),
                           value: themeType,
                           groupValue: appProvider.themeType,
-                          onChanged: (ThemeType? value) {
+                          onChanged: (ThemeType? value) async {
                             if (value != null) {
                               appProvider.updateThemeType(value);
-                              Navigator.of(context).pop();
+                              await Future.delayed(
+                                  const Duration(milliseconds: 150));
+                              if (context.mounted) {
+                                Navigator.of(context).pop();
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                        'Thème ${themeTypeNames[value]!.toLowerCase()} appliqué !'),
+                                    backgroundColor:
+                                        Theme.of(context).colorScheme.primary,
+                                  ),
+                                );
+                              }
                             }
                           },
                         );
@@ -305,10 +317,11 @@ class _SettingsMainScreenState extends State<SettingsMainScreen> {
                               .deleteUser(passwordController.text);
                           if (context.mounted) context.goNamed('auth');
                         } catch (err) {
-                          Navigator.of(context).pop();
+                          context.pop();
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: Text(err.toString()),
+                              content: const Text(
+                                  'Une erreur est srvenue. Merci de vérifier votre mot de passe.'),
                               backgroundColor:
                                   Theme.of(context).colorScheme.error,
                             ),

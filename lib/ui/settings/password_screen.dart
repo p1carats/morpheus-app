@@ -14,6 +14,7 @@ class SettingsPasswordScreen extends StatefulWidget {
 
 class _SettingsPasswordScreenState extends State<SettingsPasswordScreen> {
   final _formKey = GlobalKey<FormState>();
+  bool _isLoading = false;
   String _oldPassword = '';
   String _newPassword = '';
   String _confirmPassword = '';
@@ -22,6 +23,7 @@ class _SettingsPasswordScreenState extends State<SettingsPasswordScreen> {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
+      setState(() => _isLoading = true);
       try {
         await userProvider.changePassword(_oldPassword, _newPassword);
         await userProvider.signOut();
@@ -33,6 +35,8 @@ class _SettingsPasswordScreenState extends State<SettingsPasswordScreen> {
             backgroundColor: Theme.of(context).colorScheme.error,
           ),
         );
+      } finally {
+        setState(() => _isLoading = false);
       }
     }
   }
@@ -118,17 +122,19 @@ class _SettingsPasswordScreenState extends State<SettingsPasswordScreen> {
               const Text(
                   'Par mesure de sécurité, vous serez déconnecté⸱e à l\'issue du changement de votre mot de passe.'),
               const SizedBox(height: 20),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 50, vertical: 10),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                ),
-                onPressed: () => _submit(),
-                child: const Text('Changer mon mot de passe'),
-              ),
+              _isLoading
+                  ? const CircularProgressIndicator()
+                  : ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 50, vertical: 10),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
+                      onPressed: () => _submit(),
+                      child: const Text('Changer mon mot de passe'),
+                    ),
             ],
           ),
         ),

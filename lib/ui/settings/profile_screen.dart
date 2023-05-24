@@ -16,6 +16,7 @@ class SettingsProfileScreen extends StatefulWidget {
 
 class _SettingsProfileScreenState extends State<SettingsProfileScreen> {
   final _formKey = GlobalKey<FormState>();
+  bool _isLoading = false;
   File? _image;
   String? _name;
 
@@ -23,6 +24,7 @@ class _SettingsProfileScreenState extends State<SettingsProfileScreen> {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
+      setState(() => _isLoading = true);
       try {
         if (_name != null) {
           await userProvider.updateDisplayName(userProvider.user!.uid, _name!);
@@ -39,6 +41,8 @@ class _SettingsProfileScreenState extends State<SettingsProfileScreen> {
             backgroundColor: Theme.of(context).colorScheme.error,
           ),
         );
+      } finally {
+        setState(() => _isLoading = false);
       }
     }
   }
@@ -114,17 +118,19 @@ class _SettingsProfileScreenState extends State<SettingsProfileScreen> {
                 onSaved: (value) => _name = value!,
               ),
               const SizedBox(height: 30),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 50, vertical: 10),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                ),
-                onPressed: () => _submit(),
-                child: const Text('Valider'),
-              ),
+              _isLoading
+                  ? const CircularProgressIndicator()
+                  : ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 50, vertical: 10),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
+                      onPressed: () => _submit(),
+                      child: const Text('Valider'),
+                    ),
             ],
           ),
         ),

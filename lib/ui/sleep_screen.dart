@@ -34,12 +34,12 @@ class _SleepMainScreenState extends State<SleepMainScreen> {
         title: const Text('Sommeil'),
       ),
       body: Consumer<SleepProvider>(
-        builder: (context, sleepProvider, _) {
-          final sleepData = sleepProvider.sleepData;
+        builder: (context, provider, child) {
+          final sleepData = provider.sleepData;
 
           // Fetch sleep data for at least today if not available
           if (sleepData.isEmpty) {
-            sleepProvider.fetchSleepData();
+            provider.fetchSleepData();
             return const Center(child: CircularProgressIndicator());
           }
 
@@ -57,7 +57,7 @@ class _SleepMainScreenState extends State<SleepMainScreen> {
                           _selectedWeek--;
                           _selectedDay = 0;
                           _updateWeekDays();
-                          sleepProvider.fetchSleepDataForWeek(_weekDays.first);
+                          provider.fetchSleepDataForWeek(_weekDays.first);
                         });
                       },
                     ),
@@ -71,7 +71,7 @@ class _SleepMainScreenState extends State<SleepMainScreen> {
                           _selectedWeek++;
                           _selectedDay = 0;
                           _updateWeekDays();
-                          sleepProvider.fetchSleepDataForWeek(_weekDays.first);
+                          provider.fetchSleepDataForWeek(_weekDays.first);
                         });
                       },
                     ),
@@ -87,7 +87,7 @@ class _SleepMainScreenState extends State<SleepMainScreen> {
                       onTap: () {
                         setState(() {
                           _selectedDay = index;
-                          sleepProvider
+                          provider
                               .fetchSleepDataForDay(_weekDays[_selectedDay]);
                         });
                       },
