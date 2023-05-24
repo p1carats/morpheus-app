@@ -20,7 +20,7 @@ class SleepService {
     await Permission.activityRecognition.request();
 
     // Check if we have permission
-    final permissions = types.map((e) => HealthDataAccess.READ_WRITE).toList();
+    final permissions = types.map((e) => HealthDataAccess.READ).toList();
     bool? hasPermissions =
         await health.hasPermissions(types, permissions: permissions);
     hasPermissions = false;
