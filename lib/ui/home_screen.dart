@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:ionicons/ionicons.dart';
 
 import '../providers/user_provider.dart';
+import '../providers/dream_provider.dart';
+import '../providers/sleep_provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -16,6 +18,10 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
+    final dreamProvider = Provider.of<DreamProvider>(context, listen: false);
+    final sleepProvider = Provider.of<SleepProvider>(context, listen: false);
+    //List of dreams
+    final dreams = dreamProvider.filteredDreams;
     return Scaffold(
       body: CustomScrollView(
         slivers: <Widget>[
@@ -39,35 +45,86 @@ class _HomeScreenState extends State<HomeScreen> {
                   padding: const EdgeInsets.all(10),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const <Widget>[
-                      Text(
+                    children: <Widget>[
+                      const Text(
                         'Ma dernière nuit de sommeil',
                         style: TextStyle(
                             fontSize: 18, fontWeight: FontWeight.bold),
                       ),
-                      SizedBox(height: 10),
-                      Text('Un résumé...'),
+                      const SizedBox(height: 10),
+                      //Display the sleep data of the last night
+                      Consumer<SleepProvider>(
+                        builder: (context, provider, child) {
+                          final sleepData = provider.sleepData;
+                          if (sleepData.isEmpty) {
+                            provider.fetchSleepData();
+                            return const Center(
+                                child: CircularProgressIndicator());
+                          }
+                          return Column(
+                            children: <Widget>[
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  const Text(
+                                    'Durée de sommeil',
+                                    style: TextStyle(fontSize: 16),
+                                  ),
+                                  provider.getHoursOfSleep() != null
+                                      ? Text(
+                                          '${provider.getHoursOfSleep()}h',
+                                          style: const TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold),
+                                        )
+                                      : const Text(
+                                          'Pas de données',
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                ],
+                              ),
+                              const SizedBox(height: 10),
+                            ],
+                          );
+                        },
+                      ),
                     ],
                   ),
                 ),
               ),
+              //Card with the number of dreams
               Card(
-                elevation: 0,
-                shape: RoundedRectangleBorder(
-                  side: BorderSide(
-                    color: Theme.of(context).colorScheme.outline,
+                child: Container(
+                  padding: const EdgeInsets.all(10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      const Row(
+                        children: [
+                          Text(
+                            'Mes rêves ',
+                            style: TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
+                          Icon(Ionicons.moon_outline, size: 20),
+                          SizedBox(height: 60),
+                        ],
+                      ),
+                      Text(
+                        'J\'ai fait ${dreams.length} rêves aujourd\'hui',
+                        style: const TextStyle(
+                          fontSize: 18,
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                    ],
                   ),
-                  borderRadius: const BorderRadius.all(Radius.circular(12)),
                 ),
-                child: const SizedBox(
-                  width: 400,
-                  height: 200,
-                  child: Center(
-                    child: Text(
-                        'Un rêve lucide est un rêve dans lequel le rêveur est conscient qu’il est en train de rêver. Il peut alors prendre le contrôle de son rêve et faire ce qu’il veut.'),
-                  ),
-                ),
-              )
+              ),
             ]),
           ),
         ],

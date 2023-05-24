@@ -88,6 +88,18 @@ class SleepProvider with ChangeNotifier {
     }
   }
 
+  // display the hours of sleep for the night between yesterday and today
+  String getHoursOfSleep() {
+    if (_sleepData.isEmpty) {
+      return '0';
+    }
+    double hours = 0;
+    for (var i = 0; i < 2; i++) {
+      hours += (double.parse(_sleepData[i].value.toString()) / 60).round();
+    }
+    return hours.toStringAsFixed(1);
+  }
+
   // Fetch sleep data for a specific week
   Future<void> fetchSleepDataForWeek(DateTime day) async {
     // Handle authentication failure

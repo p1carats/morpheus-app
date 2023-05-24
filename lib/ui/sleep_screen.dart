@@ -92,7 +92,6 @@ class _SleepMainScreenState extends State<SleepMainScreen> {
                         if (dateTime.isAfter(DateTime.now())) return;
                         setState(() {
                           _selectedDay = index;
-                          provider.clearSleepData();
                           provider.fetchSleepDataForDay(dateTime);
                         });
                       },
@@ -132,7 +131,7 @@ class _SleepMainScreenState extends State<SleepMainScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        'Heures de sommeil : ${(double.parse(sleepData[_selectedDay].value.toString()) / 60).toStringAsFixed(0)}h',
+                        'Heures de sommeil : ${sleepData[_selectedDay].value}',
                       ),
                       const SizedBox(height: 20),
                     ],
