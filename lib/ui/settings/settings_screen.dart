@@ -101,72 +101,79 @@ class _SettingsMainScreenState extends State<SettingsMainScreen> {
             ),
           ),
           const SizedBox(height: 5),
-          if (userProvider.user?.emailVerified == false) ...[
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Card(
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(16)),
-                ),
-                child: Center(
-                  child: Container(
-                    padding: const EdgeInsets.fromLTRB(8, 12, 8, 2),
-                    //height: 200,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        const Text(
-                          'Adresse mail non vérifiée !',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        const Text(
-                          'Veuillez vérifier votre adresse e-mail pour continuer à utiliser Morpheus.',
-                          style: TextStyle(
-                            fontSize: 14,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                        TextButton(
-                          onPressed: () async {
-                            try {
-                              await userProvider.sendEmailVerification();
-                              if (context.mounted) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    backgroundColor:
-                                        Theme.of(context).colorScheme.primary,
-                                    content: const Text(
-                                      'Un nouvel email de vérification vous a été envoyé. Pensez à vérifier vos spams !',
+          Consumer<UserProvider>(
+            builder: (context, provider, child) {
+              if (provider.user?.emailVerified == false) {
+                return Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Card(
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(16)),
+                    ),
+                    child: Center(
+                      child: Container(
+                        padding: const EdgeInsets.fromLTRB(8, 12, 8, 2),
+                        //height: 200,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            const Text(
+                              'Adresse mail non vérifiée !',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            const Text(
+                              'Veuillez vérifier votre adresse e-mail pour continuer à utiliser Morpheus.',
+                              style: TextStyle(
+                                fontSize: 14,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                            TextButton(
+                              onPressed: () async {
+                                try {
+                                  await userProvider.sendEmailVerification();
+                                  if (context.mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        backgroundColor: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                        content: const Text(
+                                          'Un nouvel email de vérification vous a été envoyé. Pensez à vérifier vos spams !',
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                } catch (err) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      backgroundColor:
+                                          Theme.of(context).colorScheme.error,
+                                      content: Text(err.toString()),
                                     ),
-                                  ),
-                                );
-                              }
-                            } catch (err) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  backgroundColor:
-                                      Theme.of(context).colorScheme.error,
-                                  content: Text(err.toString()),
-                                ),
-                              );
-                            }
-                          },
-                          child: const Text(
-                            'Renvoyer l\'email de confirmation',
-                            //style: TextStyle(fontSize: 16),
-                          ),
+                                  );
+                                }
+                              },
+                              child: const Text(
+                                'Renvoyer l\'email de confirmation',
+                                //style: TextStyle(fontSize: 16),
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
                   ),
-                ),
-              ),
-            ),
-          ],
+                );
+              } else {
+                return const SizedBox.shrink();
+              }
+            },
+          ),
           ListTile(
             title: Text(
               'Paramètres de l\'application',
@@ -175,7 +182,7 @@ class _SettingsMainScreenState extends State<SettingsMainScreen> {
           ),
           ListTile(
             leading: const Icon(Ionicons.medical_outline),
-            title: const Text('Gestion des données'),
+            title: const Text('Gestion du sommeil'),
             trailing: const Icon(Ionicons.chevron_forward_outline),
             onTap: () => context.pushNamed('settingsdata'),
           ),

@@ -24,6 +24,7 @@ dependencies:
   firebase_storage: ^11.2.1
   firebase_analytics: ^10.4.1
   cloud_firestore: ^4.7.1
+  fl_chart: ^0.62.0
   ionicons: ^0.2.2
   
 dev_dependencies:

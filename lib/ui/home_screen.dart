@@ -103,8 +103,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      const Row(
-                        children: [
+                      Row(
+                        children: const [
                           Text(
                             'Mes rêves ',
                             style: TextStyle(

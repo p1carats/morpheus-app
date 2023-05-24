@@ -233,6 +233,7 @@ class _DreamAddScreenNarrativeTabState extends State<DreamAddScreenNarrativeTab>
               border: OutlineInputBorder(),
               prefixIcon: Icon(Ionicons.journal_outline),
             ),
+            keyboardType: TextInputType.multiline,
             validator: (value) {
               if (value!.isEmpty) {
                 return 'La description ne peut pas être vide.';

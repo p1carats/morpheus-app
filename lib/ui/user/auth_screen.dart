@@ -60,6 +60,7 @@ class _UserAuthScreenState extends State<UserAuthScreen> {
                     border: OutlineInputBorder(),
                     prefixIcon: Icon(Ionicons.mail_outline),
                   ),
+                  keyboardType: TextInputType.emailAddress,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Veuillez entrer une adresse mail !';

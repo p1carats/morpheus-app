@@ -189,9 +189,9 @@ class _UserInitScreenState extends State<UserInitScreen> {
                   }
                 },
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 20.0),
               Text(
-                'Notez que la modification de cette valeur en-dessous de la valeur recommandée est pas fortement déconseillée. Une durée de sommeil insuffisante peut avoir des conséquences néfastes sur votre bien-être général.',
+                'Notez que la modification de cette valeur en-dessous de la valeur recommandée est fortement déconseillée. Une durée de sommeil insuffisante peut avoir des conséquences néfastes sur votre bien-être général.',
                 style: Theme.of(context).textTheme.bodySmall,
                 //textAlign: TextAlign.center,
               ),
