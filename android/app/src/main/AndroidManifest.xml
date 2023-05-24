@@ -34,4 +34,6 @@
     <queries>
         <package android:name="com.google.android.apps.healthdata" />
     </queries>
+    <uses-permission android:name="android.permission.health.READ_SLEEP"/>
+    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION"/>
 </manifest>

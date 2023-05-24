@@ -9,16 +9,17 @@ class SleepProvider with ChangeNotifier {
 
   List<HealthDataPoint> get sleepData => _sleepData;
 
-  Future<void> fetchSleepData() async {
+  Future<bool?> checkIfUserIsAuthorized() async {
+    return await _healthService.hasPermissions();
+  }
+
+  // Fetch sleep data for the last 30 days
+  Future<void> fetchSleepData(DateTime start, DateTime end) async {
     bool authorized = await _healthService.authorize();
     if (!authorized) {
       // Handle authorization failure
       return;
     }
-
-    final now = DateTime.now();
-    final start = DateTime(now.year, now.month - 1, now.day);
-    final end = DateTime(now.year, now.month, now.day);
 
     try {
       final sleepData = await _healthService.health.getHealthDataFromTypes(
@@ -35,56 +36,12 @@ class SleepProvider with ChangeNotifier {
     }
   }
 
-  //fetch sleep data for a specific day
   Future<void> fetchSleepDataForDay(DateTime day) async {
-    bool authorized = await _healthService.authorize();
-    if (!authorized) {
-      // Handle authorization failure
-      return;
-    }
-
-    final start = DateTime(day.year, day.month, day.day);
-    final end = DateTime(day.year, day.month, day.day + 1);
-
-    try {
-      final sleepData = await _healthService.health.getHealthDataFromTypes(
-        start,
-        end,
-        _healthService.types,
-      );
-
-      _sleepData = sleepData;
-      notifyListeners();
-    } catch (error) {
-      // Handle error while fetching sleep data
-      print('Error fetching sleep data: $error');
-    }
+    fetchSleepData(day, day.add(const Duration(days: 1)));
   }
 
-  //fetch sleep data for a specific week
   Future<void> fetchSleepDataForWeek(DateTime day) async {
-    bool authorized = await _healthService.authorize();
-    if (!authorized) {
-      // Handle authorization failure
-      return;
-    }
-
-    final start = DateTime(day.year, day.month, day.day);
-    final end = DateTime(day.year, day.month, day.day + 7);
-
-    try {
-      final sleepData = await _healthService.health.getHealthDataFromTypes(
-        start,
-        end,
-        _healthService.types,
-      );
-
-      _sleepData = sleepData;
-      notifyListeners();
-    } catch (error) {
-      // Handle error while fetching sleep data
-      print('Error fetching sleep data: $error');
-    }
+    fetchSleepData(day, day.add(const Duration(days: 7)));
   }
 
   @override

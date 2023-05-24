@@ -22,7 +22,6 @@ class _SleepDataPageState extends State<SleepDataPage> {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      print(_desiredSleepDuration);
       try {
         await userProvider.updateDesiredSleepDuration(
             userProvider.user!.uid, _desiredSleepDuration!);
@@ -130,35 +129,29 @@ class _SleepDataPageState extends State<SleepDataPage> {
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  'Durée de sommeil souhaitée',
+                  'Accès aux données de sommeil',
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
               ),
               const SizedBox(height: 10.0),
-              ElevatedButton(
-                onPressed: () {
-                  Provider.of<SleepProvider>(context, listen: false)
-                      .fetchSleepData();
-                },
-                child: const Text('Autoriser l\'accès aux données de sommeil'),
-              ),
-              Card(
-                child: Consumer<SleepProvider>(
-                  builder: (context, sleepProvider, child) {
-                    return ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: sleepProvider.sleepData.length,
-                      itemBuilder: (context, index) {
-                        final sleep = sleepProvider.sleepData[index];
-                        return ListTile(
-                          title: Text('${sleep.value} minutes'),
-                          subtitle: Text('${sleep.dateFrom} - ${sleep.dateTo}'),
-                        );
-                      },
-                    );
-                  },
+              const Text(
+                  'Pour vous proposer des analyses de merde, Morpheus a besoin de vos données de sommeil.\nElles ne sont pas stockées sur nos serveurs, et sont uniquement utilisées pour vous proposer des analyses personnalisées.\nVous pouvez révoquer l\'accès à vos données à tout moment.'),
+              if (Provider.of<SleepProvider>(context).checkIfUserIsAuthorized()
+                      is Future<bool> ==
+                  false) ...[
+                const SizedBox(height: 10.0),
+                // checkbox
+                ElevatedButton(
+                  onPressed: () {},
+                  child: const Text('Révoquer l\'accès à mes données'),
                 ),
-              ),
+              ] else ...[
+                const SizedBox(height: 10.0),
+                ElevatedButton(
+                  onPressed: () {},
+                  child: const Text('Autoriser l\'accès à mes données'),
+                ),
+              ],
             ],
           ),
         ),
