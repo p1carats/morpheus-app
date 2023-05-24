@@ -7,6 +7,7 @@ class UserModel {
   final DateTime creationTime;
   final DateTime birthDate;
   final String gender;
+  final int desiredSleepDuration;
 
   UserModel({
     required this.uid,
@@ -17,11 +18,14 @@ class UserModel {
     required this.creationTime,
     required this.birthDate,
     required this.gender,
+    required this.desiredSleepDuration,
   });
 
   factory UserModel.fromParams(String uid, String name, String email,
       bool emailVerified, String profilePicture, DateTime creationTime,
-      {required DateTime birthDate, required String gender}) {
+      {required DateTime birthDate,
+      required String gender,
+      required int desiredSleepDuration}) {
     return UserModel(
       uid: uid,
       email: email,
@@ -31,6 +35,7 @@ class UserModel {
       name: name,
       gender: gender,
       birthDate: birthDate,
+      desiredSleepDuration: desiredSleepDuration,
     );
   }
 }

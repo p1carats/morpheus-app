@@ -25,12 +25,11 @@ class _SettingsProfileScreenState extends State<SettingsProfileScreen> {
       _formKey.currentState!.save();
       try {
         if (_name != null) {
-          await Provider.of<UserProvider>(context, listen: false)
-              .updateDisplayName(userProvider.user!.uid, _name!);
+          await userProvider.updateDisplayName(userProvider.user!.uid, _name!);
         }
         if (_image != null) {
-          await Provider.of<UserProvider>(context, listen: false)
-              .updateProfilePicture(userProvider.user!.uid, _image!);
+          await userProvider.updateProfilePicture(
+              userProvider.user!.uid, _image!);
         }
         if (context.mounted) context.goNamed('settings');
       } catch (error) {
@@ -108,12 +107,11 @@ class _SettingsProfileScreenState extends State<SettingsProfileScreen> {
                 validator: (value) {
                   if (value!.isEmpty || value.length < 3) {
                     return 'Nom trop court ! (3 caractères minimum)';
+                  } else {
+                    return null;
                   }
-                  return null;
                 },
-                onSaved: (value) {
-                  _name = value!;
-                },
+                onSaved: (value) => _name = value!,
               ),
               const SizedBox(height: 30),
               ElevatedButton(

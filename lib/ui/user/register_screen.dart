@@ -6,15 +6,15 @@ import 'package:ionicons/ionicons.dart';
 
 import '../../providers/user_provider.dart';
 
-class AuthRegisterScreen extends StatefulWidget {
-  const AuthRegisterScreen({Key? key, required this.email}) : super(key: key);
+class UserRegisterScreen extends StatefulWidget {
+  const UserRegisterScreen({Key? key, required this.email}) : super(key: key);
   final String? email;
 
   @override
-  _AuthRegisterScreenState createState() => _AuthRegisterScreenState();
+  _UserRegisterScreenState createState() => _UserRegisterScreenState();
 }
 
-class _AuthRegisterScreenState extends State<AuthRegisterScreen> {
+class _UserRegisterScreenState extends State<UserRegisterScreen> {
   final _formKey = GlobalKey<FormState>();
   String _name = '';
   String _email = '';
@@ -26,11 +26,20 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen> {
   void _submit() async {
     _email = widget.email ?? '';
     if (_formKey.currentState!.validate()) {
+      if (_password != _confirmPassword) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('Les mots de passe ne correspondent pas !'),
+            backgroundColor: Theme.of(context).colorScheme.error,
+          ),
+        );
+        return;
+      }
       _formKey.currentState!.save();
       try {
         await Provider.of<UserProvider>(context, listen: false)
             .signUp(_name, _email, _password, _gender, _birthDate);
-        if (context.mounted) context.goNamed('data');
+        if (context.mounted) context.goNamed('init');
       } catch (error) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -177,9 +186,7 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen> {
                   selected: <String>{_gender},
                   showSelectedIcon: false,
                   onSelectionChanged: (Set<String> newSelection) {
-                    setState(() {
-                      _gender = newSelection.first;
-                    });
+                    setState(() => _gender = newSelection.first);
                   },
                 ),
                 const SizedBox(height: 30),

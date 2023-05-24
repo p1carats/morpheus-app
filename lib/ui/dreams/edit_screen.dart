@@ -30,8 +30,10 @@ class _DreamEditScreenState extends State<DreamEditScreen>
   late final ValueNotifier<String> _description = ValueNotifier<String>('');
   late final ValueNotifier<DateTime> _date =
       ValueNotifier<DateTime>(DateTime.now());
-  late final ValueNotifier<String> _type = ValueNotifier<String>('');
-  late final ValueNotifier<double> _rating = ValueNotifier<double>(0);
+  late final ValueNotifier<DreamType> _type =
+      ValueNotifier<DreamType>(DreamType.dream);
+  late final ValueNotifier<double> _rating = ValueNotifier<double>(1);
+  late final ValueNotifier<bool> _isRecurrent = ValueNotifier<bool>(false);
   late final ValueNotifier<bool> _isLucid = ValueNotifier<bool>(false);
   late final ValueNotifier<bool> _isControllable = ValueNotifier<bool>(false);
 
@@ -52,6 +54,9 @@ class _DreamEditScreenState extends State<DreamEditScreen>
           break;
         case 'rating':
           _rating.value = value;
+          break;
+        case '_isRecurrent':
+          _isRecurrent.value = value;
           break;
         case 'isLucid':
           _isLucid.value = value;
@@ -115,6 +120,7 @@ class _DreamEditScreenState extends State<DreamEditScreen>
       _date.value = _dream!.date;
       _type.value = _dream!.type;
       _rating.value = _dream!.rating.toDouble();
+      _isRecurrent.value = _dream!.isRecurrent;
       _isLucid.value = _dream!.isLucid;
       _isControllable.value = _dream!.isControllable;
     });
@@ -209,6 +215,7 @@ class _DreamEditScreenState extends State<DreamEditScreen>
                     dateNotifier: _date,
                     typeNotifier: _type,
                     ratingNotifier: _rating,
+                    recurrentNotifier: _isRecurrent,
                   ),
                   DreamAddScreenLucidityTab(
                     onChanged: _onTabDataChanged,
@@ -335,14 +342,16 @@ class _DreamAddScreenNarrativeTabState extends State<DreamAddScreenNarrativeTab>
 class DreamAddScreenDetailsTab extends StatefulWidget {
   final Function(String, dynamic) onChanged;
   final ValueNotifier<DateTime> dateNotifier;
-  final ValueNotifier<String> typeNotifier;
+  final ValueNotifier<DreamType> typeNotifier;
   final ValueNotifier<double> ratingNotifier;
+  final ValueNotifier<bool> recurrentNotifier;
   const DreamAddScreenDetailsTab({
     Key? key,
     required this.onChanged,
     required this.dateNotifier,
     required this.typeNotifier,
     required this.ratingNotifier,
+    required this.recurrentNotifier,
   }) : super(key: key);
 
   @override
@@ -353,8 +362,9 @@ class DreamAddScreenDetailsTab extends StatefulWidget {
 class _DreamAddScreenDetailsTabState extends State<DreamAddScreenDetailsTab>
     with AutomaticKeepAliveClientMixin {
   DateTime _date = DateTime.now();
-  String _type = 'dream';
+  DreamType _type = DreamType.dream;
   double _rating = 1;
+  bool _isRecurrent = false;
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -390,6 +400,12 @@ class _DreamAddScreenDetailsTabState extends State<DreamAddScreenDetailsTab>
         _rating = widget.ratingNotifier.value;
       });
     });
+    _isRecurrent = widget.recurrentNotifier.value;
+    widget.recurrentNotifier.addListener(() {
+      setState(() {
+        _isRecurrent = widget.recurrentNotifier.value;
+      });
+    });
   }
 
   @override
@@ -421,22 +437,22 @@ class _DreamAddScreenDetailsTabState extends State<DreamAddScreenDetailsTab>
           ),
           const SizedBox(height: 20),
           const Text('Type de rêve'),
-          SegmentedButton<String>(
-            segments: const <ButtonSegment<String>>[
-              ButtonSegment<String>(
-                value: 'dream',
+          SegmentedButton<DreamType>(
+            segments: const <ButtonSegment<DreamType>>[
+              ButtonSegment<DreamType>(
+                value: DreamType.dream,
                 label: Text('Rêve'),
                 icon: Icon(Ionicons.sunny_outline),
               ),
-              ButtonSegment<String>(
-                value: 'nightmare',
+              ButtonSegment<DreamType>(
+                value: DreamType.nightmare,
                 label: Text('Cauchemar'),
                 icon: Icon(Ionicons.thunderstorm_outline),
               ),
             ],
-            selected: <String>{_type},
+            selected: <DreamType>{_type},
             showSelectedIcon: false,
-            onSelectionChanged: (Set<String> newSelection) {
+            onSelectionChanged: (Set<DreamType> newSelection) {
               widget.typeNotifier.value = newSelection.first;
               widget.onChanged('type', newSelection.first);
             },
@@ -452,6 +468,63 @@ class _DreamAddScreenDetailsTabState extends State<DreamAddScreenDetailsTab>
             onChanged: (double newValue) {
               widget.ratingNotifier.value = newValue;
               widget.onChanged('rating', newValue);
+            },
+          ),
+          const SizedBox(height: 20),
+          SwitchListTile(
+            title: Row(
+              children: [
+                const Text('Rêve récurrent'),
+                IconButton(
+                  icon: const Icon(Ionicons.help_circle_outline),
+                  onPressed: () {
+                    showModalBottomSheet(
+                      context: context,
+                      builder: (context) => Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              width: 40,
+                              height: 5,
+                              decoration: BoxDecoration(
+                                color: Colors.grey[300],
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            Text(
+                              'Qu\'est-ce qu\'un rêve récurrent ?',
+                              style: Theme.of(context).textTheme.headlineSmall,
+                            ),
+                            const SizedBox(height: 10),
+                            Text(
+                              'blablabla',
+                              style: Theme.of(context).textTheme.titleMedium,
+                              //textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 20),
+                            Row(
+                              children: [
+                                TextButton(
+                                  child: const Text('Ok !'),
+                                  onPressed: () => context.pop(),
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                  tooltip: 'UwU',
+                ),
+              ],
+            ),
+            value: _isRecurrent,
+            onChanged: (bool value) {
+              setState(() => _isRecurrent = value);
             },
           ),
         ],
@@ -488,7 +561,6 @@ class _DreamAddScreenLucidityTabState extends State<DreamAddScreenLucidityTab>
   void initState() {
     super.initState();
     _isLucid = widget.lucidNotifier.value;
-    _isControllable = widget.controllableNotifier.value;
     widget.lucidNotifier.addListener(() {
       setState(() {
         _isLucid = widget.lucidNotifier.value;

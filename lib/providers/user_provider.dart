@@ -71,6 +71,32 @@ class UserProvider with ChangeNotifier {
     }
   }
 
+  // sendEmailVerification
+  Future<void> sendEmailVerification() async {
+    try {
+      await _userService.sendEmailVerification();
+    } on FirebaseAuthException catch (err) {
+      if (err.code == 'too-many-requests') {
+        throw ('Veuillez patienter quelques instants avant de faire une nouvelle demande.');
+      } else {
+        throw Exception('Une erreur est survenue : ${err.message}');
+      }
+    } catch (err) {
+      throw Exception('Une erreur est survenue : $err');
+    }
+  }
+
+  // updateDesiredSleepDuration
+  Future<void> updateDesiredSleepDuration(String uid, int duration) async {
+    try {
+      await _userService.updateDesiredSleepDuration(uid, duration);
+      _user = await _userService.checkAuthentication();
+      notifyListeners();
+    } catch (err) {
+      throw Exception('Une erreur est survenue : $err');
+    }
+  }
+
   // updateProfilePicture
   Future<void> updateProfilePicture(String uid, File image) async {
     try {

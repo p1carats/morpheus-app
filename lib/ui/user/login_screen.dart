@@ -5,15 +5,15 @@ import 'package:ionicons/ionicons.dart';
 
 import '../../providers/user_provider.dart';
 
-class AuthLoginScreen extends StatefulWidget {
-  const AuthLoginScreen({Key? key, required this.email}) : super(key: key);
+class UserLoginScreen extends StatefulWidget {
+  const UserLoginScreen({Key? key, required this.email}) : super(key: key);
   final String? email;
 
   @override
-  _AuthLoginScreenState createState() => _AuthLoginScreenState();
+  _UserLoginScreenState createState() => _UserLoginScreenState();
 }
 
-class _AuthLoginScreenState extends State<AuthLoginScreen> {
+class _UserLoginScreenState extends State<UserLoginScreen> {
   final _formKey = GlobalKey<FormState>();
   String _email = '';
   String _password = '';

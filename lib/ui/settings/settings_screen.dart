@@ -1,8 +1,8 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:ionicons/ionicons.dart';
 
 import '../../providers/app_provider.dart';
@@ -33,33 +33,6 @@ class _SettingsMainScreenState extends State<SettingsMainScreen> {
     final appProvider = Provider.of<AppProvider>(context);
     final userProvider = Provider.of<UserProvider>(context, listen: false);
 
-    Widget contentWidget = Container();
-    if (userProvider.user?.emailVerified == false) {
-      contentWidget = Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Container(
-          color: Theme.of(context).colorScheme.error,
-          padding: const EdgeInsets.all(8),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
-              Icon(
-                Ionicons.warning_outline,
-                color: Colors.black,
-              ),
-              SizedBox(width: 8),
-              Text(
-                'Adresse mail non vérifiée !',
-                style: TextStyle(
-                  color: Colors.black,
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
-    }
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Réglages'),
@@ -67,7 +40,14 @@ class _SettingsMainScreenState extends State<SettingsMainScreen> {
           IconButton(
             icon: const Icon(Ionicons.help_circle_outline),
             tooltip: 'Feedback',
-            onPressed: () {},
+            onPressed: () {
+              final Uri emailLaunchUri = Uri(
+                scheme: 'mailto',
+                path: 'morpheus@uphoria.tech',
+                queryParameters: {'subject': 'Feedback sur Morpheus'},
+              );
+              launchUrl(emailLaunchUri);
+            },
           ),
           IconButton(
             icon: const Icon(Ionicons.ellipsis_vertical_outline),
@@ -83,11 +63,7 @@ class _SettingsMainScreenState extends State<SettingsMainScreen> {
       ),
       body: ListView(
         children: <Widget>[
-          Container(
-            padding: const EdgeInsets.all(8),
-            child: contentWidget,
-          ),
-          // Profile Section
+          const SizedBox(height: 10),
           ListTile(
             subtitle: Row(
               children: <Widget>[
@@ -124,9 +100,78 @@ class _SettingsMainScreenState extends State<SettingsMainScreen> {
               ],
             ),
           ),
-          const Divider(),
-          const ListTile(
-            title: Text('Paramètres de l\'application'),
+          const SizedBox(height: 5),
+          if (userProvider.user?.emailVerified == false) ...[
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Card(
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(16)),
+                ),
+                child: Center(
+                  child: Container(
+                    padding: const EdgeInsets.fromLTRB(8, 12, 8, 2),
+                    //height: 200,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        const Text(
+                          'Adresse mail non vérifiée !',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        const Text(
+                          'Veuillez vérifier votre adresse e-mail pour continuer à utiliser Morpheus.',
+                          style: TextStyle(
+                            fontSize: 14,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        TextButton(
+                          onPressed: () async {
+                            try {
+                              await userProvider.sendEmailVerification();
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    backgroundColor:
+                                        Theme.of(context).colorScheme.primary,
+                                    content: const Text(
+                                      'Un nouvel email de vérification vous a été envoyé. Pensez à vérifier vos spams !',
+                                    ),
+                                  ),
+                                );
+                              }
+                            } catch (err) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  backgroundColor:
+                                      Theme.of(context).colorScheme.error,
+                                  content: Text(err.toString()),
+                                ),
+                              );
+                            }
+                          },
+                          child: const Text(
+                            'Renvoyer l\'email de confirmation',
+                            //style: TextStyle(fontSize: 16),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+          ListTile(
+            title: Text(
+              'Paramètres de l\'application',
+              style: Theme.of(context).textTheme.bodyLarge,
+            ),
           ),
           ListTile(
             leading: const Icon(Ionicons.medical_outline),
@@ -166,13 +211,10 @@ class _SettingsMainScreenState extends State<SettingsMainScreen> {
             },
           ),
           ListTile(
-            leading: const Icon(Ionicons.language_outline),
-            title: const Text('Langue'),
-            trailing: const Icon(Ionicons.chevron_forward_outline),
-            onTap: () {},
-          ),
-          const ListTile(
-            title: Text('Paramètres du compte'),
+            title: Text(
+              'Paramètres du compte',
+              style: Theme.of(context).textTheme.bodyLarge,
+            ),
           ),
           ListTile(
             leading: const Icon(Ionicons.person_outline),

@@ -1,31 +1,38 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import "package:flutter/services.dart";
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:ionicons/ionicons.dart';
 
 import '../../providers/user_provider.dart';
-import '../../providers/sleep_provider.dart';
 
-class SleepDataPage extends StatefulWidget {
-  const SleepDataPage({Key? key}) : super(key: key);
+class UserInitScreen extends StatefulWidget {
+  const UserInitScreen({Key? key}) : super(key: key);
 
   @override
-  _SleepDataPageState createState() => _SleepDataPageState();
+  State<UserInitScreen> createState() => _UserInitScreenState();
 }
 
-class _SleepDataPageState extends State<SleepDataPage> {
+class _UserInitScreenState extends State<UserInitScreen> {
   final _formKey = GlobalKey<FormState>();
+  File? _image;
   int? _desiredSleepDuration;
 
   void _submit() async {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      print(_desiredSleepDuration);
       try {
-        await userProvider.updateDesiredSleepDuration(
-            userProvider.user!.uid, _desiredSleepDuration!);
+        if (_image != null) {
+          await userProvider.updateProfilePicture(
+              userProvider.user!.uid, _image!);
+        }
+        if (_desiredSleepDuration != null) {
+          await userProvider.updateDesiredSleepDuration(
+              userProvider.user!.uid, _desiredSleepDuration!);
+        }
         if (context.mounted) context.goNamed('settings');
       } catch (error) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -38,14 +45,27 @@ class _SleepDataPageState extends State<SleepDataPage> {
     }
   }
 
+  Future<void> _selectImage() async {
+    final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path);
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<UserProvider>(context, listen: false).user?.name;
     final birthDate =
         Provider.of<UserProvider>(context, listen: false).user?.birthDate;
     final desiredSleepDuration =
         Provider.of<UserProvider>(context, listen: false)
             .user
             ?.desiredSleepDuration;
+    final profilePicture =
+        Provider.of<UserProvider>(context, listen: false).user?.profilePicture;
 
     final currentDate = DateTime.now();
     int age = currentDate.month < birthDate!.month ||
@@ -69,26 +89,57 @@ class _SleepDataPageState extends State<SleepDataPage> {
 
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Ionicons.arrow_back_outline),
-          onPressed: () => context.pop(),
-        ),
-        title: const Text('Gestion des données'),
+        //title: const Text('Mon profil'),
+        actions: [
+          TextButton.icon(
+            icon: const Icon(Ionicons.help_outline),
+            label: const Text('Ce n\'est pas vous ?'),
+            onPressed: () async {
+              await Provider.of<UserProvider>(context, listen: false).signOut();
+              if (context.mounted) context.goNamed('auth');
+            },
+          )
+        ],
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(20.0),
         child: Form(
           key: _formKey,
           child: Column(
-            children: [
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Durée de sommeil souhaitée',
-                  style: Theme.of(context).textTheme.titleMedium,
+            children: <Widget>[
+              Text(
+                'Bienvenue sur Morpheus, $user !',
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              const SizedBox(height: 20.0),
+              const Text(
+                  'Suivez vos données de santé et notez vos rêves avec notre appli de malade mental. Créez votre profil sans plus attendre !'),
+              const SizedBox(height: 20.0),
+              Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CircleAvatar(
+                      radius: 40,
+                      backgroundImage: _image != null
+                          ? FileImage(_image!) as ImageProvider<Object>?
+                          : NetworkImage(profilePicture!),
+                    ),
+                    const SizedBox(width: 20),
+                    TextButton(
+                      onPressed: _selectImage,
+                      child: Row(
+                        children: const [
+                          Icon(Ionicons.camera_outline),
+                          SizedBox(width: 5),
+                          Text('Changer de photo'),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(height: 10.0),
+              const SizedBox(height: 20.0),
               Text(
                   'Vous semblez avoir $age ans. La durée minimale de sommeil recommandée pour votre tranche d\'âge est de ${referenceSleepDuration}h, et la durée minimale est de ${referenceSleepDuration - 2}h. Vous pouvez modifier cette valeur ci-dessous si vous le souhaitez.'),
               const SizedBox(height: 20.0),
@@ -122,42 +173,11 @@ class _SleepDataPageState extends State<SleepDataPage> {
               const SizedBox(height: 20.0),
               ElevatedButton(
                 onPressed: () => _submit(),
-                child: const Text('Mettre à jour'),
+                child: const Text('Créer mon profil'),
               ),
-              const SizedBox(height: 20.0),
-              const Divider(),
-              const SizedBox(height: 20.0),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Durée de sommeil souhaitée',
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-              ),
-              const SizedBox(height: 10.0),
-              ElevatedButton(
-                onPressed: () {
-                  Provider.of<SleepProvider>(context, listen: false)
-                      .fetchSleepData();
-                },
-                child: const Text('Autoriser l\'accès aux données de sommeil'),
-              ),
-              Card(
-                child: Consumer<SleepProvider>(
-                  builder: (context, sleepProvider, child) {
-                    return ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: sleepProvider.sleepData.length,
-                      itemBuilder: (context, index) {
-                        final sleep = sleepProvider.sleepData[index];
-                        return ListTile(
-                          title: Text('${sleep.value} minutes'),
-                          subtitle: Text('${sleep.dateFrom} - ${sleep.dateTo}'),
-                        );
-                      },
-                    );
-                  },
-                ),
+              TextButton(
+                onPressed: () => context.go('/'),
+                child: const Text('Passer cette étape'),
               ),
             ],
           ),

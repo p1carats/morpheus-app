@@ -10,6 +10,8 @@ import '../../models/dream_model.dart';
 import '../../providers/user_provider.dart';
 import '../../providers/dream_provider.dart';
 
+enum Calendar { day, week, month, year }
+
 class DreamDetailsScreen extends StatefulWidget {
   const DreamDetailsScreen({Key? key, required this.id}) : super(key: key);
   final String id;
@@ -21,9 +23,9 @@ class DreamDetailsScreen extends StatefulWidget {
 class _DreamDetailsScreenState extends State<DreamDetailsScreen> {
   late Future<DreamModel?> _dreamFuture;
 
-  final Map<String, IconData> dreamType = {
-    'dream': Ionicons.sunny_outline,
-    'nightmare': Ionicons.thunderstorm_outline,
+  final Map<DreamType, IconData> dreamType = {
+    DreamType.dream: Ionicons.sunny_outline,
+    DreamType.nightmare: Ionicons.thunderstorm_outline,
   };
 
   @override
@@ -47,7 +49,7 @@ class _DreamDetailsScreenState extends State<DreamDetailsScreen> {
           IconButton(
             icon: const Icon(Ionicons.share_outline),
             tooltip: 'Modifier',
-            onPressed: () => Share.share('J\'ai rêvé cette nuit !'),
+            onPressed: () => Share.share('J\'ai rêvé  cette nuit !'),
           ),
           IconButton(
             icon: const Icon(Ionicons.create_outline),
@@ -130,17 +132,30 @@ class _DreamDetailsScreenState extends State<DreamDetailsScreen> {
                       fontSize: 12,
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  if (dream.isRecurrent) ...[
+                    const SizedBox(height: 15),
+                    Row(
+                      children: [
+                        const Icon(Ionicons.repeat_outline),
+                        const SizedBox(width: 10),
+                        Text(
+                          'Rêve récurrent',
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        ),
+                      ],
+                    ),
+                  ],
+                  const SizedBox(height: 15),
                   Text(
                     dream.description,
                     style: Theme.of(context).textTheme.bodyLarge,
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 15),
                   Text(
                     'Note : ${dream.rating.toString()}/5',
                     style: Theme.of(context).textTheme.bodyLarge,
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
@@ -148,8 +163,8 @@ class _DreamDetailsScreenState extends State<DreamDetailsScreen> {
                         children: [
                           Icon(
                             dream.isControllable
-                                ? Ionicons.checkmark_outline
-                                : Ionicons.close_outline,
+                                ? Ionicons.eye_outline
+                                : Ionicons.eye_off_outline,
                             //size: 16,
                           ),
                           Text(

@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
@@ -5,14 +6,14 @@ import 'package:ionicons/ionicons.dart';
 
 import '../../providers/user_provider.dart';
 
-class AuthMainScreen extends StatefulWidget {
-  const AuthMainScreen({Key? key}) : super(key: key);
+class UserAuthScreen extends StatefulWidget {
+  const UserAuthScreen({Key? key}) : super(key: key);
 
   @override
-  State<AuthMainScreen> createState() => _AuthMainScreenState();
+  State<UserAuthScreen> createState() => _UserAuthScreenState();
 }
 
-class _AuthMainScreenState extends State<AuthMainScreen> {
+class _UserAuthScreenState extends State<UserAuthScreen> {
   final _formKey = GlobalKey<FormState>();
   String _email = '';
 

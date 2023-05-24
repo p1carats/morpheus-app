@@ -1,12 +1,13 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+enum DreamType { dream, nightmare }
 
 class DreamModel {
   final String? id;
   final String title;
   final String description;
   final DateTime date;
-  final String type; // dream or nightmare
-  final int rating; // 1 to 5
+  final DreamType type;
+  final int rating;
+  final bool isRecurrent;
   final bool isLucid;
   final bool isControllable;
 
@@ -17,9 +18,14 @@ class DreamModel {
     required this.date,
     required this.type,
     required this.rating,
+    required this.isRecurrent,
     required this.isLucid,
     required this.isControllable,
-  });
+  }) {
+    if (rating < 1 || rating > 5) {
+      throw Exception('Invalid dream rating');
+    }
+  }
 
   DreamModel copyWith({String? id}) {
     return DreamModel(
@@ -29,33 +35,34 @@ class DreamModel {
       date: date,
       type: type,
       rating: rating,
+      isRecurrent: isRecurrent,
       isLucid: isLucid,
       isControllable: isControllable,
     );
   }
 
-  // Conversion from JSON to Dream object
   factory DreamModel.fromJson(Map<String, dynamic> json) {
     return DreamModel(
       id: json['id'] as String?,
       title: json['title'] as String,
       description: json['description'] as String,
       date: json['date'].toDate(),
-      type: json['type'] as String,
+      type: json['type'] == 'dream' ? DreamType.dream : DreamType.nightmare,
       rating: (json['rating'] as num).toInt(),
+      isRecurrent: json['isRecurrent'] as bool,
       isLucid: json['isLucid'] as bool,
       isControllable: json['isControllable'] as bool,
     );
   }
 
-  // Conversion from Dream object to JSON
   Map<String, dynamic> toJson() {
     return {
       'title': title,
       'description': description,
       'date': date,
-      'type': type,
+      'type': type == DreamType.dream ? 'dream' : 'nightmare',
       'rating': rating,
+      'isRecurrent': isRecurrent,
       'isLucid': isLucid,
       'isControllable': isControllable,
     };

@@ -67,8 +67,8 @@ class DreamService {
           .collection('dreams')
           .doc(id)
           .update(dream.toJson());
-    } catch (e) {
-      throw Exception('Error updating dream: $e');
+    } catch (err) {
+      throw Exception('Error updating dream: $err');
     }
   }
 
@@ -81,8 +81,8 @@ class DreamService {
           .collection('dreams')
           .doc(dreamId)
           .delete();
-    } catch (e) {
-      throw Exception('Error deleting dream: $e');
+    } catch (err) {
+      throw Exception('Error deleting dream: $err');
     }
   }
 }

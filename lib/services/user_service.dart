@@ -24,6 +24,7 @@ class UserService {
           user.metadata.creationTime!,
           birthDate: (doc['birthDate'] as Timestamp).toDate(),
           gender: doc['gender'],
+          desiredSleepDuration: doc['desiredSleepDuration'] as int,
         );
       } else {
         return null;
@@ -56,6 +57,7 @@ class UserService {
       user.metadata.creationTime!,
       birthDate: (doc['birthDate'] as Timestamp).toDate(),
       gender: doc['gender'],
+      desiredSleepDuration: doc['desiredSleepDuration'] as int,
     );
   }
 
@@ -79,9 +81,33 @@ class UserService {
     await user.updatePhotoURL(await ref.getDownloadURL());
     // Send a verification email
     await user.sendEmailVerification();
-    //await Future.delayed(const Duration(milliseconds: 1500));
     await user.reload();
     user = _auth.currentUser!;
+    // age desired sleep duration
+    final currentDate = DateTime.now();
+    int age = currentDate.month < birthDate.month ||
+            (currentDate.month == birthDate.month &&
+                currentDate.day < birthDate.day)
+        ? currentDate.year - birthDate.year - 1
+        : currentDate.year - birthDate.year;
+    int desiredSleepDuration;
+    if (age >= 26) {
+      desiredSleepDuration = 9;
+    } else if (age >= 18) {
+      desiredSleepDuration = 8;
+    } else if (age >= 14) {
+      desiredSleepDuration = 10;
+    } else if (age >= 6) {
+      desiredSleepDuration = 11;
+    } else {
+      desiredSleepDuration = 12;
+    }
+    // Set the user's birth date, gender, and desired sleep duration
+    await _firestore.collection('users').doc(user.uid).set({
+      'birthDate': birthDate,
+      'gender': gender,
+      'desiredSleepDuration': desiredSleepDuration,
+    });
     // Return the user details
     return UserModel.fromParams(
       user.uid,
@@ -92,12 +118,26 @@ class UserService {
       user.metadata.creationTime!,
       birthDate: birthDate,
       gender: gender,
+      desiredSleepDuration: 8,
     );
   }
 
   // Logs out the current user
   Future<void> signOut() async {
     return await _auth.signOut();
+  }
+
+  // Send email verification
+  Future<void> sendEmailVerification() async {
+    User? user = _auth.currentUser;
+    if (user != null) return await user.sendEmailVerification();
+  }
+
+  // Updates the user's desired sleep duration
+  Future<void> updateDesiredSleepDuration(String uid, int duration) async {
+    await _firestore.collection('users').doc(uid).update({
+      'desiredSleepDuration': duration,
+    });
   }
 
   // Updates the user's profile picture

@@ -18,11 +18,11 @@ import 'ui/settings/data_screen.dart';
 import 'ui/settings/profile_screen.dart';
 import 'ui/settings/email_screen.dart';
 import 'ui/settings/password_screen.dart';
-import 'ui/auth/auth_screen.dart';
-import 'ui/auth/login_screen.dart';
-import 'ui/auth/register_screen.dart';
+import 'ui/user/auth_screen.dart';
+import 'ui/user/login_screen.dart';
+import 'ui/user/register_screen.dart';
+import 'ui/user/init_screen.dart';
 import 'ui/wizard/welcome_screen.dart';
-import 'ui/wizard/data_screen.dart';
 import 'ui/error_screen.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -139,19 +139,19 @@ final GoRouter router = GoRouter(
       parentNavigatorKey: _rootNavigatorKey,
       name: 'auth',
       path: '/auth',
-      builder: (context, state) => const AuthMainScreen(),
+      builder: (context, state) => const UserAuthScreen(),
       routes: <RouteBase>[
         GoRoute(
           name: 'login',
           path: 'login',
-          builder: (context, state) => AuthLoginScreen(
+          builder: (context, state) => UserLoginScreen(
             email: state.queryParameters['email'],
           ),
         ),
         GoRoute(
           name: 'register',
           path: 'register',
-          builder: (context, state) => AuthRegisterScreen(
+          builder: (context, state) => UserRegisterScreen(
             email: state.queryParameters['email'],
           ),
         ),
@@ -159,15 +159,15 @@ final GoRouter router = GoRouter(
     ),
     GoRoute(
       parentNavigatorKey: _rootNavigatorKey,
-      name: 'welcome',
-      path: '/welcome',
-      builder: (context, state) => const WizardWelcomeScreen(),
+      name: 'init',
+      path: '/init',
+      builder: (context, state) => const UserInitScreen(),
     ),
     GoRoute(
       parentNavigatorKey: _rootNavigatorKey,
-      name: 'data',
-      path: '/data',
-      builder: (context, state) => const WizardDataScreen(),
+      name: 'welcome',
+      path: '/welcome',
+      builder: (context, state) => const WizardWelcomeScreen(),
     ),
   ],
   errorBuilder: (context, state) => const ErrorScreen(),
