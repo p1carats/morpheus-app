@@ -56,6 +56,12 @@ class SleepProvider with ChangeNotifier {
     }
   }
 
+  // Clear sleep data
+  void clearSleepData() {
+    _sleepData = [];
+    notifyListeners();
+  }
+
   // Fetch sleep data for a specific day
   Future<void> fetchSleepDataForDay(DateTime day) async {
     // Handle authentication failure

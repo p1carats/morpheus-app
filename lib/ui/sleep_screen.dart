@@ -56,6 +56,7 @@ class _SleepMainScreenState extends State<SleepMainScreen> {
                         setState(() {
                           _selectedWeek--;
                           _selectedDay = 0;
+                          provider.clearSleepData();
                           _updateWeekDays();
                           provider.fetchSleepDataForWeek(_weekDays.first);
                         });
@@ -66,14 +67,17 @@ class _SleepMainScreenState extends State<SleepMainScreen> {
                     ),
                     IconButton(
                       icon: const Icon(Icons.arrow_forward),
-                      onPressed: () {
-                        setState(() {
-                          _selectedWeek++;
-                          _selectedDay = 0;
-                          _updateWeekDays();
-                          provider.fetchSleepDataForWeek(_weekDays.first);
-                        });
-                      },
+                      onPressed: _weekDays.last.isAfter(DateTime.now())
+                          ? null
+                          : () {
+                              setState(() {
+                                _selectedWeek++;
+                                _selectedDay = 0;
+                                provider.clearSleepData();
+                                _updateWeekDays();
+                                provider.fetchSleepDataForWeek(_weekDays.first);
+                              });
+                            },
                     ),
                   ],
                 ),
@@ -85,10 +89,11 @@ class _SleepMainScreenState extends State<SleepMainScreen> {
                   return Expanded(
                     child: GestureDetector(
                       onTap: () {
+                        if (dateTime.isAfter(DateTime.now())) return;
                         setState(() {
                           _selectedDay = index;
-                          provider
-                              .fetchSleepDataForDay(_weekDays[_selectedDay]);
+                          provider.clearSleepData();
+                          provider.fetchSleepDataForDay(dateTime);
                         });
                       },
                       child: Column(
@@ -126,26 +131,10 @@ class _SleepMainScreenState extends State<SleepMainScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      // if _selectedDay > DateTime.now().day, then show 0
-                      if (_selectedDay > DateTime.now().day)
-                        const Text(
-                          'Heures de sommeil : 0',
-                        ),
                       Text(
-                        'Heures de sommeil : ${sleepData[_selectedDay].value}',
+                        'Heures de sommeil : ${(double.parse(sleepData[_selectedDay].value.toString()) / 60).toStringAsFixed(0)}h',
                       ),
                       const SizedBox(height: 20),
-                      Text(
-                        DateFormat('EEEE, d MMMM').format(
-                          _weekDays[_selectedDay < 0
-                              ? _weekDays.length - 1
-                              : _selectedDay],
-                        ),
-                      ),
-                      Container(
-                        height: 200,
-                        padding: const EdgeInsets.all(16),
-                      ),
                     ],
                   ),
                 ),
