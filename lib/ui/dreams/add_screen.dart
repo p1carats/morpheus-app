@@ -378,6 +378,7 @@ class _DreamAddScreenDetailsTabState extends State<DreamAddScreenDetailsTab>
             value: _isRecurrent,
             onChanged: (bool value) {
               setState(() => _isRecurrent = value);
+              widget.onChanged('isRecurrent', _isRecurrent);
             },
           ),
           const SizedBox(height: 20),

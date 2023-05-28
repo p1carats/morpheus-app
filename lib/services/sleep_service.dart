@@ -38,8 +38,8 @@ class SleepService {
   Future revokeAccess() async {
     try {
       await health.revokePermissions();
-    } catch (error) {
-      print("Caught exception in revokeAccess: $error");
+    } catch (err) {
+      print('Caught exception in revokeAccess: $err');
     }
   }
 }
